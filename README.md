@@ -1,3 +1,33 @@
+## ros_control (indigo) - 0.9.2-0
+
+The packages in the `ros_control` repository were released into the `indigo` distro by running `/usr/bin/bloom-release ros_control --track indigo --rosdistro indigo` on `Mon, 04 May 2015 16:03:22 -0000`
+
+These packages were released:
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `ros_control`:
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: https://github.com/ros-gbp/ros_control-release.git
+- rosdistro version: `0.9.1-0`
+- old version: `0.9.1-0`
+- new version: `0.9.2-0`
+
+Versions of tools used:
+- bloom version: `0.5.19`
+- catkin_pkg version: `0.2.8`
+- rosdep version: `0.11.0`
+- rosdistro version: `0.4.0`
+- vcstools version: `0.1.33`
+
+
 ## ros_control (indigo) - 0.9.1-0
 
 The packages in the `ros_control` repository were released into the `indigo` distro by running `/usr/bin/bloom-release --rosdistro indigo --track indigo ros_control` on `Mon, 03 Nov 2014 17:20:51 -0000`
