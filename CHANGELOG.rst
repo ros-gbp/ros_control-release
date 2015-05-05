@@ -2,6 +2,9 @@
 Changelog for package joint_limits_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.3 (2015-05-05)
+------------------
+
 0.9.2 (2015-05-04)
 ------------------
 * Reset functionality for stateful position joint limit handles
