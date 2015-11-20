@@ -1,3 +1,33 @@
+## ros_control (jade) - 0.10.0-1
+
+The packages in the `ros_control` repository were released into the `jade` distro by running `/usr/bin/bloom-release ros_control --track jade --rosdistro jade --new-track` on `Fri, 20 Nov 2015 17:04:21 -0000`
+
+These packages were released:
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `ros_control`:
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `0.10.0-0`
+- new version: `0.10.0-1`
+
+Versions of tools used:
+- bloom version: `0.5.20`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.4`
+- rosdistro version: `0.4.2`
+- vcstools version: `0.1.38`
+
+
 ## ros_control (jade) - 0.10.0-0
 
 The packages in the `ros_control` repository were released into the `jade` distro by running `/usr/bin/bloom-release ros_control --track jade --rosdistro jade --new-track` on `Fri, 20 Nov 2015 16:48:02 -0000`
