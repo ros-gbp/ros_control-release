@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2012, hiDOF INC.
+// Copyright (C) 2015, PAL Robotics S.L.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -8,7 +8,7 @@
 //   * Redistributions in binary form must reproduce the above copyright
 //     notice, this list of conditions and the following disclaimer in the
 //     documentation and/or other materials provided with the distribution.
-//   * Neither the name of hiDOF, Inc. nor the names of its
+//   * Neither the names of PAL Robotics S.L. nor the names of its
 //     contributors may be used to endorse or promote products derived from
 //     this software without specific prior written permission.
 //
@@ -25,41 +25,33 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-//! \author Vijay Pradeep
+#ifndef CONTROLLER_MANAGER_TESTS_VEL_EFF_CONTROLLER_H
+#define CONTROLLER_MANAGER_TESTS_VEL_EFF_CONTROLLER_H
 
-#ifndef CONTROLLER_MANAGER_TESTS_MY_DUMMY_CONTROLLER_H
-#define CONTROLLER_MANAGER_TESTS_MY_DUMMY_CONTROLLER_H
-
-#include <controller_interface/controller.h>
-#include <hardware_interface/hardware_interface.h>
+#include <controller_interface/multi_interface_controller.h>
+#include <hardware_interface/joint_command_interface.h>
 #include <pluginlib/class_list_macros.h>
 
 namespace controller_manager_tests
 {
 
-class MyDummyInterface : public hardware_interface::HardwareInterface
+class VelEffController : public
+      controller_interface::MultiInterfaceController<hardware_interface::VelocityJointInterface,
+                                                     hardware_interface::EffortJointInterface>
 {
 public:
-  MyDummyInterface()
-  {
+  VelEffController() {}
 
-  }
-};
+  bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle &n);
+  void starting(const ros::Time& time);
+  void update(const ros::Time& time, const ros::Duration& period);
+  void stopping(const ros::Time& time);
 
-class MyDummyController : public controller_interface::Controller<MyDummyInterface>
-{
-public:
-  MyDummyController() { }
-
-  using controller_interface::Controller<MyDummyInterface>::init;
-  bool init(MyDummyInterface* /*hw*/, ros::NodeHandle& /*n*/) { return true; }
-  void starting(const ros::Time& /*time*/) { }
-  void update(const ros::Time& /*time*/, const ros::Duration& /*period*/) { }
-  void stopping(const ros::Time& /*time*/) { }
+private:
+  std::vector<hardware_interface::JointHandle> vel_cmd_;
+  std::vector<hardware_interface::JointHandle> eff_cmd_;
 };
 
 }
 
 #endif
-
-

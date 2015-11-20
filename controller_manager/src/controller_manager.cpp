@@ -94,6 +94,9 @@ void ControllerManager::update(const ros::Time& time, const ros::Duration& perio
   // there are controllers to start/stop
   if (please_switch_)
   {
+    // switch hardware interfaces (if any)
+    robot_hw_->doSwitch(switch_start_list_, switch_stop_list_);
+
     // stop controllers
     for (unsigned int i=0; i<stop_request_.size(); i++)
       if (!stop_request_[i]->stopRequest(time))
@@ -225,7 +228,7 @@ bool ControllerManager::loadController(const std::string& name)
   // Initializes the controller
   ROS_DEBUG("Initializing controller '%s'", name.c_str());
   bool initialized;
-  std::set<std::string> claimed_resources; // Gets populated during initRequest call
+  controller_interface::ControllerBase::ClaimedResources claimed_resources; // Gets populated during initRequest call
   try{
     initialized = c->initRequest(robot_hw_, root_nh_, c_nh, claimed_resources);
   }
@@ -248,9 +251,8 @@ bool ControllerManager::loadController(const std::string& name)
   // Adds the controller to the new list
   to.resize(to.size() + 1);
   to[to.size()-1].info.type = type;
-  to[to.size()-1].info.hardware_interface = c->getHardwareInterfaceType();
   to[to.size()-1].info.name = name;
-  to[to.size()-1].info.resources = claimed_resources;
+  to[to.size()-1].info.claimed_resources = claimed_resources;
   to[to.size()-1].c = c;
 
   // Destroys the old controllers list when the realtime thread is finished with it.
@@ -408,24 +410,37 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
   ROS_DEBUG("Start request vector has size %i", (int)start_request_.size());
 
   // Do the resource management checking
-  std::list<hardware_interface::ControllerInfo> info_list, start_list, stop_list;
+  std::list<hardware_interface::ControllerInfo> info_list;
+  switch_start_list_.clear();
+  switch_stop_list_.clear();
   
   std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
   for (size_t i = 0; i < controllers.size(); ++i)
   {
     bool in_stop_list  = false;
-
     for(size_t j = 0; j < stop_request_.size(); j++)
-      in_stop_list = in_stop_list || (stop_request_[j] == controllers[i].c.get());
+    {
+      if (stop_request_[j] == controllers[i].c.get())
+      {
+        in_stop_list = true;
+        break;
+      }
+    }
 
     bool in_start_list = false;
     for(size_t j = 0; j < start_request_.size(); j++)
-      in_start_list = in_start_list || (start_request_[j] == controllers[i].c.get());
+    {
+      if (start_request_[j] == controllers[i].c.get())
+      {
+        in_start_list = true;
+        break;
+      }
+    }
 
-    bool add_to_list = controllers[i].c->isRunning();
+    const bool is_running = controllers[i].c->isRunning();
     hardware_interface::ControllerInfo &info = controllers[i].info;
 
-    if(!add_to_list && in_stop_list){ // check for double stop
+    if(!is_running && in_stop_list){ // check for double stop
       if(strictness ==  controller_manager_msgs::SwitchController::Request::STRICT){
         ROS_ERROR_STREAM("Could not stop controller '" << info.name << "' since it is not running");
         stop_request_.clear();
@@ -436,7 +451,7 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
       }
     }
 
-    if(add_to_list && !in_stop_list && in_start_list){ // check for doubled start
+    if(is_running && !in_stop_list && in_start_list){ // check for doubled start
       if(strictness ==  controller_manager_msgs::SwitchController::Request::STRICT){
         ROS_ERROR_STREAM("Controller '" << info.name << "' is already running");
         stop_request_.clear();
@@ -447,13 +462,14 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
       }
     }
 
-    if(add_to_list && in_stop_list && !in_start_list){ // running and real stop
-      stop_list.push_back(info);
+    if(is_running && in_stop_list && !in_start_list){ // running and real stop
+      switch_stop_list_.push_back(info);
     }
-    else if(!in_stop_list && in_start_list){ // start, but no restart
-      start_list.push_back(info);
+    else if(!is_running && !in_stop_list && in_start_list){ // start, but no restart
+      switch_start_list_.push_back(info);
      }
 
+    bool add_to_list = is_running;
     if (in_stop_list)
       add_to_list = false;
     if (in_start_list)
@@ -472,15 +488,13 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
     return false;
   }
 
-  if (!robot_hw_->canSwitch(start_list, stop_list))
+  if (!robot_hw_->prepareSwitch(switch_start_list_, switch_stop_list_))
   {
     ROS_ERROR("Could not switch controllers. The hardware interface combination for the requested controllers is unfeasible.");
     stop_request_.clear();
     start_request_.clear();
     return false;
   }
-
-  robot_hw_->doSwitch(start_list, stop_list);
 
   // start the atomic controller switching
   switch_strictness_ = strictness;
@@ -604,13 +618,20 @@ bool ControllerManager::listControllersSrv(
   for (size_t i = 0; i < controllers.size(); ++i)
   {
     controller_manager_msgs::ControllerState& cs = resp.controller[i];
-    cs.name               = controllers[i].info.name;
-    cs.type               = controllers[i].info.type;
-    cs.hardware_interface = controllers[i].info.hardware_interface;
-    cs.resources.clear();
-    cs.resources.reserve(controllers[i].info.resources.size());
-    for (std::set<std::string>::iterator it = controllers[i].info.resources.begin(); it != controllers[i].info.resources.end(); ++it)
-      cs.resources.push_back(*it);
+    cs.name = controllers[i].info.name;
+    cs.type = controllers[i].info.type;
+
+    cs.claimed_resources.clear();
+    typedef std::vector<hardware_interface::InterfaceResources> ClaimedResVec;
+    typedef ClaimedResVec::const_iterator ClaimedResIt;
+    const ClaimedResVec& c_res = controllers[i].info.claimed_resources;
+    for (ClaimedResIt c_res_it = c_res.begin(); c_res_it != c_res.end(); ++c_res_it)
+    {
+      controller_manager_msgs::HardwareInterfaceResources iface_res;
+      iface_res.hardware_interface = c_res_it->hardware_interface;
+      std::copy(c_res_it->resources.begin(), c_res_it->resources.end(), std::back_inserter(iface_res.resources));
+      cs.claimed_resources.push_back(iface_res);
+    }
 
     if (controllers[i].c->isRunning())
       cs.state = "running";
