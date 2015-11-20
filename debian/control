@@ -1,0 +1,12 @@
+Source: ros-jade-ros-control
+Section: misc
+Priority: extra
+Maintainer: Adolfo Rodriguez Tsouroukdissian <adolfo.rodriguez@pal-robotics.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jade-catkin
+Homepage: http://ros.org/wiki/ros_control
+Standards-Version: 3.9.2
+
+Package: ros-jade-ros-control
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jade-control-toolbox, ros-jade-controller-interface, ros-jade-controller-manager, ros-jade-controller-manager-msgs, ros-jade-controller-manager-tests, ros-jade-hardware-interface, ros-jade-joint-limits-interface, ros-jade-realtime-tools, ros-jade-transmission-interface
+Description: A set of packages that include controller interfaces, controller managers, transmissions, hardware_interfaces and the control_toolbox.
