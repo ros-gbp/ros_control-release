@@ -2,6 +2,12 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.4 (2016-02-12)
+------------------
+* Cleaner test exit
+* Address -Wunused-parameter warnings
+* Contributors: Adolfo Rodriguez Tsouroukdissian
+
 0.9.3 (2015-05-05)
 ------------------
 
