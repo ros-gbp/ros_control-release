@@ -2,12 +2,9 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.0 (2015-11-20)
--------------------
+0.9.4 (2016-02-12)
+------------------
 * Cleaner test exit
-* Extend test suite
-  - Exercise much more of the controller_manager ROS API.
-  - Create multi-interface test controllers and exercise them in tests.
 * Address -Wunused-parameter warnings
 * Contributors: Adolfo Rodriguez Tsouroukdissian
 

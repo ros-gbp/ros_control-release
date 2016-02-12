@@ -58,10 +58,6 @@ template<typename T> T intersect(const T& v1, const T &v2)
     return res;
 }
 
-// NOTE: For test simplicity, this robot abstraction assumes that it will work
-// with controllers claiming resources from only one hardware interface.
-// Note that in the general case, controllers can claim resources from multiple
-// hardware interfaces.
 class SwitchBot : public hardware_interface::RobotHW
 {
     hardware_interface::JointStateInterface jsi_;
@@ -86,7 +82,7 @@ class SwitchBot : public hardware_interface::RobotHW
             if(can_switch) interfaces_.insert(hardware_interface::internal::demangledTypeName<Interface>() );
             iface.registerHandle(typename Interface::ResourceHandleType(jsh_, &dummy_));
         }
-        bool prepareSwitch(const std::string &n)
+        bool canSwitch(const std::string &n) const
         {
             if(interfaces_.find(n) == interfaces_.end()) return false;
             return n >= current_;
@@ -135,11 +131,10 @@ public:
 
     }
 
-    virtual bool prepareSwitch(const std::list<hardware_interface::ControllerInfo>& start_list,
-                               const std::list<hardware_interface::ControllerInfo>& stop_list)
+    virtual bool canSwitch(const std::list<hardware_interface::ControllerInfo> &start_list, const std::list<hardware_interface::ControllerInfo> &stop_list) const
     {
 
-        if(!RobotHW::prepareSwitch(start_list, stop_list))
+        if(!RobotHW::canSwitch(start_list, stop_list))
         {
             ROS_ERROR("Something is wrong with RobotHW");
             return false;
@@ -156,24 +151,19 @@ public:
 
         for(std::list<hardware_interface::ControllerInfo>::const_iterator it = start_list.begin(); it != start_list.end(); ++it)
         {
-            if (it->claimed_resources.size() != 1)
+            for (std::set<std::string>::const_iterator res_it = it->resources.begin(); res_it != it->resources.end(); ++res_it)
             {
-                ROS_FATAL("We expect controllers to claim resoures from only one interface. This should never happen!");
-                return false;
-            }
-            const hardware_interface::InterfaceResources& iface_res = it->claimed_resources.front();
-            for (std::set<std::string>::const_iterator res_it = iface_res.resources.begin(); res_it != iface_res.resources.end(); ++res_it)
-            {
+
                 // special check
-                if(iface_res.hardware_interface == "hardware_interface::EffortJointInterface" && *res_it == "j_pe") j_pe_e = true;
-                else if(iface_res.hardware_interface == "hardware_interface::VelocityJointInterface" && *res_it == "j_ve") j_ve_v = true;
+                if(it->hardware_interface == "hardware_interface::EffortJointInterface" && *res_it == "j_pe") j_pe_e = true;
+                else if(it->hardware_interface == "hardware_interface::VelocityJointInterface" && *res_it == "j_ve") j_ve_v = true;
 
                 // per joint check
                 try
                 {
-                    if(!joints_.at(*res_it)->prepareSwitch(iface_res.hardware_interface))
+                    if(!joints_.at(*res_it)->canSwitch(it->hardware_interface))
                     {
-                        ROS_ERROR_STREAM("Cannot switch " << *res_it << " to " << iface_res.hardware_interface);
+                        ROS_ERROR_STREAM("Cannot switch " << *res_it << " to " << it->hardware_interface);
                         return false;
                     }
                 }
@@ -195,20 +185,19 @@ public:
         {
             started_.erase(std::remove(started_.begin(), started_.end(), it->name), started_.end());
             stopped_.push_back(it->name);
-            const hardware_interface::InterfaceResources& iface_res = it->claimed_resources.front();
-            for (std::set<std::string>::const_iterator res_it = iface_res.resources.begin(); res_it != iface_res.resources.end(); ++res_it)
+            for (std::set<std::string>::const_iterator res_it = it->resources.begin(); res_it != it->resources.end(); ++res_it)
             {
                 switches[*res_it] = "";
             }
         }
         for(std::list<hardware_interface::ControllerInfo>::const_iterator it = start_list.begin(); it != start_list.end(); ++it)
         {
+
             stopped_.erase(std::remove(stopped_.begin(), stopped_.end(), it->name), stopped_.end());
             started_.push_back(it->name);
-            const hardware_interface::InterfaceResources& iface_res = it->claimed_resources.front();
-            for (std::set<std::string>::const_iterator res_it = iface_res.resources.begin(); res_it != iface_res.resources.end(); ++res_it)
+            for (std::set<std::string>::const_iterator res_it = it->resources.begin(); res_it != it->resources.end(); ++res_it)
             {
-                switches[*res_it] = iface_res.hardware_interface;
+                switches[*res_it] = it->hardware_interface;
             }
         }
         for(std::map<std::string, std::string>::iterator it = switches.begin(); it != switches.end(); ++it)
@@ -236,9 +225,9 @@ class DummyControllerLoader: public controller_manager::ControllerLoaderInterfac
         DummyController(const std::string &name) : type_name(name) {}
         virtual void update(const ros::Time& /*time*/, const ros::Duration& /*period*/) {}
         virtual bool initRequest(hardware_interface::RobotHW* /*hw*/,
-                                 ros::NodeHandle&             /*root_nh*/,
-                                 ros::NodeHandle&             controller_nh,
-                                 ClaimedResources&            claimed_resources)
+                                 ros::NodeHandle& /*root_nh*/,
+                                 ros::NodeHandle &controller_nh,
+                                 std::set<std::string>& claimed_resources)
         {
             std::vector<std::string> joints;
             if(!controller_nh.getParam("joints", joints))
@@ -246,9 +235,7 @@ class DummyControllerLoader: public controller_manager::ControllerLoaderInterfac
                 ROS_ERROR("Could not parse joint names");
                 return false;
             }
-            std::set<std::string> resources(joints.begin(), joints.end());
-            hardware_interface::InterfaceResources iface_res(getHardwareInterfaceType(), resources);
-            claimed_resources.assign(1, iface_res);
+            claimed_resources.insert(joints.begin(), joints.end());
             state_ = INITIALIZED;
             return true;
         }

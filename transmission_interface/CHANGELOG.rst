@@ -2,11 +2,12 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.0 (2015-11-20)
--------------------
+0.9.4 (2016-02-12)
+------------------
+* Clarify that hardwareInterface element is optional for actuators
 * Allow loading transmissions from a vector of TransmissionInfo instances.
 * Address -Wunused-parameter warnings
-* Contributors: Adolfo Rodriguez Tsouroukdissian
+* Contributors: Adolfo Rodriguez Tsouroukdissian, Dave Coleman
 
 0.9.3 (2015-05-05)
 ------------------

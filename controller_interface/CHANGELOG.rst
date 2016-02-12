@@ -2,20 +2,8 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.0 (2015-11-20)
--------------------
-* Add MultiInterfaceController.
-  - Subclass of ControllerBase which allows to claim resources from up to four
-  different hardware interfaces.
-  Requested hardware interfaces are required by default, but can be made optional
-  through a constructor flag.
-* Remove getHardwareInterfaceType() pure virtual method from ControllerBase
-  class.
-  - C++ API break.
-  - Controller class still preserves the method, albeit protected and non-virtual.
-* Modify controller interfaces to allow for controllers that claim resources
-  from more than one hardware interface.
-  - C++ API break.
+0.9.4 (2016-02-12)
+------------------
 * Address -Wunused-parameter warnings
 * Contributors: Adolfo Rodriguez Tsouroukdissian
 

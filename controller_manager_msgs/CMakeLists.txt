@@ -12,7 +12,6 @@ add_message_files(
   ControllerState.msg
   ControllerStatistics.msg
   ControllersStatistics.msg
-  HardwareInterfaceResources.msg
   )
 
 add_service_files(

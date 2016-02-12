@@ -36,10 +36,6 @@
 #include <ros/node_handle.h>
 #include <hardware_interface/robot_hw.h>
 
-namespace hardware_interface
-{
-  class InterfaceResources;
-}
 
 namespace controller_interface
 {
@@ -126,11 +122,12 @@ public:
   /** \name Non Real-Time Safe Functions
    *\{*/
 
-  typedef std::vector<hardware_interface::InterfaceResources> ClaimedResources;
+  /// Get the name of this controller's hardware interface type
+  virtual std::string getHardwareInterfaceType() const = 0;
 
   /** \brief Request that the controller be initialized
    *
-   * \param robot_hw The robot hardware abstraction.
+   * \param hw The hardware interface to the robot.
    *
    * \param root_nh A NodeHandle in the root of the controller manager namespace.
    * This is where the ROS interfaces are setup (publishers, subscribers, services).
@@ -139,15 +136,12 @@ public:
    * This is where the controller-specific configuration resides.
    *
    * \param[out] claimed_resources The resources claimed by this controller.
-   * They can belong to multiple hardware interfaces.
    *
    * \returns True if initialization was successful and the controller
    * is ready to be started.
    */
-  virtual bool initRequest(hardware_interface::RobotHW* robot_hw,
-                           ros::NodeHandle&             root_nh,
-                           ros::NodeHandle&             controller_nh,
-                           ClaimedResources&            claimed_resources) = 0;
+  virtual bool initRequest(hardware_interface::RobotHW* hw, ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
+                           std::set<std::string>& claimed_resources) = 0;
 
   /*\}*/
 
