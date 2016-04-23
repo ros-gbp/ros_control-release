@@ -2,9 +2,18 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.4 (2016-02-12)
-------------------
+0.10.1 (2016-04-23)
+-------------------
+* Add missing test dependency on rosservice
+* Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
+* Contributors: Bence Magyar
+
+0.10.0 (2015-11-20)
+-------------------
 * Cleaner test exit
+* Extend test suite
+  - Exercise much more of the controller_manager ROS API.
+  - Create multi-interface test controllers and exercise them in tests.
 * Address -Wunused-parameter warnings
 * Contributors: Adolfo Rodriguez Tsouroukdissian
 

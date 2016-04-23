@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 2.8.3)
 project(controller_manager_tests)
 
 # Load catkin and all dependencies required for this package
-find_package(catkin REQUIRED COMPONENTS controller_manager controller_interface control_toolbox)
+find_package(catkin REQUIRED COMPONENTS controller_manager controller_interface)
 catkin_python_setup()
 
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 
 catkin_package(
-  CATKIN_DEPENDS controller_manager controller_interface control_toolbox
+  CATKIN_DEPENDS controller_manager controller_interface
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   )
@@ -19,6 +19,12 @@ add_library(${PROJECT_NAME}
   include/controller_manager_tests/my_robot_hw.h
   src/effort_test_controller.cpp
   include/controller_manager_tests/effort_test_controller.h
+  src/vel_eff_controller.cpp
+  include/controller_manager_tests/vel_eff_controller.h
+  src/pos_eff_controller.cpp
+  include/controller_manager_tests/pos_eff_controller.h
+  src/pos_eff_opt_controller.cpp
+  include/controller_manager_tests/pos_eff_opt_controller.h
   src/my_dummy_controller.cpp
   include/controller_manager_tests/my_dummy_controller.h
   )

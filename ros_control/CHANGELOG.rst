@@ -2,8 +2,13 @@
 Changelog for package ros_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.4 (2016-02-12)
-------------------
+0.10.1 (2016-04-23)
+-------------------
+* Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
+* Contributors: Bence Magyar
+
+0.10.0 (2015-11-20)
+-------------------
 
 0.9.3 (2015-05-05)
 ------------------

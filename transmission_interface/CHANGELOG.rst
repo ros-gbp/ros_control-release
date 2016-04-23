@@ -2,12 +2,16 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.4 (2016-02-12)
-------------------
-* Clarify that hardwareInterface element is optional for actuators
+0.10.1 (2016-04-23)
+-------------------
+* Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
+* Contributors: Bence Magyar
+
+0.10.0 (2015-11-20)
+-------------------
 * Allow loading transmissions from a vector of TransmissionInfo instances.
 * Address -Wunused-parameter warnings
-* Contributors: Adolfo Rodriguez Tsouroukdissian, Dave Coleman
+* Contributors: Adolfo Rodriguez Tsouroukdissian
 
 0.9.3 (2015-05-05)
 ------------------
