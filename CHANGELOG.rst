@@ -2,6 +2,9 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.11.0 (2016-05-23)
+-------------------
+
 0.10.1 (2016-04-23)
 -------------------
 * Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
