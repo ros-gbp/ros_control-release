@@ -2,6 +2,9 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.11.0 (2016-05-23)
+-------------------
+
 0.10.1 (2016-04-23)
 -------------------
 * Add missing test dependency on rosservice
