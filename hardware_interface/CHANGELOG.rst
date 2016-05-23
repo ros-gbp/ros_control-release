@@ -2,6 +2,12 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.11.0 (2016-05-23)
+-------------------
+* Allow the InterfaceManager class to register other InterfaceManagers.
+  This will make it possible to combine several RobotHW objects into a single one.
+* Contributors: Toni Oliver
+
 0.10.1 (2016-04-23)
 -------------------
 * Fix rosconsole errors from test build
