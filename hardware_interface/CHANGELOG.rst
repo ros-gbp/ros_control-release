@@ -2,6 +2,9 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.11.1 (2016-08-18)
+-------------------
+
 0.11.0 (2016-05-23)
 -------------------
 * Allow the InterfaceManager class to register other InterfaceManagers.
