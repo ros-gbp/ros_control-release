@@ -2,6 +2,11 @@
 Changelog for package rqt_controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.11.1 (2016-08-18)
+-------------------
+* Qt5 migration
+* Contributors: Bence Magyar
+
 0.11.0 (2016-05-23)
 -------------------
 
