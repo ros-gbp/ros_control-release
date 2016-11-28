@@ -2,6 +2,9 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.10.1 (2016-11-28)
+-------------------
+
 0.10.0 (2015-11-20)
 -------------------
 * Add MultiInterfaceController.
