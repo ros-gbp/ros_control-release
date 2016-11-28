@@ -2,6 +2,9 @@
 Changelog for package rqt_controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.10.1 (2016-11-28)
+-------------------
+
 0.10.0 (2015-11-20)
 -------------------
 * Allow running as standalone application
