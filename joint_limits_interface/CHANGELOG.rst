@@ -2,6 +2,13 @@
 Changelog for package joint_limits_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.10.1 (2016-11-28)
+-------------------
+* Fix catkin_package
+  * Don't export local include dirs.
+  * Fix dependency on urdfdom (Thanks to Mathias Lüdtke).
+* Contributors: Jochen Sprickerhof
+
 0.10.0 (2015-11-20)
 -------------------
 
