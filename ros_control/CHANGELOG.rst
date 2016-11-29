@@ -2,8 +2,23 @@
 Changelog for package ros_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.10.1 (2016-11-28)
+0.11.2 (2016-11-28)
 -------------------
+* Add Enrique and Bence to maintainer list
+* Convert to format2, fix dependency in cmake
+* Add combined_robot_hw to metapackage & system figure
+* Contributors: Bence Magyar
+
+0.11.1 (2016-08-18)
+-------------------
+
+0.11.0 (2016-05-23)
+-------------------
+
+0.10.1 (2016-04-23)
+-------------------
+* Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
+* Contributors: Bence Magyar
 
 0.10.0 (2015-11-20)
 -------------------
