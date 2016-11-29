@@ -2,6 +2,13 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.11.2 (2016-11-28)
+-------------------
+* Add Enrique and Bence to maintainer list
+* Clean up export leftovers from rosbuild
+* Convert to format2, fix dependency in cmake
+* Contributors: Bence Magyar
+
 0.11.1 (2016-08-18)
 -------------------
 
