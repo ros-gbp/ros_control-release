@@ -1,0 +1,12 @@
+Source: ros-kinetic-transmission-interface
+Section: misc
+Priority: extra
+Maintainer: Adolfo Rodriguez Tsouroukdissian <adolfo.rodriguez@pal-robotics.com>
+Build-Depends: debhelper (>= 9.0.0), libtinyxml-dev, ros-kinetic-catkin, ros-kinetic-cmake-modules, ros-kinetic-hardware-interface, ros-kinetic-pluginlib, ros-kinetic-resource-retriever, ros-kinetic-roscpp
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-transmission-interface
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libtinyxml-dev, ros-kinetic-pluginlib, ros-kinetic-roscpp
+Description: Transmission Interface.
