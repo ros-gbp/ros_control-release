@@ -1,3 +1,37 @@
+## foo (kinetic) - 0.11.3-1
+
+The packages in the `foo` repository were released into the `kinetic` distro by running `/usr/local/bin/bloom-release -r kinetic -t kinetic foo` on `Wed, 21 Dec 2016 04:15:04 -0000`
+
+These packages were released:
+- `combined_robot_hw`
+- `combined_robot_hw_tests`
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `foo`:
+
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `0.11.3-0`
+- new version: `0.11.3-1`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
 ## ros_control (kinetic) - 0.11.3-0
 
 The packages in the `ros_control` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release --rosdistro kinetic --track kinetic ros_control` on `Wed, 07 Dec 2016 15:44:51 -0000`
