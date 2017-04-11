@@ -1,0 +1,12 @@
+Source: ros-lunar-combined-robot-hw-tests
+Section: misc
+Priority: extra
+Maintainer: Toni Oliver <toni@shadowrobot.com>
+Build-Depends: debhelper (>= 9.0.0), ros-lunar-catkin, ros-lunar-combined-robot-hw, ros-lunar-controller-manager, ros-lunar-controller-manager-tests, ros-lunar-hardware-interface, ros-lunar-roscpp, ros-lunar-rostest
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-lunar-combined-robot-hw-tests
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-lunar-combined-robot-hw, ros-lunar-controller-manager, ros-lunar-controller-manager-tests, ros-lunar-hardware-interface, ros-lunar-roscpp
+Description: The combined_robot_hw_tests package
