@@ -1,3 +1,37 @@
+## ros_control (lunar) - 0.13.0-0
+
+The packages in the `ros_control` repository were released into the `lunar` distro by running `/usr/bin/bloom-release ros_control --track lunar --rosdistro lunar` on `Sat, 23 Dec 2017 13:55:55 -0000`
+
+These packages were released:
+- `combined_robot_hw`
+- `combined_robot_hw_tests`
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `ros_control`:
+
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: https://github.com/ros-gbp/ros_control-release.git
+- rosdistro version: `0.12.0-0`
+- old version: `0.12.0-0`
+- new version: `0.13.0-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.1`
+- catkin_pkg version: `0.3.9`
+- rosdep version: `0.11.8`
+- rosdistro version: `0.6.2`
+- vcstools version: `0.1.39`
+
+
 ## ros_control (kinetic) - 0.13.0-0
 
 The packages in the `ros_control` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release ros_control --track kinetic --rosdistro kinetic` on `Sat, 23 Dec 2017 13:47:00 -0000`
