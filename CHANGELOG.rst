@@ -2,6 +2,16 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.0 (2017-12-23)
+-------------------
+* Several spawner-related fixes:
+* Remove shutdown_timeout & add deprecation note
+* Remove roslib import
+* Run wait_for_service on object instead of the hardcoded string version
+* Remove wait_for_service and rephrase warning after exception
+* Remove sleep(1) as it causes more problems than what it solves
+* Contributors: Bence Magyar
+
 0.12.0 (2017-08-05)
 -------------------
 
