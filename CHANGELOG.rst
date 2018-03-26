@@ -2,6 +2,9 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.5 (2018-03-26)
+------------------
+
 0.9.4 (2016-02-12)
 ------------------
 * Address -Wunused-parameter warnings
