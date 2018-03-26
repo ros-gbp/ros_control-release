@@ -1,0 +1,12 @@
+Source: ros-melodic-rqt-controller-manager
+Section: misc
+Priority: extra
+Maintainer: Kelsey Hawkins <kphawkins@gatech.edu>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-controller-manager, ros-melodic-rqt-gui
+Homepage: http://ros.org/wiki/rqt_controller_manager
+Standards-Version: 3.9.2
+
+Package: ros-melodic-rqt-controller-manager
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-controller-manager, ros-melodic-rqt-gui
+Description: The rqt_controller_manager package
