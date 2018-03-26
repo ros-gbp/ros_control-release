@@ -2,6 +2,14 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.14.0 (2018-03-26)
+-------------------
+* migrate classloader headers
+* refactored controller_manager unspawner
+* fix controller_manager list: migrated to new ControllerState with claimed_resources
+* remove debug prints from controller_manager script
+* Contributors: Mathias Lüdtke
+
 0.13.0 (2017-12-23)
 -------------------
 * Several spawner-related fixes:

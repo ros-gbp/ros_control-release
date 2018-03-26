@@ -2,6 +2,12 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.14.0 (2018-03-26)
+-------------------
+* migrate to new class list macros header
+* migrate classloader headers
+* Contributors: Mathias Lüdtke
+
 0.13.0 (2017-12-23)
 -------------------
 

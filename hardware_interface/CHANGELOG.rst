@@ -2,6 +2,9 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.14.0 (2018-03-26)
+-------------------
+
 0.13.0 (2017-12-23)
 -------------------
 * move CheckIsResourceManager into internal namespace
