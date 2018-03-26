@@ -43,7 +43,7 @@
 #include <hardware_interface/robot_hw.h>
 #include <realtime_tools/realtime_publisher.h>
 #include <ros/node_handle.h>
-#include <pluginlib/class_loader.hpp>
+#include <pluginlib/class_loader.h>
 #include <controller_manager_msgs/ListControllerTypes.h>
 #include <controller_manager_msgs/ListControllers.h>
 #include <controller_manager_msgs/ReloadControllerLibraries.h>

@@ -27,7 +27,7 @@
 
 
 // Pluginlib
-#include <pluginlib/class_list_macros.hpp>
+#include <pluginlib/class_list_macros.h>
 
 // ros_control
 #include <transmission_interface/velocity_joint_interface_provider.h>
