@@ -40,6 +40,7 @@
 #include <string>
 #include <vector>
 #include <ros/ros.h>
+#include <tinyxml.h>
 #include <hardware_interface/robot_hw.h>
 #include <realtime_tools/realtime_publisher.h>
 #include <ros/node_handle.h>

@@ -57,8 +57,7 @@ def list_controllers():
         print "No controllers are loaded in mechanism control"
     else:
         for c in resp.controller:
-            hwi = list(set(r.hardware_interface for r in  c.claimed_resources))
-            print '%s - %s ( %s )'%(c.name, '+'.join(hwi), c.state)
+            print '%s - %s ( %s )'%(c.name, c.hardware_interface, c.state)
 
 
 def load_controller(name):

@@ -36,6 +36,8 @@
 #include <cmath>
 #include <limits>
 
+#include <boost/shared_ptr.hpp>
+
 #include <ros/duration.h>
 
 #include <hardware_interface/internal/resource_manager.h>
@@ -265,19 +267,9 @@ class EffortJointSaturationHandle
 {
 public:
   EffortJointSaturationHandle(const hardware_interface::JointHandle& jh, const JointLimits& limits)
-    : jh_(jh)
-    , limits_(limits)
   {
-    if (!limits.has_velocity_limits)
-    {
-      throw JointLimitsInterfaceException("Cannot enforce limits for joint '" + getName() +
-                                           "'. It has no velocity limits specification.");
-    }
-    if (!limits.has_effort_limits)
-    {
-      throw JointLimitsInterfaceException("Cannot enforce limits for joint '" + getName() +
-                                          "'. It has no efforts limits specification.");
-    }
+    jh_ = jh;
+    limits_ = limits;
   }
 
   /** \return Joint name. */
@@ -288,8 +280,17 @@ public:
    */
   void enforceLimits(const ros::Duration& /* period */)
   {
-    double min_eff = -limits_.max_effort;
-    double max_eff = limits_.max_effort;
+    double min_eff, max_eff;
+    if (limits_.has_effort_limits)
+    {
+      min_eff = -limits_.max_effort;
+      max_eff = limits_.max_effort;
+    }
+    else
+    {
+      min_eff = -std::numeric_limits<double>::max();
+      max_eff = std::numeric_limits<double>::max();
+    }
 
     if (limits_.has_position_limits)
     {
@@ -300,11 +301,14 @@ public:
         max_eff = 0;
     }
 
-    const double vel = jh_.getVelocity();
-    if (vel < -limits_.max_velocity)
-      min_eff = 0;
-    else if (vel > limits_.max_velocity)
-      max_eff = 0;
+    if (limits_.has_velocity_limits)
+    {
+      const double vel = jh_.getVelocity();
+      if (vel < -limits_.max_velocity)
+        min_eff = 0;
+      else if (vel > limits_.max_velocity)
+        max_eff = 0;
+    }
 
     jh_.setCommand(internal::saturate(jh_.getCommand(), min_eff, max_eff));
   }
