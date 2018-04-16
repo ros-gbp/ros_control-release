@@ -2,14 +2,11 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.14.1 (2018-04-16)
+0.13.2 (2018-04-16)
 -------------------
 
-0.14.0 (2018-03-26)
+0.13.1 (2018-03-26)
 -------------------
-* Switch MultiInterfaceController to use variadic templates.
-* Use public virtual for Controller inheritance.
-* Contributors: Mike Purvis
 
 0.13.0 (2017-12-23)
 -------------------
