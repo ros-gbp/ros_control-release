@@ -2,18 +2,57 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.6 (2018-04-16)
-------------------
+0.13.2 (2018-04-16)
+-------------------
+* migrate to new class list macros header
+* migrate classloader headers
+* Contributors: Mathias Lüdtke
 
-0.9.5 (2018-03-26)
-------------------
+0.13.1 (2018-03-26)
+-------------------
 
-0.9.4 (2016-02-12)
-------------------
-* Clarify that hardwareInterface element is optional for actuators
+0.13.0 (2017-12-23)
+-------------------
+
+0.12.0 (2017-08-05)
+-------------------
+* Add unit tests for new bidirectional joint interface providers
+* Add bidirectional joint interface providers
+* Add inverse transmission interfaces to TransmissionLoaderData
+* Contributors: Jordan Lack
+
+0.11.5 (2017-06-28)
+-------------------
+
+0.11.4 (2017-02-14)
+-------------------
+
+0.11.3 (2016-12-07)
+-------------------
+
+0.11.2 (2016-11-28)
+-------------------
+* Add Enrique and Bence to maintainer list
+* Clean up export leftovers from rosbuild
+* Convert to format2, fix dependency in cmake
+* Contributors: Bence Magyar
+
+0.11.1 (2016-08-18)
+-------------------
+
+0.11.0 (2016-05-23)
+-------------------
+
+0.10.1 (2016-04-23)
+-------------------
+* Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
+* Contributors: Bence Magyar
+
+0.10.0 (2015-11-20)
+-------------------
 * Allow loading transmissions from a vector of TransmissionInfo instances.
 * Address -Wunused-parameter warnings
-* Contributors: Adolfo Rodriguez Tsouroukdissian, Dave Coleman
+* Contributors: Adolfo Rodriguez Tsouroukdissian
 
 0.9.3 (2015-05-05)
 ------------------

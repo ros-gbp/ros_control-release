@@ -2,17 +2,58 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.9.6 (2018-04-16)
-------------------
+0.13.2 (2018-04-16)
+-------------------
 * Fix controller_manager_interface and add unit tests.
-* Contributors: Yong Li
+* migrate to new class list macros header
+* Contributors: Mathias Lüdtke, Yong Li
 
-0.9.5 (2018-03-26)
-------------------
+0.13.1 (2018-03-26)
+-------------------
+* add tests for controller_manager scripts and nodes
+* return 0 in dummy_app main
+* Contributors: Mathias Lüdtke
 
-0.9.4 (2016-02-12)
-------------------
+0.13.0 (2017-12-23)
+-------------------
+* Drop includes from CMake library build.
+* Contributors: Mike Purvis
+
+0.12.0 (2017-08-05)
+-------------------
+
+0.11.5 (2017-06-28)
+-------------------
+
+0.11.4 (2017-02-14)
+-------------------
+
+0.11.3 (2016-12-07)
+-------------------
+
+0.11.2 (2016-11-28)
+-------------------
+* Add Enrique and Bence to maintainer list
+* Contributors: Bence Magyar
+
+0.11.1 (2016-08-18)
+-------------------
+
+0.11.0 (2016-05-23)
+-------------------
+
+0.10.1 (2016-04-23)
+-------------------
+* Add missing test dependency on rosservice
+* Remove control_toolbox dependency. Fix thread linking error coming from removal of dependency.
+* Contributors: Bence Magyar
+
+0.10.0 (2015-11-20)
+-------------------
 * Cleaner test exit
+* Extend test suite
+  - Exercise much more of the controller_manager ROS API.
+  - Create multi-interface test controllers and exercise them in tests.
 * Address -Wunused-parameter warnings
 * Contributors: Adolfo Rodriguez Tsouroukdissian
 
