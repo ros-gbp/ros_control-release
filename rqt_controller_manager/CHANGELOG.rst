@@ -2,6 +2,9 @@
 Changelog for package rqt_controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.6 (2018-04-16)
+------------------
+
 0.9.5 (2018-03-26)
 ------------------
 * Add install rule for standalone executable
