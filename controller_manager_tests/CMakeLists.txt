@@ -2,25 +2,25 @@ cmake_minimum_required(VERSION 2.8.3)
 project(controller_manager_tests)
 
 # Load catkin and all dependencies required for this package
-find_package(catkin REQUIRED COMPONENTS controller_manager controller_interface)
+find_package(catkin REQUIRED COMPONENTS controller_manager controller_interface control_toolbox)
 catkin_python_setup()
 
 include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 
 catkin_package(
-  CATKIN_DEPENDS controller_manager controller_interface
+  CATKIN_DEPENDS controller_manager controller_interface control_toolbox
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   )
 
 #common commands for building c++ executables and libraries
 add_library(${PROJECT_NAME}
-  src/effort_test_controller.cpp
-  src/my_dummy_controller.cpp
   src/my_robot_hw.cpp
-  src/pos_eff_controller.cpp
-  src/pos_eff_opt_controller.cpp
-  src/vel_eff_controller.cpp
+  include/controller_manager_tests/my_robot_hw.h
+  src/effort_test_controller.cpp
+  include/controller_manager_tests/effort_test_controller.h
+  src/my_dummy_controller.cpp
+  include/controller_manager_tests/my_dummy_controller.h
   )
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
@@ -35,7 +35,6 @@ if(CATKIN_ENABLE_TESTING)
   add_rostest(test/cm_test.test)
   catkin_add_nosetests(test)
   add_rostest(test/cm_msgs_utils_rostest.test)
-  add_rostest(test/controller_manager_scripts.test)
 endif()
 
 # Install
@@ -49,3 +48,4 @@ install(TARGETS ${PROJECT_NAME} dummy_app
 
 install(FILES test_controllers_plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+

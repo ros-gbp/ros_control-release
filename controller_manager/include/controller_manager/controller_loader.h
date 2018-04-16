@@ -28,7 +28,7 @@
 #ifndef CONRTOLLER_MANAGER_CONTROLLER_LOADER_H
 #define CONRTOLLER_MANAGER_CONTROLLER_LOADER_H
 
-#include <pluginlib/class_loader.hpp>
+#include <pluginlib/class_loader.h>
 #include <controller_manager/controller_loader_interface.h>
 #include <boost/shared_ptr.hpp>
 

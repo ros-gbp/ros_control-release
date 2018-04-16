@@ -2,75 +2,26 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.13.2 (2018-04-16)
--------------------
+0.9.6 (2018-04-16)
+------------------
 
-0.13.1 (2018-03-26)
--------------------
+0.9.5 (2018-03-26)
+------------------
 
-0.13.0 (2017-12-23)
--------------------
-* move CheckIsResourceManager into internal namespace
-* remove unused CheckIsResourceManager::value
-* do not require default constructors for HardwareInterface classes
-  ResourceManager-based interfaces still need a default constructor.
-* get rid of warnings for functions returning no values
-* test for HW interface without default constructor
-* fix constness in ImuSensorHandle
-* fix constness in ForceTorqueSensorHandle
-* Contributors: Mathias Lüdtke
-
-0.12.0 (2017-08-05)
--------------------
-
-0.11.5 (2017-06-28)
--------------------
-
-0.11.4 (2017-02-14)
--------------------
-
-0.11.3 (2016-12-07)
--------------------
-
-0.11.2 (2016-11-28)
--------------------
-* Add Enrique and Bence to maintainer list
-* Clean up export leftovers from rosbuild
-* Convert to format2, fix dependency in cmake
-* Contributors: Bence Magyar
-
-0.11.1 (2016-08-18)
--------------------
-
-0.11.0 (2016-05-23)
--------------------
-* Allow the InterfaceManager class to register other InterfaceManagers.
-  This will make it possible to combine several RobotHW objects into a single one.
-* Contributors: Toni Oliver
-
-0.10.1 (2016-04-23)
--------------------
-* Fix rosconsole errors from test build
-* Contributors: Bence Magyar
-
-0.10.0 (2015-11-20)
--------------------
+0.9.4 (2016-02-12)
+------------------
 * Fix doSwitch execution point
   The doSwitch method needs to be executed in the update() method,  that is, in
   the real-time path, which is where controller switching actually takes place.
   It was previously done in the switchController callback, which is non real-time.
+  In this method controller switching is scheduled, but not actually executed.
+  This changeset fixes a bug in which hardware interface  modes could switch
+  before controllers, leading to undefined behavior.
 * Introduce prepareSwitch, replacement of canSwitch
-* Add InterfaceManager::getNames
-  Add new method that allows to query the names of all interfaces managed by
-  an InterfaceManager instance.
-* Multi-interface controllers
-  - C++ API break.
-  - Modify ControllerInfo class to allow controllers to claim resources from
-  multiple hardware interfaces.
-  - Propagate changes to RobotHW::checkForConflict: Default resource ownsership
-  policy is aware of controllers claiming resources from  multiple hardware
-  interfaces.
-  - Update and extend the corresponding test suite.
+  RobotHW::prepareSwitch is intended as a substitute for RobotHW::canSwitch.
+  The main reasons for the change are a non-const signature to allow
+  changing state and a more descriptive name.
+  RobotHW::canSwitch will be deprecated in a later ROS distro.
 * Address -Wunused-parameter warnings
 * Contributors: Adolfo Rodriguez Tsouroukdissian, Mathias Lüdtke
 

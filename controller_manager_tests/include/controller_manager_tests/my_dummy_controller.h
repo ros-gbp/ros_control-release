@@ -32,7 +32,7 @@
 
 #include <controller_interface/controller.h>
 #include <hardware_interface/hardware_interface.h>
-#include <pluginlib/class_list_macros.hpp>
+#include <pluginlib/class_list_macros.h>
 
 namespace controller_manager_tests
 {
@@ -61,3 +61,5 @@ public:
 }
 
 #endif
+
+

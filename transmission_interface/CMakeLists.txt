@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   hardware_interface
   cmake_modules
   pluginlib
+  resource_retriever
   roscpp
 )
 
@@ -23,6 +24,7 @@ catkin_package(
   DEPENDS
     TinyXML
     pluginlib
+    resource_retriever
     roscpp
 )
 
@@ -52,16 +54,13 @@ target_link_libraries(${PROJECT_NAME}_loader
 
 
 add_library(${PROJECT_NAME}_loader_plugins
-  src/simple_transmission_loader.cpp                      include/transmission_interface/simple_transmission_loader.h
-  src/differential_transmission_loader.cpp                include/transmission_interface/differential_transmission_loader.h
-  src/four_bar_linkage_transmission_loader.cpp            include/transmission_interface/four_bar_linkage_transmission_loader.h
-  src/joint_state_interface_provider.cpp                  include/transmission_interface/joint_state_interface_provider.h
-  src/position_joint_interface_provider.cpp               include/transmission_interface/position_joint_interface_provider.h
-  src/velocity_joint_interface_provider.cpp               include/transmission_interface/velocity_joint_interface_provider.h
-  src/effort_joint_interface_provider.cpp                 include/transmission_interface/effort_joint_interface_provider.h
-  src/bidirectional_position_joint_interface_provider.cpp include/transmission_interface/bidirectional_position_joint_interface_provider.h
-  src/bidirectional_velocity_joint_interface_provider.cpp include/transmission_interface/bidirectional_velocity_joint_interface_provider.h
-  src/bidirectional_effort_joint_interface_provider.cpp   include/transmission_interface/bidirectional_effort_joint_interface_provider.h)
+  src/simple_transmission_loader.cpp           include/transmission_interface/simple_transmission_loader.h
+  src/differential_transmission_loader.cpp     include/transmission_interface/differential_transmission_loader.h
+  src/four_bar_linkage_transmission_loader.cpp include/transmission_interface/four_bar_linkage_transmission_loader.h
+  src/joint_state_interface_provider.cpp       include/transmission_interface/joint_state_interface_provider.h
+  src/position_joint_interface_provider.cpp    include/transmission_interface/position_joint_interface_provider.h
+  src/velocity_joint_interface_provider.cpp    include/transmission_interface/velocity_joint_interface_provider.h
+  src/effort_joint_interface_provider.cpp      include/transmission_interface/effort_joint_interface_provider.h)
 target_link_libraries(${PROJECT_NAME}_loader_plugins ${PROJECT_NAME}_loader)
 
 
@@ -88,36 +87,26 @@ install(FILES ros_control_plugins.xml
 #############
 
 if(CATKIN_ENABLE_TESTING)
-
-  find_package(Boost REQUIRED COMPONENTS system thread)
-  find_package(catkin REQUIRED COMPONENTS resource_retriever roscpp)
-
   catkin_add_gtest(simple_transmission_test           test/simple_transmission_test.cpp)
-  target_link_libraries(simple_transmission_test ${Boost_LIBRARIES})
-
   catkin_add_gtest(differential_transmission_test     test/differential_transmission_test.cpp)
-  target_link_libraries(differential_transmission_test ${Boost_LIBRARIES})
-
   catkin_add_gtest(four_bar_linkage_transmission_test test/four_bar_linkage_transmission_test.cpp)
-  target_link_libraries(four_bar_linkage_transmission_test ${Boost_LIBRARIES})
 
   catkin_add_gtest(transmission_interface_test        test/transmission_interface_test.cpp)
-  target_link_libraries(transmission_interface_test ${TinyXML_LIBRARIES} ${catkin_LIBRARIES})
+  target_link_libraries(transmission_interface_test ${catkin_LIBRARIES} ${TinyXML_LIBRARIES})
 
   catkin_add_gtest(transmission_parser_test test/transmission_parser_test.cpp)
-  target_link_libraries(transmission_parser_test ${PROJECT_NAME}_parser ${catkin_LIBRARIES})
+  target_link_libraries(transmission_parser_test ${PROJECT_NAME}_parser)
 
   catkin_add_gtest(simple_transmission_loader_test test/simple_transmission_loader_test.cpp)
-  target_link_libraries(simple_transmission_loader_test ${PROJECT_NAME}_parser ${catkin_LIBRARIES})
+  target_link_libraries(simple_transmission_loader_test ${PROJECT_NAME}_parser)
 
   catkin_add_gtest(differential_transmission_loader_test test/differential_transmission_loader_test.cpp)
-  target_link_libraries(differential_transmission_loader_test ${PROJECT_NAME}_parser ${catkin_LIBRARIES})
+  target_link_libraries(differential_transmission_loader_test ${PROJECT_NAME}_parser)
 
   catkin_add_gtest(four_bar_linkage_transmission_loader_test test/four_bar_linkage_transmission_loader_test.cpp)
-  target_link_libraries(four_bar_linkage_transmission_loader_test ${PROJECT_NAME}_parser ${catkin_LIBRARIES})
+  target_link_libraries(four_bar_linkage_transmission_loader_test ${PROJECT_NAME}_parser)
 
   catkin_add_gtest(transmission_interface_loader_test test/transmission_interface_loader_test.cpp)
   target_link_libraries(transmission_interface_loader_test ${PROJECT_NAME}_parser
-                                                          transmission_interface_loader
-                                                          ${catkin_LIBRARIES})
+                                                          transmission_interface_loader)
 endif()
