@@ -2,6 +2,9 @@
 Changelog for package combined_robot_hw_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.14.1 (2018-04-16)
+-------------------
+
 0.14.0 (2018-03-26)
 -------------------
 * migrate to new class list macros header
