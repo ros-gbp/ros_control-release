@@ -2,6 +2,11 @@
 Changelog for package combined_robot_hw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.2 (2018-04-16)
+-------------------
+* migrate classloader headers
+* Contributors: Mathias Lüdtke
+
 0.13.1 (2018-03-26)
 -------------------
 
