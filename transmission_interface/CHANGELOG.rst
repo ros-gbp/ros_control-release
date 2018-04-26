@@ -2,14 +2,22 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.13.2 (2018-04-16)
+0.14.2 (2018-04-26)
+-------------------
+* Update maintainers
+* Fix catkin_lint errors and warnings
+* fix license string
+* Update transmission parser to parse the joint role
+* Contributors: Bence Magyar, Patrick Holthaus, jlack1987
+
+0.14.1 (2018-04-16)
+-------------------
+
+0.14.0 (2018-03-26)
 -------------------
 * migrate to new class list macros header
 * migrate classloader headers
 * Contributors: Mathias Lüdtke
-
-0.13.1 (2018-03-26)
--------------------
 
 0.13.0 (2017-12-23)
 -------------------

@@ -2,14 +2,22 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.13.2 (2018-04-16)
+0.14.2 (2018-04-26)
+-------------------
+* Update maintainers
+* Fix catkin_lint errors and warnings
+* Remove unused imports, comment and executable flag
+* Remove realtime_tools dependency
+* Contributors: Bence Magyar
+
+0.14.1 (2018-04-16)
 -------------------
 * Fix controller_manager_interface and add unit tests.
-* migrate classloader headers
-* Contributors: Mathias Lüdtke, Yong Li
+* Contributors: Yong Li
 
-0.13.1 (2018-03-26)
+0.14.0 (2018-03-26)
 -------------------
+* migrate classloader headers
 * refactored controller_manager unspawner
 * fix controller_manager list: migrated to new ControllerState with claimed_resources
 * remove debug prints from controller_manager script
