@@ -1,0 +1,12 @@
+Source: ros-kinetic-combined-robot-hw-tests
+Section: misc
+Priority: extra
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin, ros-kinetic-combined-robot-hw, ros-kinetic-controller-manager, ros-kinetic-controller-manager-tests, ros-kinetic-hardware-interface, ros-kinetic-roscpp, ros-kinetic-rostest
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-combined-robot-hw-tests
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kinetic-combined-robot-hw, ros-kinetic-controller-manager, ros-kinetic-controller-manager-tests, ros-kinetic-hardware-interface, ros-kinetic-roscpp
+Description: The combined_robot_hw_tests package
