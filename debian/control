@@ -1,0 +1,12 @@
+Source: ros-melodic-controller-interface
+Section: misc
+Priority: extra
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-hardware-interface, ros-melodic-pluginlib, ros-melodic-roscpp
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-melodic-controller-interface
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-hardware-interface, ros-melodic-pluginlib, ros-melodic-roscpp
+Description: Interface base class for controllers
