@@ -2,19 +2,19 @@
 Changelog for package combined_robot_hw_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.14.2 (2018-04-26)
+0.13.3 (2018-04-26)
 -------------------
 * Update maintainers
 * Fix catkin_lint errors and warnings
 * Contributors: Bence Magyar
 
-0.14.1 (2018-04-16)
--------------------
-
-0.14.0 (2018-03-26)
+0.13.2 (2018-04-16)
 -------------------
 * migrate to new class list macros header
 * Contributors: Mathias Lüdtke
+
+0.13.1 (2018-03-26)
+-------------------
 
 0.13.0 (2017-12-23)
 -------------------
