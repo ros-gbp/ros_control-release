@@ -2,6 +2,12 @@
 Changelog for package joint_limits_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.3 (2018-04-26)
+-------------------
+* Update maintainers
+* Fix catkin_lint errors and warnings
+* Contributors: Bence Magyar
+
 0.13.2 (2018-04-16)
 -------------------
 
