@@ -2,6 +2,9 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.7 (2018-05-19)
+------------------
+
 0.9.6 (2018-04-16)
 ------------------
 * Fix controller_manager_interface and add unit tests.
