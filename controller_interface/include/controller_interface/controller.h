@@ -96,9 +96,8 @@ protected:
    *
    */
   virtual bool initRequest(hardware_interface::RobotHW* robot_hw,
-                           ros::NodeHandle&             root_nh,
-                           ros::NodeHandle&             controller_nh,
-                           ClaimedResources&            claimed_resources)
+                           ros::NodeHandle& root_nh, ros::NodeHandle &controller_nh,
+                           std::set<std::string> &claimed_resources)
   {
     // check if construction finished cleanly
     if (state_ != CONSTRUCTED){
@@ -123,8 +122,7 @@ protected:
       ROS_ERROR("Failed to initialize the controller");
       return false;
     }
-    hardware_interface::InterfaceResources iface_res(getHardwareInterfaceType(), hw->getClaims());
-    claimed_resources.assign(1, iface_res);
+    claimed_resources = hw->getClaims();
     hw->clearClaims();
 
     // success
@@ -132,8 +130,7 @@ protected:
     return true;
   }
 
-  /// Get the name of this controller's hardware interface type
-  std::string getHardwareInterfaceType() const
+  virtual std::string getHardwareInterfaceType() const
   {
     return hardware_interface::internal::demangledTypeName<T>();
   }

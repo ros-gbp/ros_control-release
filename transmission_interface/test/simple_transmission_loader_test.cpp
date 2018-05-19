@@ -30,7 +30,7 @@
 #include <string>
 #include <boost/foreach.hpp>
 #include <gtest/gtest.h>
-#include <pluginlib/class_loader.hpp>
+#include <pluginlib/class_loader.h>
 #include <transmission_interface/simple_transmission.h>
 #include <transmission_interface/transmission_loader.h>
 #include "read_file.h"
@@ -53,7 +53,6 @@ TEST(SimpleTransmissionLoaderTest, FullSpec)
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
   ASSERT_TRUE(0 != transmission);
-  ASSERT_STREQ(infos.front().joints_.front().role_.c_str(),"");
 
   // Validate transmission
   SimpleTransmission* simple_transmission = dynamic_cast<SimpleTransmission*>(transmission.get());

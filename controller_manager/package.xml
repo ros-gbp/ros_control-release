@@ -1,10 +1,8 @@
-<package format="2">
+<package>
   <name>controller_manager</name>
-  <version>0.13.3</version>
+  <version>0.9.7</version>
   <description>The controller manager.</description>
-  <maintainer email="bence.magyar.robotics@gmail.com">Bence Magyar</maintainer>
-  <maintainer email="enrique.fernandez.perdomo@gmail.com">Enrique Fernandez</maintainer>
-  <maintainer email="mathias.luedtke@ipa.fraunhofer.de">Mathias Lüdtke</maintainer>
+  <maintainer email="adolfo.rodriguez@pal-robotics.com">Adolfo Rodriguez Tsouroukdissian</maintainer>
 
   <license>BSD</license>
 
@@ -17,9 +15,19 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>controller_interface</depend>
-  <depend>controller_manager_msgs</depend>
-  <depend>hardware_interface</depend>
-  <depend>pluginlib</depend>
-  <test_depend>rostest</test_depend>
+  <build_depend>controller_interface</build_depend> 
+  <build_depend>controller_manager_msgs</build_depend> 
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>realtime_tools</build_depend>
+  <build_depend>rostest</build_depend>            <!--Tests-only!-->
+  <run_depend>controller_interface</run_depend>
+  <run_depend>controller_manager_msgs</run_depend> 
+  <run_depend>hardware_interface</run_depend> 
+  <run_depend>pluginlib</run_depend> 
+  <run_depend>realtime_tools</run_depend>
+  <run_depend>rostest</run_depend>                <!--Tests-only!-->
+  <export>
+    <cpp lflags="-L${prefix}/lib -lcontroller_manager" cflags="-I${prefix}/include"/>
+  </export>
 </package>

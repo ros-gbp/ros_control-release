@@ -4,8 +4,8 @@ project(joint_limits_interface)
 find_package(urdfdom REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
-  hardware_interface
   roscpp
+  hardware_interface
   urdf
 )
 
@@ -18,13 +18,16 @@ include_directories(
 # Declare catkin package
 catkin_package(
   CATKIN_DEPENDS
-    hardware_interface
     roscpp
+    hardware_interface
     urdf
   INCLUDE_DIRS
     include
-  DEPENDS
-    urdfdom
+    ${catkin_INCLUDE_DIRS}
+    ${urdfdom_INCLUDE_DIRS}
+  LIBRARIES
+    ${catkin_LIBRARIES}
+    ${urdfdom_LIBRARIES}
 )
 
 if(CATKIN_ENABLE_TESTING)
