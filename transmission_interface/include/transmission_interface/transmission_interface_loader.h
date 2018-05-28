@@ -37,10 +37,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-// Boost
-#include <boost/foreach.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 // ROS
 #include <ros/console.h>
@@ -155,8 +152,6 @@ struct InverseTransmissionInterfaces
 
 struct TransmissionLoaderData
 {
-  typedef boost::shared_ptr<Transmission> TransmissionPtr;
-
   TransmissionLoaderData()
     : robot_hw(0),
       robot_transmissions(0)
@@ -168,13 +163,12 @@ struct TransmissionLoaderData
   RawJointDataMap               raw_joint_data_map;
   ForwardTransmissionInterfaces transmission_interfaces;
   InverseTransmissionInterfaces inverse_transmission_interfaces;
-  std::vector<TransmissionPtr>  transmission_data;
+  std::vector<TransmissionSharedPtr>  transmission_data;
 };
 
 class RequisiteProvider // TODO: There must be a more descriptive name for this class!
 {
 public:
-  typedef TransmissionLoaderData::TransmissionPtr TransmissionPtr;
 
   virtual ~RequisiteProvider() {}
 
@@ -199,16 +193,16 @@ public:
 
   bool loadTransmissionMaps(const TransmissionInfo& transmission_info,
                             TransmissionLoaderData& loader_data,
-                            TransmissionPtr         transmission);
+                            TransmissionSharedPtr   transmission);
 protected:
   struct TransmissionHandleData
   {
-    std::string     name;
-    ActuatorData    act_state_data;
-    ActuatorData    act_cmd_data;
-    JointData       jnt_state_data;
-    JointData       jnt_cmd_data;
-    TransmissionPtr transmission;
+    std::string           name;
+    ActuatorData          act_state_data;
+    ActuatorData          act_cmd_data;
+    JointData             jnt_state_data;
+    JointData             jnt_cmd_data;
+    TransmissionSharedPtr transmission;
   };
 
   virtual bool getJointStateData(const TransmissionInfo& transmission_info,
@@ -271,7 +265,7 @@ protected:
     }
 
     // Get handles to all required resource
-    BOOST_FOREACH(const ActuatorInfo& info, actuators_info)
+    for (const ActuatorInfo& info : actuators_info)
     {
       try
       {
@@ -406,13 +400,11 @@ public:
 
 private:
   typedef pluginlib::ClassLoader<TransmissionLoader>      TransmissionClassLoader;
-  typedef boost::shared_ptr<TransmissionClassLoader>      TransmissionClassLoaderPtr;
+  typedef std::shared_ptr<TransmissionClassLoader>      TransmissionClassLoaderPtr;
   typedef pluginlib::ClassLoader<RequisiteProvider>       RequisiteProviderClassLoader;
-  typedef boost::shared_ptr<RequisiteProviderClassLoader> RequisiteProviderClassLoaderPtr;
+  typedef std::shared_ptr<RequisiteProviderClassLoader> RequisiteProviderClassLoaderPtr;
 
-  typedef boost::shared_ptr<Transmission>                 TransmissionPtr;
-  typedef boost::shared_ptr<TransmissionLoader>           TransmissionLoaderPtr;
-  typedef boost::shared_ptr<RequisiteProvider>            RequisiteProviderPtr;
+  typedef std::shared_ptr<RequisiteProvider>            RequisiteProviderPtr;
 
   TransmissionClassLoaderPtr transmission_class_loader_;
   RequisiteProviderClassLoaderPtr req_provider_loader_;
