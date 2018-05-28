@@ -146,6 +146,12 @@ bool TransmissionParser::parseJoints(TiXmlElement *trans_it, std::vector<JointIn
       return false;
     }
 
+    TiXmlElement *role_it = joint_it->FirstChildElement("role");
+    if(role_it)
+    {
+      joint.role_ = role_it->GetText() ? role_it->GetText() : std::string();
+    }
+
     // Hardware interfaces (required)
     TiXmlElement *hw_iface_it = NULL;
     for (hw_iface_it = joint_it->FirstChildElement("hardwareInterface"); hw_iface_it;
@@ -229,7 +235,7 @@ bool TransmissionParser::parseActuators(TiXmlElement *trans_it, std::vector<Actu
     }
     if (actuator.hardware_interfaces_.empty())
     {
-      ROS_DEBUG_STREAM_NAMED("parser","Optional: No valid hardware interface element found in actuator '"
+      ROS_DEBUG_STREAM_NAMED("parser","No valid hardware interface element found in actuator '"
         << actuator.name_ << "'.");
       // continue; // NOTE: Hardware interface is optional, so we keep on going
     }

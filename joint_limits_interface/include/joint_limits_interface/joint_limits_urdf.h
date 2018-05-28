@@ -31,8 +31,8 @@
 #define JOINT_LIMITS_INTERFACE_JOINT_LIMITS_URDF_H
 
 #include <ros/common.h>
-#include <urdf/urdfdom_compatibility.h>
 #include <urdf_model/joint.h>
+#include <urdf/urdfdom_compatibility.h>
 #include <joint_limits_interface/joint_limits.h>
 
 namespace joint_limits_interface

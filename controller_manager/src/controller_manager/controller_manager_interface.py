@@ -1,10 +1,4 @@
 #! /usr/bin/env python
-# Wrappers around the services provided by MechanismControlNode
-
-import roslib; roslib.load_manifest('controller_manager')
-
-import sys
-
 import rospy
 from controller_manager_msgs.srv import *
 
@@ -54,7 +48,8 @@ def list_controllers():
         print "No controllers are loaded in mechanism control"
     else:
         for c in resp.controller:
-            print '%s - %s ( %s )'%(c.name, c.hardware_interface, c.state)
+            hwi = list(set(r.hardware_interface for r in  c.claimed_resources))
+            print '%s - %s ( %s )'%(c.name, '+'.join(hwi), c.state)
 
 
 def load_controller(name):
@@ -80,37 +75,28 @@ def unload_controller(name):
         return False
 
 def start_controller(name):
-    return start_stop_controllers([name], True)
+    return start_stop_controllers(start_controllers=[name])
 
 def start_controllers(names):
-    return start_stop_controllers(names, True)
+    return start_stop_controllers(start_controllers=names)
 
 def stop_controller(name):
-    return start_stop_controllers([name], False)
+    return start_stop_controllers(stop_controllers=[name])
 
 def stop_controllers(names):
-    return start_stop_controllers(names, False)
+    return start_stop_controllers(stop_controllers=names)
 
-def start_stop_controllers(names, st):
+def start_stop_controllers(start_controllers=[], stop_controllers=[]):
     rospy.wait_for_service('controller_manager/switch_controller')
     s = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
-    start = []
-    stop = []
     strictness = SwitchControllerRequest.STRICT
-    if st:
-        start = names
-    else:
-        stop = names
-    resp = s.call(SwitchControllerRequest(start, stop, strictness))
+    resp = s.call(SwitchControllerRequest(start_controllers, stop_controllers, strictness))
     if resp.ok == 1:
-        if st:
-            print "Started {} successfully".format(names)
-        else:
-            print "Stopped {} successfully".format(names)
+        if start_controllers:
+            print "Started {} successfully".format(start_controllers)
+        if stop_controllers:
+            print "Stopped {} successfully".format(stop_controllers)
         return True
     else:
-        if st:
-            print "Error when starting ", names
-        else:
-            print "Error when stopping ", names
+        print "Error when starting {} and stopping {}".format(start_controllers, stop_controllers)
         return False

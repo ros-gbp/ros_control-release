@@ -28,9 +28,8 @@
 /// \author Adolfo Rodriguez Tsouroukdissian
 
 #include <string>
-#include <boost/foreach.hpp>
 #include <gtest/gtest.h>
-#include <pluginlib/class_loader.h>
+#include <pluginlib/class_loader.hpp>
 #include <transmission_interface/simple_transmission.h>
 #include <transmission_interface/transmission_loader.h>
 #include "read_file.h"
@@ -53,6 +52,7 @@ TEST(SimpleTransmissionLoaderTest, FullSpec)
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
   ASSERT_TRUE(0 != transmission);
+  ASSERT_STREQ(infos.front().joints_.front().role_.c_str(),"");
 
   // Validate transmission
   SimpleTransmission* simple_transmission = dynamic_cast<SimpleTransmission*>(transmission.get());
@@ -95,7 +95,7 @@ TEST(SimpleTransmissionLoaderTest, InvalidSpec)
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
   ASSERT_TRUE(0 != transmission_loader);
 
-  BOOST_FOREACH(const TransmissionInfo& info, infos)
+  for (const TransmissionInfo& info : infos)
   {
     TransmissionSharedPtr transmission;
     transmission = transmission_loader->load(info);
