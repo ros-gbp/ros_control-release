@@ -28,7 +28,6 @@
 /// \author Adolfo Rodriguez Tsouroukdissian
 
 #include <string>
-#include <boost/foreach.hpp>
 #include <gtest/gtest.h>
 #include <pluginlib/class_loader.hpp>
 #include <transmission_interface/simple_transmission.h>
@@ -37,9 +36,6 @@
 #include "loader_utils.h"
 
 using namespace transmission_interface;
-typedef TransmissionLoader::TransmissionPtr TransmissionPtr;
-
-
 
 TEST(SimpleTransmissionLoaderTest, FullSpec)
 {
@@ -49,10 +45,10 @@ TEST(SimpleTransmissionLoaderTest, FullSpec)
 
   // Transmission loader
   TransmissionPluginLoader loader;
-  boost::shared_ptr<TransmissionLoader> transmission_loader = loader.create(infos.front().type_);
+  TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
   ASSERT_TRUE(0 != transmission_loader);
 
-  TransmissionPtr transmission;
+  TransmissionSharedPtr transmission;
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
   ASSERT_TRUE(0 != transmission);
@@ -73,10 +69,10 @@ TEST(SimpleTransmissionLoaderTest, MinimalSpec)
 
   // Transmission loader
   TransmissionPluginLoader loader;
-  boost::shared_ptr<TransmissionLoader> transmission_loader = loader.create(infos.front().type_);
+  TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
   ASSERT_TRUE(0 != transmission_loader);
 
-  TransmissionPtr transmission;
+  TransmissionSharedPtr transmission;
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
   ASSERT_TRUE(0 != transmission);
@@ -96,12 +92,12 @@ TEST(SimpleTransmissionLoaderTest, InvalidSpec)
 
   // Transmission loader
   TransmissionPluginLoader loader;
-  boost::shared_ptr<TransmissionLoader> transmission_loader = loader.create(infos.front().type_);
+  TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
   ASSERT_TRUE(0 != transmission_loader);
 
-  BOOST_FOREACH(const TransmissionInfo& info, infos)
+  for (const TransmissionInfo& info : infos)
   {
-    TransmissionPtr transmission;
+    TransmissionSharedPtr transmission;
     transmission = transmission_loader->load(info);
     ASSERT_TRUE(0 == transmission);
   }
