@@ -2,6 +2,9 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.15.1 (2018-09-30)
+-------------------
+
 0.15.0 (2018-05-28)
 -------------------
 * boost::shared_ptr -> std::shared_ptr
