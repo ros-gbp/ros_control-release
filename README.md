@@ -1,3 +1,37 @@
+## ros_control (melodic) - 0.15.1-0
+
+The packages in the `ros_control` repository were released into the `melodic` distro by running `/usr/local/bin/bloom-release --rosdistro melodic --track melodic ros_control` on `Sun, 30 Sep 2018 13:21:04 -0000`
+
+These packages were released:
+- `combined_robot_hw`
+- `combined_robot_hw_tests`
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `ros_control`:
+
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: https://github.com/ros-gbp/ros_control-release.git
+- rosdistro version: `0.15.0-0`
+- old version: `0.15.0-0`
+- new version: `0.15.1-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.4`
+- catkin_pkg version: `0.4.7`
+- rosdep version: `0.12.2`
+- rosdistro version: `0.6.8`
+- vcstools version: `0.1.40`
+
+
 ## ros_control (melodic) - 0.15.0-0
 
 The packages in the `ros_control` repository were released into the `melodic` distro by running `/usr/local/bin/bloom-release --ros-distro melodic --track melodic ros_control` on `Mon, 28 May 2018 13:33:22 -0000`
