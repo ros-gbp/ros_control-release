@@ -1,0 +1,12 @@
+Source: ros-melodic-combined-robot-hw-tests
+Section: misc
+Priority: extra
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-melodic-catkin, ros-melodic-combined-robot-hw, ros-melodic-controller-manager, ros-melodic-controller-manager-tests, ros-melodic-hardware-interface, ros-melodic-roscpp, ros-melodic-rostest
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-melodic-combined-robot-hw-tests
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-melodic-combined-robot-hw, ros-melodic-controller-manager, ros-melodic-controller-manager-tests, ros-melodic-hardware-interface, ros-melodic-roscpp
+Description: The combined_robot_hw_tests package
