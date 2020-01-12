@@ -2,6 +2,9 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.4 (2020-01-12)
+-------------------
+
 0.13.3 (2018-04-26)
 -------------------
 * Introduce shared_ptr typedefs
