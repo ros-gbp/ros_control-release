@@ -2,29 +2,23 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.15.1 (2018-09-30)
+0.13.4 (2020-01-12)
 -------------------
-
-0.15.0 (2018-05-28)
--------------------
-* boost::shared_ptr -> std::shared_ptr
-* Introduce shared_ptr typedefs
+* add minimum required pluginlib version
 * remove forward declaration of InterfaceResources
-* Contributors: Bence Magyar, Mathias Lüdtke
+* Contributors: Mathias Lüdtke, Mikael Arguedas
 
-0.14.2 (2018-04-26)
+0.13.3 (2018-04-26)
 -------------------
+* Introduce shared_ptr typedefs
 * Update maintainers
 * Contributors: Bence Magyar
 
-0.14.1 (2018-04-16)
+0.13.2 (2018-04-16)
 -------------------
 
-0.14.0 (2018-03-26)
+0.13.1 (2018-03-26)
 -------------------
-* Switch MultiInterfaceController to use variadic templates.
-* Use public virtual for Controller inheritance.
-* Contributors: Mike Purvis
 
 0.13.0 (2017-12-23)
 -------------------

@@ -36,7 +36,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <memory>
+
+// Boost
+#include <boost/foreach.hpp>
+#include <boost/shared_ptr.hpp>
 
 // TinyXML
 #include <tinyxml.h>
@@ -140,7 +143,7 @@ protected:
                                   std::string&        role);
 };
 
-typedef std::shared_ptr<TransmissionLoader> TransmissionLoaderSharedPtr;
+typedef boost::shared_ptr<TransmissionLoader> TransmissionLoaderSharedPtr;
 
 } // namespace
 

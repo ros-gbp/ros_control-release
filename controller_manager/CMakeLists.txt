@@ -46,11 +46,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
-catkin_install_python(PROGRAMS
-  scripts/controller_group
-  scripts/controller_manager
-  scripts/spawner
-  scripts/unspawner
+install(PROGRAMS scripts/spawner scripts/unspawner scripts/controller_manager
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 catkin_python_setup()

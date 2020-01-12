@@ -2,39 +2,31 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.15.1 (2018-09-30)
+0.13.4 (2020-01-12)
 -------------------
+* Touch up remaining Python2 prints and PEP8
+* Initialize controller_manager node using init_node. Fixes `#349 <https://github.com/ros-controls/ros_control/issues/349>`_
 * Updated for compatibility with Python2 or Python3
-* Initialize controller_manager node using init_node.
-* back to Python3 prints, add '-s to remaining places
-* pep8 styling
-* added quotes in python code too, also changed python prints to rosconsole
-* added quotes for controller name and controller type in warnings and errors
-* Contributors: Daniel Ingram, Jasper Güldenstein, Stefan Profanter, Gennaro Raiola, Bence Magyar
+* add minimum required pluginlib version
+* Contributors: Bence Magyar, Daniel Ingram, Mikael Arguedas, Stefan Profanter
 
-0.15.0 (2018-05-28)
+0.13.3 (2018-04-26)
 -------------------
-* boost::shared_ptr -> std::shared_ptr
 * Introduce shared_ptr typedefs
-* Add controller_group script that allows switching groups easily
-* Contributors: Bence Magyar, Enrique Fernández Perdomo, Yong Li
-
-0.14.2 (2018-04-26)
--------------------
 * Update maintainers
 * Fix catkin_lint errors and warnings
 * Remove unused imports, comment and executable flag
 * Remove realtime_tools dependency
 * Contributors: Bence Magyar
 
-0.14.1 (2018-04-16)
+0.13.2 (2018-04-16)
 -------------------
 * Fix controller_manager_interface and add unit tests.
-* Contributors: Yong Li
-
-0.14.0 (2018-03-26)
--------------------
 * migrate classloader headers
+* Contributors: Mathias Lüdtke, Yong Li
+
+0.13.1 (2018-03-26)
+-------------------
 * refactored controller_manager unspawner
 * fix controller_manager list: migrated to new ControllerState with claimed_resources
 * remove debug prints from controller_manager script

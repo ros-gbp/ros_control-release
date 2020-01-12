@@ -2,33 +2,28 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.15.1 (2018-09-30)
+0.13.4 (2020-01-12)
 -------------------
+* add minimum required pluginlib version
+* Contributors: Mikael Arguedas
 
-0.15.0 (2018-05-28)
+0.13.3 (2018-04-26)
 -------------------
-* Remove deprecated typedef
-* BOOST_FOREACH -> C++11 for
-* boost::shared_ptr -> std::shared_ptr
 * Introduce shared_ptr typedefs
-* Contributors: Bence Magyar, Mathias Lüdtke
-
-0.14.2 (2018-04-26)
--------------------
 * Update maintainers
 * Fix catkin_lint errors and warnings
 * fix license string
 * Update transmission parser to parse the joint role
 * Contributors: Bence Magyar, Patrick Holthaus, jlack1987
 
-0.14.1 (2018-04-16)
--------------------
-
-0.14.0 (2018-03-26)
+0.13.2 (2018-04-16)
 -------------------
 * migrate to new class list macros header
 * migrate classloader headers
 * Contributors: Mathias Lüdtke
+
+0.13.1 (2018-03-26)
+-------------------
 
 0.13.0 (2017-12-23)
 -------------------

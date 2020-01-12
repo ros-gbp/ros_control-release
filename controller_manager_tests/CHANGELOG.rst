@@ -2,36 +2,26 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.15.1 (2018-09-30)
+0.13.4 (2020-01-12)
 -------------------
-* Added quotes for controller name and controller type in warnings and errors
-* Update expected text in tests to have '' around controller names
-* Contributors: Bence Magyar, Gennaro Raiola
 
-0.15.0 (2018-05-28)
--------------------
-* Add controller_group script that allows switching groups easily
-* Contributors: Enrique Fernández Perdomo, Yong Li
-
-0.14.2 (2018-04-26)
+0.13.3 (2018-04-26)
 -------------------
 * Update maintainers
-* pluginlib: .h -> .hpp
 * Fix catkin_lint errors and warnings
 * Contributors: Bence Magyar
 
-0.14.1 (2018-04-16)
+0.13.2 (2018-04-16)
 -------------------
 * Fix controller_manager_interface and add unit tests.
-* Contributors: Yong Li
-
-0.14.0 (2018-03-26)
--------------------
-* Copyright blocks.
-* Tests for extensible controllers.
 * migrate to new class list macros header
+* Contributors: Mathias Lüdtke, Yong Li
+
+0.13.1 (2018-03-26)
+-------------------
 * add tests for controller_manager scripts and nodes
-* Contributors: Mathias Lüdtke, Mike Purvis
+* return 0 in dummy_app main
+* Contributors: Mathias Lüdtke
 
 0.13.0 (2017-12-23)
 -------------------
