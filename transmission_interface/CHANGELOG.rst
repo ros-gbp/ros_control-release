@@ -2,6 +2,11 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.4 (2020-01-12)
+-------------------
+* add minimum required pluginlib version
+* Contributors: Mikael Arguedas
+
 0.13.3 (2018-04-26)
 -------------------
 * Introduce shared_ptr typedefs
