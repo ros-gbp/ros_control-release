@@ -1,38 +1,27 @@
-## Transmission Interface ##
+ros_control
+===========
 
-### Overview ###
+See [ros_control documentation](http://wiki.ros.org/ros_control) on ros.org
 
-**transmission_interface** contains data structures for representing mechanical transmissions, and methods for
-propagating position, velocity and effort variables between actuator and joint spaces.
+### Build Status
 
-In the same spirit as the **hardware_interface** package, this package wraps existing raw data (eg. current actuator
-position, reference joint command, etc.) under a consistent interface. By not imposing a specific layout on the raw data,
-it becomes easier to support arbitrary hardware drivers to software control.
+[![Build Status](https://travis-ci.org/ros-controls/ros_control.png?branch=hydro-devel)](https://travis-ci.org/ros-controls/ros_control)
 
-### Structure ###
+## Publication
 
-There are three main elements involved in setting up a transmission_interface:
-  - The **Transmission** class defines an abstract interface for mapping
-  position, velocity and effort variables between actuator and joint space.
-  Derived classes implement specific transmission types, such as
-  simple reducers, differentials and four-bar linkages.
-  Note that a single transmission may couple the variables of multiple actuators and joints (eg. a differential couples
-  two actuators to two joints).
+If you find this work useful please give credits to the authors by citing:
 
-  - The **TransmissionHandle** class associates a name to a
-  Transmission instance and a set of raw data variables
-  it operates on (specified through the **ActuatorData** and
-  **JointData** structures).
-  Derived classes implement specific maps, such as
-  **JointToActuatorEffortHandle** or
-  **ActuatorToJointStateHandle**.
+* S. Chitta, E. Marder-Eppstein, W. Meeussen, V. Pradeep, A. Rodríguez Tsouroukdissian, J. Bohren, D. Coleman, B. Magyar, G. Raiola, M. Lüdtke and E. Fernandez Perdomo
+**"ros_control: A generic and simple control framework for ROS"**,
+The Journal of Open Source Software, 2017. ([PDF](http://www.theoj.org/joss-papers/joss.00456/10.21105.joss.00456.pdf))
 
-  - The **TransmissionInterface<HandleType>** class manages
-  a set of transmission handles of the same type.
-  Note that although the handles are of the same type, the underlying transmissions can be heterogeneous
-  eg. a single **ActuatorToJointPositionInterface** can be
-  set up to transform position variables from actuator to joint space for an arm with a four-bar-linkage in the
-  shoulder, a differential in the wrist, and simple reducers elsewhere.
-
-### Examples ###
-Please refer to the  [transmission_interface](https://github.com/ros-controls/ros_control/wiki/transmission_interface) wiki page.
+```
+@article{ros_control,
+author = {Chitta, Sachin and Marder-Eppstein, Eitan and Meeussen, Wim and Pradeep, Vijay and Rodr{\'i}guez Tsouroukdissian, Adolfo  and Bohren, Jonathan and Coleman, David and Magyar, Bence and Raiola, Gennaro and L{\"u}dtke, Mathias and Fern{\'a}ndez Perdomo, Enrique},
+title = {ros\_control: A generic and simple control framework for ROS},
+journal = {The Journal of Open Source Software},
+year = {2017},
+doi = {10.21105/joss.00456},
+URL = {http://www.theoj.org/joss-papers/joss.00456/10.21105.joss.00456.pdf}
+}
+```
