@@ -2,6 +2,15 @@
 Changelog for package rqt_controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.0 (2020-01-27)
+-------------------
+* Update package dependencies
+* Add missing roscpp & rospy dependencies
+* Update package.xml descriptions
+* Apply consistent style to CMakeLists.txt files
+* Apply consistent style to package.xml files
+* Contributors: Bence Magyar, Matt Reynolds
+
 0.15.1 (2018-09-30)
 -------------------
 
