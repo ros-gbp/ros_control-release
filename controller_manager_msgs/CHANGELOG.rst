@@ -2,6 +2,14 @@
 Changelog for package controller_manager_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.0 (2020-01-27)
+-------------------
+* Update package dependencies
+* Apply consistent style to CMakeLists.txt files
+* Apply consistent style to package.xml files
+* Fix exception module
+* Contributors: Bence Magyar, Jordan Palacios, Matt Reynolds, Ryohei Ueda
+
 0.15.1 (2018-09-30)
 -------------------
 
