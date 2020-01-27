@@ -27,7 +27,9 @@
 
 /// \author Daniel Pinyol
 
-#include <boost/scoped_ptr.hpp>
+#pragma once
+
+
 #include <pluginlib/class_loader.hpp>
 #include <transmission_interface/simple_transmission.h>
 #include <transmission_interface/transmission_loader.h>
@@ -47,12 +49,12 @@ struct TransmissionPluginLoader
 
     try
     {
-      return class_loader_.createInstance(type);
+      return class_loader_.createUniqueInstance(type);
     }
     catch(...) {return TransmissionLoaderSharedPtr();}
   }
 
 private:
   //must keep it alive because instance destroyers need it
-  pluginlib::ClassLoader<TransmissionLoader>  class_loader_;
+  pluginlib::ClassLoader<TransmissionLoader> class_loader_;
 };

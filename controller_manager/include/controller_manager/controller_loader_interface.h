@@ -25,12 +25,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#ifndef CONRTOLLER_MANAGER_CONTROLLER_LOADER_INTERFACE_H
-#define CONRTOLLER_MANAGER_CONTROLLER_LOADER_INTERFACE_H
+#pragma once
+
 
 #include <vector>
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <controller_interface/controller_base.h>
 
 namespace controller_manager
@@ -56,8 +56,6 @@ private:
 
 };
 
-typedef boost::shared_ptr<ControllerLoaderInterface> ControllerLoaderInterfaceSharedPtr;
+typedef std::shared_ptr<ControllerLoaderInterface> ControllerLoaderInterfaceSharedPtr;
 
 }
-
-#endif
