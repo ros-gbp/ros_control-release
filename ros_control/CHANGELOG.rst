@@ -2,6 +2,12 @@
 Changelog for package ros_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.16.0 (2020-01-27)
+-------------------
+* Remove _tests packages from metapackage
+* Apply consistent style to package.xml files
+* Contributors: Bence Magyar, Matt Reynolds
+
 0.15.1 (2018-09-30)
 -------------------
 
