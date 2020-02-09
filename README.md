@@ -1,3 +1,37 @@
+## ros_control (kinetic) - 0.13.5-1
+
+The packages in the `ros_control` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release ros_control --track kinetic --rosdistro kinetic` on `Sun, 09 Feb 2020 08:45:07 -0000`
+
+These packages were released:
+- `combined_robot_hw`
+- `combined_robot_hw_tests`
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `ros_control`:
+
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: https://github.com/ros-gbp/ros_control-release.git
+- rosdistro version: `0.13.4-1`
+- old version: `0.13.4-1`
+- new version: `0.13.5-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.0`
+- catkin_pkg version: `0.4.13`
+- rosdep version: `0.15.2`
+- rosdistro version: `0.8.0`
+- vcstools version: `0.1.42`
+
+
 ## ros_control (melodic) - 0.16.0-1
 
 The packages in the `ros_control` repository were released into the `melodic` distro by running `/usr/bin/bloom-release ros_control --track melodic --rosdistro melodic` on `Mon, 27 Jan 2020 14:30:01 -0000`
