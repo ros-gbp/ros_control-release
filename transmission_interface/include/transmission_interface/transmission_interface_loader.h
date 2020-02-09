@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_LOADER_H
+#define TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_LOADER_H
 
 // C++ standard
 #include <algorithm>
@@ -37,7 +37,10 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <memory>
+
+// Boost
+#include <boost/foreach.hpp>
+#include <boost/shared_ptr.hpp>
 
 // ROS
 #include <ros/console.h>
@@ -110,11 +113,7 @@ struct RawJointData
       effort(std::numeric_limits<double>::quiet_NaN()),
       position_cmd(std::numeric_limits<double>::quiet_NaN()),
       velocity_cmd(std::numeric_limits<double>::quiet_NaN()),
-      effort_cmd(std::numeric_limits<double>::quiet_NaN()),
-      absolute_position(std::numeric_limits<double>::quiet_NaN()),
-      torque_sensor(std::numeric_limits<double>::quiet_NaN()),
-      hasAbsolutePosition(true),
-      hasTorqueSensor(true)
+      effort_cmd(std::numeric_limits<double>::quiet_NaN())
   {}
 
   double position;
@@ -123,11 +122,6 @@ struct RawJointData
   double position_cmd;
   double velocity_cmd;
   double effort_cmd;
-  double absolute_position;
-  double torque_sensor;
-
-  bool hasAbsolutePosition;
-  bool hasTorqueSensor;
 };
 
 typedef std::map<std::string, RawJointData> RawJointDataMap;
@@ -161,9 +155,11 @@ struct InverseTransmissionInterfaces
 
 struct TransmissionLoaderData
 {
+  typedef boost::shared_ptr<Transmission> TransmissionPtr; // DEPRECATED and unused!
+
   TransmissionLoaderData()
-    : robot_hw(nullptr),
-      robot_transmissions(nullptr)
+    : robot_hw(0),
+      robot_transmissions(0)
   {}
 
   hardware_interface::RobotHW*  robot_hw;            ///< Lifecycle is externally controlled (ie. hardware abstraction)
@@ -274,7 +270,7 @@ protected:
     }
 
     // Get handles to all required resource
-    for (const auto& info : actuators_info)
+    BOOST_FOREACH(const ActuatorInfo& info, actuators_info)
     {
       try
       {
@@ -409,11 +405,11 @@ public:
 
 private:
   typedef pluginlib::ClassLoader<TransmissionLoader>      TransmissionClassLoader;
-  typedef std::shared_ptr<TransmissionClassLoader>      TransmissionClassLoaderPtr;
+  typedef boost::shared_ptr<TransmissionClassLoader>      TransmissionClassLoaderPtr;
   typedef pluginlib::ClassLoader<RequisiteProvider>       RequisiteProviderClassLoader;
-  typedef std::shared_ptr<RequisiteProviderClassLoader> RequisiteProviderClassLoaderPtr;
+  typedef boost::shared_ptr<RequisiteProviderClassLoader> RequisiteProviderClassLoaderPtr;
 
-  typedef std::shared_ptr<RequisiteProvider>            RequisiteProviderPtr;
+  typedef boost::shared_ptr<RequisiteProvider>            RequisiteProviderPtr;
 
   TransmissionClassLoaderPtr transmission_class_loader_;
   RequisiteProviderClassLoaderPtr req_provider_loader_;
@@ -426,3 +422,5 @@ private:
 };
 
 } // namespace
+
+#endif // header guard

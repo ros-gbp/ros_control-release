@@ -25,8 +25,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_EXCEPTION_H
+#define TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_EXCEPTION_H
 
 #include <exception>
 
@@ -44,3 +44,5 @@ private:
 };
 
 } // transmission_interface
+
+#endif // TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_EXCEPTION_H

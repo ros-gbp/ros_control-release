@@ -25,8 +25,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
+#ifndef JOINT_LIMITS_INTERFACE_JOINT_LIMITS_INTERFACE_EXCEPTION_H
+#define JOINT_LIMITS_INTERFACE_JOINT_LIMITS_INTERFACE_EXCEPTION_H
 
 namespace joint_limits_interface
 {
@@ -50,3 +50,5 @@ private:
 };
 
 }
+
+#endif

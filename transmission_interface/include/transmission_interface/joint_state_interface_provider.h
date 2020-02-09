@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_JOINT_STATE_INTERFACE_PROVIDER_H
+#define TRANSMISSION_INTERFACE_JOINT_STATE_INTERFACE_PROVIDER_H
 
 // ros_control
 #include <transmission_interface/transmission_info.h>
@@ -67,3 +67,5 @@ protected:
 };
 
 } // namespace
+
+#endif // header guard

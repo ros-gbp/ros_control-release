@@ -97,7 +97,7 @@ class SwitchBot : public hardware_interface::RobotHW
         }
     };
 
-    typedef std::shared_ptr<Joint> JointSharedPtr;
+    typedef boost::shared_ptr<Joint> JointSharedPtr;
 
     std::map<std::string,  JointSharedPtr> joints_;
 
@@ -156,26 +156,26 @@ public:
         bool j_pe_e = false;
         bool j_ve_v = false;
 
-        for (const auto& controller : start_list)
+        for(std::list<hardware_interface::ControllerInfo>::const_iterator it = start_list.begin(); it != start_list.end(); ++it)
         {
-            if (controller.claimed_resources.size() != 1)
+            if (it->claimed_resources.size() != 1)
             {
                 ROS_FATAL("We expect controllers to claim resoures from only one interface. This should never happen!");
                 return false;
             }
-            const hardware_interface::InterfaceResources& iface_res = controller.claimed_resources.front();
-            for (const auto& resource : iface_res.resources)
+            const hardware_interface::InterfaceResources& iface_res = it->claimed_resources.front();
+            for (std::set<std::string>::const_iterator res_it = iface_res.resources.begin(); res_it != iface_res.resources.end(); ++res_it)
             {
                 // special check
-                if(iface_res.hardware_interface == "hardware_interface::EffortJointInterface" && resource == "j_pe") j_pe_e = true;
-                else if(iface_res.hardware_interface == "hardware_interface::VelocityJointInterface" && resource == "j_ve") j_ve_v = true;
+                if(iface_res.hardware_interface == "hardware_interface::EffortJointInterface" && *res_it == "j_pe") j_pe_e = true;
+                else if(iface_res.hardware_interface == "hardware_interface::VelocityJointInterface" && *res_it == "j_ve") j_ve_v = true;
 
                 // per joint check
                 try
                 {
-                    if(!joints_.at(resource)->prepareSwitch(iface_res.hardware_interface))
+                    if(!joints_.at(*res_it)->prepareSwitch(iface_res.hardware_interface))
                     {
-                        ROS_ERROR_STREAM("Cannot switch " << resource << " to " << iface_res.hardware_interface);
+                        ROS_ERROR_STREAM("Cannot switch " << *res_it << " to " << iface_res.hardware_interface);
                         return false;
                     }
                 }
@@ -193,29 +193,29 @@ public:
         RobotHW::doSwitch(start_list, stop_list); // check if member is defined
 
         std::map<std::string, std::string> switches;
-        for (const auto& controller : stop_list)
+        for(std::list<hardware_interface::ControllerInfo>::const_iterator it = stop_list.begin(); it != stop_list.end(); ++it)
         {
-            started_.erase(std::remove(started_.begin(), started_.end(), controller.name), started_.end());
-            stopped_.push_back(controller.name);
-            const hardware_interface::InterfaceResources& iface_res = controller.claimed_resources.front();
-            for (const auto& resource : iface_res.resources)
+            started_.erase(std::remove(started_.begin(), started_.end(), it->name), started_.end());
+            stopped_.push_back(it->name);
+            const hardware_interface::InterfaceResources& iface_res = it->claimed_resources.front();
+            for (std::set<std::string>::const_iterator res_it = iface_res.resources.begin(); res_it != iface_res.resources.end(); ++res_it)
             {
-                switches[resource] = "";
+                switches[*res_it] = "";
             }
         }
-        for (const auto& controller : start_list)
+        for(std::list<hardware_interface::ControllerInfo>::const_iterator it = start_list.begin(); it != start_list.end(); ++it)
         {
-            stopped_.erase(std::remove(stopped_.begin(), stopped_.end(), controller.name), stopped_.end());
-            started_.push_back(controller.name);
-            const hardware_interface::InterfaceResources& iface_res = controller.claimed_resources.front();
-            for (const auto& resource : iface_res.resources)
+            stopped_.erase(std::remove(stopped_.begin(), stopped_.end(), it->name), stopped_.end());
+            started_.push_back(it->name);
+            const hardware_interface::InterfaceResources& iface_res = it->claimed_resources.front();
+            for (std::set<std::string>::const_iterator res_it = iface_res.resources.begin(); res_it != iface_res.resources.end(); ++res_it)
             {
-                switches[resource] = iface_res.hardware_interface;
+                switches[*res_it] = iface_res.hardware_interface;
             }
         }
-        for (const auto& to_switch : switches)
+        for(std::map<std::string, std::string>::iterator it = switches.begin(); it != switches.end(); ++it)
         {
-            joints_[to_switch.first]->doSwitch(to_switch.second);
+            joints_[it->first]->doSwitch(it->second);
         }
     }
     bool checkUnqiue() const
@@ -279,9 +279,9 @@ public:
     virtual std::vector<std::string> getDeclaredClasses()
     {
         std::vector<std::string> v;
-        for (const auto& declared_class : classes)
+        for(std::map<std::string, std::string>::iterator it = classes.begin(); it != classes.end(); ++it)
         {
-            v.push_back(declared_class.first);
+            v.push_back(it->first);
         }
         return v;
     }
@@ -312,7 +312,7 @@ TEST(SwitchInterfacesTest, SwitchInterfaces)
 
     controller_manager::ControllerManager cm(&bot);
 
-    cm.registerControllerLoader(std::make_shared<DummyControllerLoader>());
+    cm.registerControllerLoader(boost::make_shared<DummyControllerLoader>());
 
     ros::Timer timer = nh.createTimer(ros::Duration(0.01), boost::bind(update, boost::ref(cm), _1));
 

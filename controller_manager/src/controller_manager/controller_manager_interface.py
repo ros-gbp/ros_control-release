@@ -12,7 +12,7 @@ def list_controller_types():
         print(t)
 
 
-def reload_libraries(force_kill, restore = False):
+def reload_libraries(force_kill, restore=False):
     rospy.wait_for_service('controller_manager/reload_controller_libraries')
     s = rospy.ServiceProxy('controller_manager/reload_controller_libraries', ReloadControllerLibraries)
 
@@ -20,7 +20,7 @@ def reload_libraries(force_kill, restore = False):
     load_srv = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
     switch_srv = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
 
-    print("Restore: " + str(restore))
+    print("Restore:", restore)
     if restore:
         originally = list_srv.call(ListControllersRequest())
 
@@ -51,8 +51,8 @@ def list_controllers():
         print("No controllers are loaded in mechanism control")
     else:
         for c in resp.controller:
-            hwi = list(set(r.hardware_interface for r in  c.claimed_resources))
-            print("'%s' - '%s' ( %s )" % (c.name, "+".join(hwi), c.state))
+            hwi = list(set(r.hardware_interface for r in c.claimed_resources))
+            print('%s - %s ( %s )' % (c.name, '+'.join(hwi), c.state))
 
 
 def load_controller(name):
@@ -60,10 +60,10 @@ def load_controller(name):
     s = rospy.ServiceProxy('controller_manager/load_controller', LoadController)
     resp = s.call(LoadControllerRequest(name))
     if resp.ok:
-        print("Loaded \'" + name + "\'")
+        print("Loaded", name)
         return True
     else:
-        print("Error when loading \'" + name + "\'")
+        print("Error when loading", name)
         return False
 
 
@@ -72,40 +72,49 @@ def unload_controller(name):
     s = rospy.ServiceProxy('controller_manager/unload_controller', UnloadController)
     resp = s.call(UnloadControllerRequest(name))
     if resp.ok == 1:
-        print("Unloaded \'" + name + "\' successfully")
+        print("Unloaded %s successfully" % name)
         return True
     else:
-        print("Error when unloading \'" + name + "\'")
+        print("Error when unloading", name)
         return False
 
 
 def start_controller(name):
-    return start_stop_controllers(start_controllers=[name])
+    return start_stop_controllers([name], True)
 
 
 def start_controllers(names):
-    return start_stop_controllers(start_controllers=names)
+    return start_stop_controllers(names, True)
 
 
 def stop_controller(name):
-    return start_stop_controllers(stop_controllers=[name])
+    return start_stop_controllers([name], False)
 
 
 def stop_controllers(names):
-    return start_stop_controllers(stop_controllers=names)
+    return start_stop_controllers(names, False)
 
 
-def start_stop_controllers(start_controllers=[], stop_controllers=[]):
+def start_stop_controllers(names, st):
     rospy.wait_for_service('controller_manager/switch_controller')
     s = rospy.ServiceProxy('controller_manager/switch_controller', SwitchController)
+    start = []
+    stop = []
     strictness = SwitchControllerRequest.STRICT
-    resp = s.call(SwitchControllerRequest(start_controllers, stop_controllers, strictness, False, 0.0))
+    if st:
+        start = names
+    else:
+        stop = names
+    resp = s.call(SwitchControllerRequest(start, stop, strictness))
     if resp.ok == 1:
-        if start_controllers:
-            print("Started {} successfully".format(start_controllers))
-        if stop_controllers:
-            print("Stopped {} successfully".format(stop_controllers))
+        if st:
+            print("Started {} successfully".format(names))
+        else:
+            print("Stopped {} successfully".format(names))
         return True
     else:
-        print("Error when starting {} and stopping {}".format(start_controllers, stop_controllers))
+        if st:
+            print("Error when starting ", names)
+        else:
+            print("Error when stopping ", names)
         return False

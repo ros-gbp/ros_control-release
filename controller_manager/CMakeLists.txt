@@ -2,96 +2,51 @@ cmake_minimum_required(VERSION 2.8.3)
 project(controller_manager)
 
 # Load catkin and all dependencies required for this package
-find_package(catkin REQUIRED COMPONENTS
-  controller_interface
-  controller_manager_msgs
-  hardware_interface
-  pluginlib
-  roscpp
-)
+find_package(catkin REQUIRED COMPONENTS controller_interface controller_manager_msgs hardware_interface pluginlib)
 
-# Include Boost.Thread
 find_package(Boost REQUIRED COMPONENTS thread)
 
-catkin_python_setup()
+include_directories(include ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 
-# Declare a catkin package
+# Declare catkin package
 catkin_package(
-  INCLUDE_DIRS
-    include
-  LIBRARIES
-    ${PROJECT_NAME}
-  CATKIN_DEPENDS
-    controller_interface
-    controller_manager_msgs
-    hardware_interface
-    pluginlib
-    roscpp
-  DEPENDS
-    Boost
+  DEPENDS Boost
+  CATKIN_DEPENDS controller_interface controller_manager_msgs hardware_interface pluginlib
+  INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
 )
-
-
-###########
-## Build ##
-###########
-
-# Specify header include paths
-include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME}
-  include/controller_manager/controller_loader.h
-  include/controller_manager/controller_loader_interface.h
-  include/controller_manager/controller_manager.h
   src/controller_manager.cpp
+  include/controller_manager/controller_manager.h
+  include/controller_manager/controller_loader_interface.h
+  include/controller_manager/controller_loader.h
 )
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
-
-#############
-## Testing ##
-#############
+if(catkin_EXPORTED_TARGETS)
+  add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+endif()
 
 if(CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
 
-  add_rostest_gtest(${PROJECT_NAME}_hwi_switch_test
+  find_package(rostest REQUIRED)
+  add_rostest_gtest(controller_manager_hwi_switch_test
     test/hwi_switch_test.test
     test/hwi_switch_test.cpp
   )
-  add_dependencies(${PROJECT_NAME}_hwi_switch_test ${catkin_EXPORTED_TARGETS})
-  target_link_libraries(${PROJECT_NAME}_hwi_switch_test ${PROJECT_NAME} ${catkin_LIBRARIES})
+  target_link_libraries(controller_manager_hwi_switch_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-  add_rostest_gmock(${PROJECT_NAME}_hwi_update_test
-    test/hwi_update_test.test
-    test/hwi_update_test.cpp
-  )
-  add_dependencies(${PROJECT_NAME}_hwi_update_test ${catkin_EXPORTED_TARGETS})
-  target_link_libraries(${PROJECT_NAME}_hwi_update_test ${PROJECT_NAME} ${catkin_LIBRARIES})
 endif()
 
-
-#############
-## Install ##
-#############
-
-# Install python scripts
-catkin_install_python(PROGRAMS scripts/controller_group
-                               scripts/controller_manager
-                               scripts/spawner
-                               scripts/unspawner
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-# Install headers
+# Install
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
 
-# Install targets
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-)
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
+
+install(PROGRAMS scripts/spawner scripts/unspawner scripts/controller_manager
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+catkin_python_setup()

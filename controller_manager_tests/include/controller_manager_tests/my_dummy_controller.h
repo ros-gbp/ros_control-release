@@ -27,8 +27,8 @@
 
 //! \author Vijay Pradeep
 
-#pragma once
-
+#ifndef CONTROLLER_MANAGER_TESTS_MY_DUMMY_CONTROLLER_H
+#define CONTROLLER_MANAGER_TESTS_MY_DUMMY_CONTROLLER_H
 
 #include <controller_interface/controller.h>
 #include <hardware_interface/hardware_interface.h>
@@ -59,3 +59,5 @@ public:
 };
 
 }
+
+#endif

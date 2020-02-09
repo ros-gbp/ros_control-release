@@ -28,8 +28,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef JOINT_LIMITS_INTERFACE_JOINT_LIMITS_INTERFACE_H
+#define JOINT_LIMITS_INTERFACE_JOINT_LIMITS_INTERFACE_H
 
 #include <algorithm>
 #include <cassert>
@@ -64,9 +64,9 @@ class PositionJointSaturationHandle
 {
 public:
   PositionJointSaturationHandle(const hardware_interface::JointHandle& jh, const JointLimits& limits)
-  : jh_(jh),
-    limits_(limits)
   {
+    jh_ = jh;
+    limits_ = limits;
 
     if (limits_.has_position_limits)
     {
@@ -295,16 +295,16 @@ public:
     {
       const double pos = jh_.getPosition();
       if (pos < limits_.min_position)
-        min_eff = 0.0;
+        min_eff = 0;
       else if (pos > limits_.max_position)
-        max_eff = 0.0;
+        max_eff = 0;
     }
 
     const double vel = jh_.getVelocity();
     if (vel < -limits_.max_velocity)
-      min_eff = 0.0;
+      min_eff = 0;
     else if (vel > limits_.max_velocity)
-      max_eff = 0.0;
+      max_eff = 0;
 
     jh_.setCommand(internal::saturate(jh_.getCommand(), min_eff, max_eff));
   }
@@ -406,14 +406,11 @@ private:
 class VelocityJointSaturationHandle
 {
 public:
-  VelocityJointSaturationHandle ()
-    : prev_cmd_(0.0)
-  {}
+  VelocityJointSaturationHandle () {}
 
   VelocityJointSaturationHandle(const hardware_interface::JointHandle& jh, const JointLimits& limits)
-    : jh_(jh)
-    , limits_(limits)
-    , prev_cmd_(0.0)
+    : jh_(jh),
+      limits_(limits)
   {
     if (!limits.has_velocity_limits)
     {
@@ -440,10 +437,11 @@ public:
     if (limits_.has_acceleration_limits)
     {
       assert(period.toSec() > 0.0);
+      const double vel = jh_.getVelocity();
       const double dt  = period.toSec();
 
-      vel_low  = std::max(prev_cmd_ - limits_.max_acceleration * dt, -limits_.max_velocity);
-      vel_high = std::min(prev_cmd_ + limits_.max_acceleration * dt,  limits_.max_velocity);
+      vel_low  = std::max(vel - limits_.max_acceleration * dt, -limits_.max_velocity);
+      vel_high = std::min(vel + limits_.max_acceleration * dt,  limits_.max_velocity);
     }
     else
     {
@@ -456,16 +454,11 @@ public:
                                     vel_low,
                                     vel_high);
     jh_.setCommand(vel_cmd);
-
-    // Cache variables
-    prev_cmd_ = jh_.getCommand();
   }
 
 private:
   hardware_interface::JointHandle jh_;
   JointLimits limits_;
-
-  double prev_cmd_;
 };
 
 /** \brief A handle used to enforce position, velocity, and acceleration limits of a velocity-controlled joint. */
@@ -561,9 +554,10 @@ public:
   /** \brief Enforce limits for all managed handles. */
   void enforceLimits(const ros::Duration& period)
   {
-    for (auto&& resource_name_and_handle : this->resource_map_)
+    typedef typename hardware_interface::ResourceManager<HandleType>::ResourceMap::iterator ItratorType;
+    for (ItratorType it = this->resource_map_.begin(); it != this->resource_map_.end(); ++it)
     {
-      resource_name_and_handle.second.enforceLimits(period);
+      it->second.enforceLimits(period);
     }
   }
   /*\}*/
@@ -577,9 +571,10 @@ public:
   /** \brief Reset all managed handles. */
   void reset()
   {
-    for (auto&& resource_name_and_handle : this->resource_map_)
+    typedef hardware_interface::ResourceManager<PositionJointSaturationHandle>::ResourceMap::iterator ItratorType;
+    for (ItratorType it = this->resource_map_.begin(); it != this->resource_map_.end(); ++it)
     {
-      resource_name_and_handle.second.reset();
+      it->second.reset();
     }
   }
   /*\}*/
@@ -593,9 +588,10 @@ public:
   /** \brief Reset all managed handles. */
   void reset()
   {
-    for (auto&& resource_name_and_handle : this->resource_map_)
+    typedef hardware_interface::ResourceManager<PositionJointSoftLimitsHandle>::ResourceMap::iterator ItratorType;
+    for (ItratorType it = this->resource_map_.begin(); it != this->resource_map_.end(); ++it)
     {
-      resource_name_and_handle.second.reset();
+      it->second.reset();
     }
   }
   /*\}*/
@@ -614,3 +610,5 @@ class VelocityJointSaturationInterface : public JointLimitsInterface<VelocityJoi
 class VelocityJointSoftLimitsInterface : public JointLimitsInterface<VelocityJointSoftLimitsHandle> {};
 
 }
+
+#endif

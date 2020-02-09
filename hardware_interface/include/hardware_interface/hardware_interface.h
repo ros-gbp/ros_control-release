@@ -29,8 +29,9 @@
  * Author: Wim Meeussen
  */
 
-#pragma once
 
+#ifndef HARDWARE_INTERFACE_HARDWARE_INTERFACE_H
+#define HARDWARE_INTERFACE_HARDWARE_INTERFACE_H
 
 #include <exception>
 #include <string>
@@ -86,3 +87,6 @@ private:
   std::string msg;
 };
 }
+
+
+#endif

@@ -25,12 +25,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
+#ifndef CONRTOLLER_MANAGER_CONTROLLER_LOADER_H
+#define CONRTOLLER_MANAGER_CONTROLLER_LOADER_H
 
 #include <pluginlib/class_loader.hpp>
 #include <controller_manager/controller_loader_interface.h>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace controller_manager
 {
@@ -58,7 +58,7 @@ public:
 
   controller_interface::ControllerBaseSharedPtr createInstance(const std::string& lookup_name)
   {
-    return controller_loader_->createUniqueInstance(lookup_name);
+    return controller_loader_->createInstance(lookup_name);
   }
 
   std::vector<std::string> getDeclaredClasses()
@@ -74,7 +74,9 @@ public:
 private:
   std::string package_;
   std::string base_class_;
-  std::unique_ptr<pluginlib::ClassLoader<T> > controller_loader_;
+  boost::shared_ptr<pluginlib::ClassLoader<T> > controller_loader_;
 };
 
 }
+
+#endif

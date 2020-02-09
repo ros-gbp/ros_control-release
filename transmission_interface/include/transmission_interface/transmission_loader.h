@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_TRANSMISSION_LOADER_H
+#define TRANSMISSION_INTERFACE_TRANSMISSION_LOADER_H
 
 // C++ standard
 #include <algorithm>
@@ -36,7 +36,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <memory>
+
+// Boost
+#include <boost/foreach.hpp>
+#include <boost/shared_ptr.hpp>
 
 // TinyXML
 #include <tinyxml.h>
@@ -140,6 +143,8 @@ protected:
                                   std::string&        role);
 };
 
-typedef std::shared_ptr<TransmissionLoader> TransmissionLoaderSharedPtr;
+typedef boost::shared_ptr<TransmissionLoader> TransmissionLoaderSharedPtr;
 
 } // namespace
+
+#endif // header guard

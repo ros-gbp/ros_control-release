@@ -29,12 +29,13 @@
  * Author: Wim Meeussen
  */
 
-#pragma once
 
+#ifndef CONTROLLER_INTERFACE_CONTROLLER_BASE_H
+#define CONTROLLER_INTERFACE_CONTROLLER_BASE_H
 
 #include <ros/node_handle.h>
 #include <hardware_interface/robot_hw.h>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace controller_interface
 {
@@ -59,7 +60,7 @@ public:
    *
    * \param time The current time
    */
-  virtual void starting(const ros::Time& /*time*/) {}
+  virtual void starting(const ros::Time& /*time*/) {};
 
   /** \brief This is called periodically by the realtime thread when the controller is running
    *
@@ -73,137 +74,47 @@ public:
    *
    * \param time The current time
    */
-  virtual void stopping(const ros::Time& /*time*/) {}
-
-  /** \brief This is called from within the realtime thread while the controller is
-   * waiting to start
-   *
-   * \param time The current time
-   */
-  virtual void waiting(const ros::Time& /*time*/) {}
-
-  /** \brief This is called from within the realtime thread when the controller needs
-   * to be aborted
-   *
-   * \param time The current time
-   */
-  virtual void aborting(const ros::Time& /*time*/) {}
-
-  /** \brief Check if the controller is initialized
-   * \returns true if the controller is initialized
-   */
-  bool isInitialized() const
-  {
-    return state_ == INITIALIZED;
-  }
+  virtual void stopping(const ros::Time& /*time*/) {};
 
   /** \brief Check if the controller is running
    * \returns true if the controller is running
    */
-  bool isRunning() const
+  bool isRunning()
   {
-    return state_ == RUNNING;
-  }
-
-  /** \brief Check if the controller is stopped
-   * \returns true if the controller is stopped
-   */
-  bool isStopped() const
-  {
-    return state_ == STOPPED;
-  }
-
-  /** \brief Check if the controller is waiting
-   * \returns true if the controller is waiting
-   */
-  bool isWaiting() const
-  {
-    return state_ == WAITING;
-  }
-
-  /** \brief Check if the controller is aborted
-   * \returns true if the controller is aborted
-   */
-  bool isAborted() const
-  {
-    return state_ == ABORTED;
+    return (state_ == RUNNING);
   }
 
   /// Calls \ref update only if this controller is running.
   void updateRequest(const ros::Time& time, const ros::Duration& period)
   {
     if (state_ == RUNNING)
-    {
       update(time, period);
-    }
   }
 
-  /// Calls \ref starting unless this controller is just constructed
+  /// Calls \ref starting only if this controller is initialized or already running
   bool startRequest(const ros::Time& time)
   {
-    // start works from any state, except CONSTRUCTED
-    if (state_ != CONSTRUCTED)
-    {
+    // start succeeds even if the controller was already started
+    if (state_ == RUNNING || state_ == INITIALIZED){
       starting(time);
       state_ = RUNNING;
       return true;
     }
     else
-    {
-      ROS_FATAL("Failed to start controller. It is not initialized.");
       return false;
-    }
   }
 
-  /// Calls \ref stopping unless this controller is just constructed
+  /// Calls \ref stopping only if this controller is initialized or already running
   bool stopRequest(const ros::Time& time)
   {
-    // stop works from any state, except CONSTRUCTED
-    if (state_ != CONSTRUCTED)
-    {
+    // stop succeeds even if the controller was already stopped
+    if (state_ == RUNNING || state_ == INITIALIZED){
       stopping(time);
-      state_ = STOPPED;
+      state_ = INITIALIZED;
       return true;
     }
     else
-    {
-      ROS_FATAL("Failed to stop controller. It is not initialized.");
       return false;
-    }
-  }
-
-  /// Calls \ref waiting unless this controller is just constructed
-  bool waitRequest(const ros::Time& time)
-  {
-    // wait works from any state, except CONSTRUCTED
-    if (state_ != CONSTRUCTED)
-    {
-      waiting(time);
-      state_ = WAITING;
-      return true;
-    }
-    else
-    {
-      ROS_FATAL("Failed to wait controller. It is not initialized.");
-      return false;
-    }
-  }
-
-  /// Calls \ref abort unless this controller is just constructed
-  bool abortRequest(const ros::Time& time)
-  {
-    // abort works from any state, except CONSTRUCTED
-    if (state_ != CONSTRUCTED)
-    {
-      aborting(time);
-      state_ = ABORTED;
-      return true;
-    }
-    else
-    {
-      ROS_FATAL("Failed to abort controller. It is not initialized.");
-      return false;
-    }
   }
 
   /*\}*/
@@ -237,7 +148,7 @@ public:
   /*\}*/
 
   /// The current execution state of the controller
-  enum {CONSTRUCTED, INITIALIZED, RUNNING, STOPPED, WAITING, ABORTED} state_;
+  enum {CONSTRUCTED, INITIALIZED, RUNNING} state_;
 
 
 private:
@@ -246,6 +157,9 @@ private:
 
 };
 
-typedef std::shared_ptr<ControllerBase> ControllerBaseSharedPtr;
+typedef boost::shared_ptr<ControllerBase> ControllerBaseSharedPtr;
 
 }
+
+
+#endif

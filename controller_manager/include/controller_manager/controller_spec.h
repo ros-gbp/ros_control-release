@@ -29,9 +29,11 @@
  * Author: Wim Meeussen
  */
 
-#pragma once
-#pragma GCC diagnostic ignored "-Wextra"
 
+#ifndef CONTROLLER_MANAGER_CONTROLLER_SPEC_H
+#define CONTROLLER_MANAGER_CONTROLLER_SPEC_H
+
+#pragma GCC diagnostic ignored "-Wextra"
 
 #include <map>
 #include <string>
@@ -55,3 +57,6 @@ struct ControllerSpec
 };
 
 }
+
+#endif
+

@@ -44,8 +44,8 @@ bool EffortTestController::init(hardware_interface::EffortJointInterface* hw, ro
     joint_names.push_back("hiDOF_joint2");
   }
 
-  for (const auto& joint_name : joint_names)
-    joint_effort_commands_.push_back(hw->getHandle(joint_name));
+  for (unsigned i=0; i<joint_names.size(); i++)
+    joint_effort_commands_.push_back(hw->getHandle(joint_names[i]));
 
   return true;
 }
@@ -56,7 +56,12 @@ void EffortTestController::starting(const ros::Time& /*time*/)
 }
 
 void EffortTestController::update(const ros::Time& /*time*/, const ros::Duration& /*period*/)
-{}
+{
+  for (unsigned int i=0; i < joint_effort_commands_.size(); i++)
+  {
+
+  }
+}
 
 void EffortTestController::stopping(const ros::Time& /*time*/)
 {

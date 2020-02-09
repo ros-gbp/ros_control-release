@@ -25,8 +25,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
+#ifndef CONTROLLER_MANAGER_TESTS_VEL_EFF_CONTROLLER_H
+#define CONTROLLER_MANAGER_TESTS_VEL_EFF_CONTROLLER_H
 
 #include <controller_interface/multi_interface_controller.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -53,3 +53,5 @@ private:
 };
 
 }
+
+#endif

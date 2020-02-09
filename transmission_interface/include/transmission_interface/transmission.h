@@ -27,14 +27,14 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_TRANSMISSION_H
+#define TRANSMISSION_INTERFACE_TRANSMISSION_H
 
 #include <cstddef>
 #include <string>
 #include <vector>
-#include <memory>
-#include <stdexcept>
+#include <boost/shared_ptr.hpp>
+
 
 namespace transmission_interface
 {
@@ -52,8 +52,6 @@ struct ActuatorData
   std::vector<double*> position;
   std::vector<double*> velocity;
   std::vector<double*> effort;
-  std::vector<double*> absolute_position;
-  std::vector<double*> torque_sensor;
 };
 
 /**
@@ -65,8 +63,6 @@ struct JointData
   std::vector<double*> position;
   std::vector<double*> velocity;
   std::vector<double*> effort;
-  std::vector<double*> absolute_position;
-  std::vector<double*> torque_sensor;
 };
 
 /**
@@ -126,21 +122,6 @@ public:
   virtual void actuatorToJointPosition(const ActuatorData& act_data,
                                              JointData&    jnt_data) = 0;
 
-  virtual void actuatorToJointAbsolutePosition(const ActuatorData&,
-                                                     JointData&)
-  {
-    throw std::runtime_error("transmission does not support actuator to joint absolute position");
-  }
-
-  virtual void actuatorToJointTorqueSensor(const ActuatorData&,
-                                                 JointData&)
-  {
-    throw std::runtime_error("transmission does not support actuator to joint torque sensor");
-  }
-
-  virtual bool hasActuatorToJointAbsolutePosition() const {return false;}
-  virtual bool hasActuatorToJointTorqueSensor()     const {return false;}
-
   /**
    * \brief Transform \e effort variables from joint to actuator space.
    * \param[in]  jnt_data Joint-space variables.
@@ -178,9 +159,11 @@ public:
   virtual std::size_t numActuators() const = 0;
 
   /** \return Number of joints managed by transmission, ie. the dimension of the joint space. */
-  virtual std::size_t numJoints() const = 0;
+  virtual std::size_t numJoints()    const = 0;
 };
 
-typedef std::shared_ptr<Transmission> TransmissionSharedPtr;
+typedef boost::shared_ptr<Transmission> TransmissionSharedPtr;
 
 } // transmission_interface
+
+#endif // TRANSMISSION_INTERFACE_TRANSMISSION_H

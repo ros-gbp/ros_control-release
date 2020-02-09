@@ -37,6 +37,7 @@ bool PosEffOptController::init(hardware_interface::RobotHW* robot_hw, ros::NodeH
   std::vector<std::string> eff_joints;
   if (!n.getParam("effort_joints", eff_joints)) {return false;}
 
+  typedef std::vector<std::string>::const_iterator NamesIterator;
   typedef hardware_interface::PositionJointInterface PosIface;
   typedef hardware_interface::EffortJointInterface EffIface;
 
@@ -49,9 +50,9 @@ bool PosEffOptController::init(hardware_interface::RobotHW* robot_hw, ros::NodeH
   // populate command handles (claimed resources)
   if (pos_iface)
   {
-    for (const auto& pos_joint : pos_joints)
+    for (NamesIterator it = pos_joints.begin(); it != pos_joints.end(); it++)
     {
-      pos_cmd_.push_back(pos_iface->getHandle(pos_joint));
+      pos_cmd_.push_back(pos_iface->getHandle(*it));
     }
   }
   else
@@ -61,9 +62,9 @@ bool PosEffOptController::init(hardware_interface::RobotHW* robot_hw, ros::NodeH
 
   if (eff_iface)
   {
-    for (const auto& eff_joint : eff_joints)
+    for (NamesIterator it = eff_joints.begin(); it != eff_joints.end(); it++)
     {
-      eff_cmd_.push_back(eff_iface->getHandle(eff_joint));
+      eff_cmd_.push_back(eff_iface->getHandle(*it));
     }
   }
   else

@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_H
+#define TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_H
 
 #include <map>
 #include <string>
@@ -86,7 +86,7 @@ protected:
     if (actuator_data.position.empty() && actuator_data.velocity.empty() && actuator_data.effort.empty() &&
         joint_data.position.empty() && joint_data.velocity.empty() && joint_data.effort.empty())
     {
-      throw TransmissionInterfaceException("All data vectors are empty. Transmission instance can't do anything!.");
+       throw TransmissionInterfaceException("All data vectors are empty. Transmission instance can't do anything!.");
     }
 
     // Precondition: All non-empty data vectors must have sizes consistent with the transmission
@@ -102,14 +102,6 @@ protected:
     {
       throw TransmissionInterfaceException("Actuator effort data size does not match transmission.");
     }
-    if (!actuator_data.absolute_position.empty() && actuator_data.absolute_position.size() != transmission_->numActuators())
-    {
-      throw TransmissionInterfaceException("Actuator absolute position data size does not match transmission.");
-    }
-    if (!actuator_data.absolute_position.empty() && actuator_data.absolute_position.size() != transmission_->numActuators())
-    {
-      throw TransmissionInterfaceException("Actuator torque sensor data size does not match transmission.");
-    }
 
     if (!joint_data.position.empty() && joint_data.position.size() != transmission_->numJoints())
     {
@@ -122,14 +114,6 @@ protected:
     if (!joint_data.effort.empty() && joint_data.effort.size() != transmission_->numJoints())
     {
       throw TransmissionInterfaceException("Joint effort data size does not match transmission.");
-    }
-    if (!joint_data.absolute_position.empty() && joint_data.absolute_position.size() != transmission_->numJoints())
-    {
-      throw TransmissionInterfaceException("Joint absolute position data size does not match transmission.");
-    }
-    if (!joint_data.torque_sensor.empty() && joint_data.torque_sensor.size() != transmission_->numJoints())
-    {
-      throw TransmissionInterfaceException("Joint torque sensor data size does not match transmission.");
     }
 
     // Precondition: Valid pointers to raw data
@@ -145,14 +129,6 @@ protected:
     {
       throw TransmissionInterfaceException("Actuator effort data contains null pointers.");
     }
-    if (!actuator_data.absolute_position.empty() && !hasValidPointers(actuator_data.absolute_position))
-    {
-      throw TransmissionInterfaceException("Actuator absolute position data contains null pointers.");
-    }
-    if (!actuator_data.torque_sensor.empty() && !hasValidPointers(actuator_data.torque_sensor))
-    {
-      throw TransmissionInterfaceException("Actuator torque sensor data contains null pointers.");
-    }
 
     if (!hasValidPointers(joint_data.position))
     {
@@ -166,23 +142,14 @@ protected:
     {
       throw TransmissionInterfaceException("Joint effort data contains null pointers.");
     }
-    if (!joint_data.absolute_position.empty() && !hasValidPointers(joint_data.absolute_position))
-    {
-      throw TransmissionInterfaceException("Joint absolute position data contains null pointers.");
-    }
-    if (!joint_data.torque_sensor.empty() && !hasValidPointers(joint_data.torque_sensor))
-    {
-      throw TransmissionInterfaceException("Joint torque sensor data contains null pointers.");
-    }
-
   }
 
 private:
   static bool hasValidPointers(const std::vector<double*>& data)
   {
-    for (const auto& ptr : data)
+    for (std::vector<double*>::const_iterator it = data.begin(); it != data.end(); ++it)
     {
-      if (!ptr) {return false;}
+      if (!(*it)) {return false;}
     }
     return true;
   }
@@ -208,17 +175,7 @@ public:
   {
     transmission_->actuatorToJointPosition(actuator_data_, joint_data_);
     transmission_->actuatorToJointVelocity(actuator_data_, joint_data_);
-    transmission_->actuatorToJointEffort(actuator_data_, joint_data_);
-
-    if(!actuator_data_.absolute_position.empty() && transmission_->hasActuatorToJointAbsolutePosition())
-    {
-       transmission_->actuatorToJointAbsolutePosition(actuator_data_, joint_data_);
-    }
-
-    if(!actuator_data_.torque_sensor.empty() && transmission_->hasActuatorToJointTorqueSensor())
-    {
-       transmission_->actuatorToJointTorqueSensor(actuator_data_, joint_data_);
-    }
+    transmission_->actuatorToJointEffort(  actuator_data_, joint_data_);
   }
   /*\}*/
 };
@@ -403,9 +360,10 @@ public:
   /** \brief Propagate the transmission maps of all managed handles. */
   void propagate()
   {
-    for (auto&& resource_name_and_handle : this->resource_map_)
+    typedef typename hardware_interface::ResourceManager<HandleType>::ResourceMap::iterator ItratorType;
+    for (ItratorType it = this->resource_map_.begin(); it != this->resource_map_.end(); ++it)
     {
-      resource_name_and_handle.second.propagate();
+      it->second.propagate();
     }
   }
   /*\}*/
@@ -438,3 +396,5 @@ class JointToActuatorVelocityInterface : public TransmissionInterface<JointToAct
 class JointToActuatorEffortInterface : public TransmissionInterface<JointToActuatorEffortHandle> {};
 
 } // transmission_interface
+
+#endif // TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_H

@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef JOINT_LIMITS_INTERFACE_JOINT_LIMITS_H
+#define JOINT_LIMITS_INTERFACE_JOINT_LIMITS_H
 
 namespace joint_limits_interface
 {
@@ -81,3 +81,5 @@ struct SoftJointLimits
 };
 
 }
+
+#endif

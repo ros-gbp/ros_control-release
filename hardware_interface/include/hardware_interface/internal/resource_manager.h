@@ -28,8 +28,8 @@
 
 /// \author Wim Meeussen, Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef HARDWARE_INTERFACE_RESOURCE_MANAGER_H
+#define HARDWARE_INTERFACE_RESOURCE_MANAGER_H
 
 #include <stdexcept>
 #include <string>
@@ -80,9 +80,9 @@ public:
   {
     std::vector<std::string> out;
     out.reserve(resource_map_.size());
-    for (const auto& resource_name_and_handle : resource_map_)
+    for(typename ResourceMap::const_iterator it = resource_map_.begin(); it != resource_map_.end(); ++it)
     {
-      out.push_back(resource_name_and_handle.first);
+      out.push_back(it->first);
     }
     return out;
   }
@@ -136,9 +136,12 @@ public:
   static void concatManagers(std::vector<resource_manager_type*>& managers,
                              resource_manager_type* result)
   {
-    for (const auto& manager : managers) {
-      for (const auto& handle_name : manager->getNames()) {
-        result->registerHandle(manager->getHandle(handle_name));
+    for(typename std::vector<resource_manager_type*>::iterator it_man = managers.begin();
+        it_man != managers.end(); ++it_man) {
+      std::vector<std::string> handle_names = (*it_man)->getNames();
+      for(std::vector<std::string>::iterator it_nms = handle_names.begin();
+          it_nms != handle_names.end(); ++it_nms) {
+        result->registerHandle((*it_man)->getHandle(*it_nms));
       }
     }
   }
@@ -151,3 +154,5 @@ protected:
 };
 
 }
+
+#endif // HARDWARE_INTERFACE_RESOURCE_MANAGER_H

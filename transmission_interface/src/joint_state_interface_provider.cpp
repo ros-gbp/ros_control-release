@@ -49,7 +49,7 @@ bool JointStateInterfaceProvider::updateJointInterfaces(const TransmissionInfo& 
   JointStateInterface& interface = *(robot_hw->get<JointStateInterface>());
 
   // Register joints on the hardware interface
-  for (const auto& joint_info : transmission_info.joints_)
+  BOOST_FOREACH(const JointInfo& joint_info, transmission_info.joints_)
   {
     const std::string& name = joint_info.name_;
 
@@ -59,43 +59,11 @@ bool JointStateInterfaceProvider::updateJointInterfaces(const TransmissionInfo& 
     // Update hardware interface
     using hardware_interface::JointStateHandle;
     RawJointData& raw_joint_data = raw_joint_data_map[name]; // Add joint if it does not yet exist
-    if(raw_joint_data.hasAbsolutePosition && raw_joint_data.hasTorqueSensor)
-    {
-      JointStateHandle handle(name,
-                              &raw_joint_data.position,
-                              &raw_joint_data.velocity,
-                              &raw_joint_data.effort,
-                              &raw_joint_data.absolute_position,
-                              &raw_joint_data.torque_sensor);
-      interface.registerHandle(handle);
-    }
-    else if(raw_joint_data.hasAbsolutePosition)
-    {
-      JointStateHandle handle(name,
-                              &raw_joint_data.position,
-                              &raw_joint_data.velocity,
-                              &raw_joint_data.effort,
-                              &raw_joint_data.absolute_position);
-      interface.registerHandle(handle);
-    }
-    else if(raw_joint_data.hasTorqueSensor)
-    {
-      JointStateHandle handle(name,
-                              &raw_joint_data.position,
-                              &raw_joint_data.velocity,
-                              &raw_joint_data.effort,
-                              &raw_joint_data.torque_sensor, true);
-      interface.registerHandle(handle);
-    }
-    else
-    {
-      JointStateHandle handle(name,
-                              &raw_joint_data.position,
-                              &raw_joint_data.velocity,
-                              &raw_joint_data.effort);
-      interface.registerHandle(handle);
-    }
-
+    JointStateHandle handle(name,
+                            &raw_joint_data.position,
+                            &raw_joint_data.velocity,
+                            &raw_joint_data.effort);
+    interface.registerHandle(handle);
   }
   return true;
 }
@@ -109,30 +77,6 @@ bool JointStateInterfaceProvider::getJointStateData(const TransmissionInfo& tran
   jnt_state_data.velocity.resize(dim);
   jnt_state_data.effort.resize(dim);
 
-  bool hasAbsolutePosition = true;
-  bool hasTorqueSensor = true;
-
-  for (unsigned int i = 0; i < dim; ++i)
-  {
-    const std::string& joint_name = transmission_info.joints_[i].name_;
-    RawJointDataMap::const_iterator raw_joint_data_it = raw_joint_data_map.find(joint_name);
-    if (raw_joint_data_it == raw_joint_data_map.end()) {return false;} // Joint name not found!
-    const RawJointData& raw_joint_data = raw_joint_data_it->second;
-
-    hasAbsolutePosition = hasAbsolutePosition && raw_joint_data.hasAbsolutePosition;
-    hasTorqueSensor = hasTorqueSensor && raw_joint_data.hasTorqueSensor;
-  }
-
-  if(hasAbsolutePosition)
-  {
-    jnt_state_data.absolute_position.resize(dim);
-  }
-
-  if(hasTorqueSensor)
-  {
-    jnt_state_data.torque_sensor.resize(dim);
-  }
-
   for (unsigned int i = 0; i < dim; ++i)
   {
     const std::string& joint_name = transmission_info.joints_[i].name_;
@@ -144,14 +88,6 @@ bool JointStateInterfaceProvider::getJointStateData(const TransmissionInfo& tran
     jnt_state_data.position[i] = const_cast<double*>(&(raw_joint_data.position));
     jnt_state_data.velocity[i] = const_cast<double*>(&(raw_joint_data.velocity));
     jnt_state_data.effort[i]   = const_cast<double*>(&(raw_joint_data.effort));
-    if(hasAbsolutePosition)
-    {
-      jnt_state_data.absolute_position[i] = const_cast<double*>(&(raw_joint_data.absolute_position));
-    }
-    if(hasTorqueSensor)
-    {
-      jnt_state_data.torque_sensor[i] = const_cast<double*>(&(raw_joint_data.torque_sensor));
-    }
   }
 
   return true;
@@ -176,39 +112,12 @@ bool JointStateInterfaceProvider::getActuatorStateData(const TransmissionInfo&  
   act_state_data.velocity.resize(dim);
   act_state_data.effort.resize(dim);
 
-  bool hasAbsolutePositionInterface = true;
-  bool hasTorqueSensorInterface = true;
-
-  for (unsigned int i = 0; i < dim; ++i)
-  {
-    hasAbsolutePositionInterface = hasAbsolutePositionInterface && handles[i].hasAbsolutePosition();
-    hasTorqueSensorInterface = hasTorqueSensorInterface && handles[i].hasTorqueSensor();
-  }
-
-  if(hasAbsolutePositionInterface)
-  {
-    act_state_data.absolute_position.resize(dim);
-  }
-
-  if(hasTorqueSensorInterface)
-  {
-    act_state_data.torque_sensor.resize(dim);
-  }
-
   for (unsigned int i = 0; i < dim; ++i)
   {
     // TODO: Get rid of these const casts!
     act_state_data.position[i] = const_cast<double*>(handles[i].getPositionPtr());
     act_state_data.velocity[i] = const_cast<double*>(handles[i].getVelocityPtr());
     act_state_data.effort[i]   = const_cast<double*>(handles[i].getEffortPtr());
-    if(hasAbsolutePositionInterface)
-    {
-      act_state_data.absolute_position[i] = const_cast<double*>(handles[i].getAbsolutePositionPtr());
-    }
-    if(hasTorqueSensorInterface)
-    {
-      act_state_data.torque_sensor[i] = const_cast<double*>(handles[i].getTorqueSensorPtr());
-    }
   }
   return true;
 }

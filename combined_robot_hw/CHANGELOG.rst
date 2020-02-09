@@ -2,45 +2,29 @@
 Changelog for package combined_robot_hw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.16.0 (2020-01-27)
+0.13.5 (2020-02-09)
 -------------------
-* Use range-based for loop
-* Update dependencies
-  - Dependencies needed to compile are <build_depend>
-  - Dependencies used in public headers are <build_export_depend>
-  - Dependencies needed to link or run are <exec_depend>
-* Use #pragma once
-* Replace header guard with #pragma once
-* Remove unused Boost dependencies
-* Apply consistent style to CMakeLists.txt files
-* Apply consistent style to package.xml files
-* Fix build error in clang error: non-aggregate type 'std::vector' (aka 'vector >') cannot be initialized with an initializer list
-* fix install destination
-* specify RUNTIME DESTINATION for libraries needed for exporting DLLs on Windows
-* Contributors: Bence Magyar, James Xu, Matt Reynolds, Victor Lopez
+* Improve controller and resource filtering for CombinedRobotHW
+* Contributors: Toni Oliver, Bence Magyar
 
-0.15.1 (2018-09-30)
+0.13.4 (2020-01-12)
 -------------------
+* add minimum required pluginlib version
+* Contributors: Mikael Arguedas
 
-0.15.0 (2018-05-28)
+0.13.3 (2018-04-26)
 -------------------
-* CreateInstance -> CreateUniqueInstance
-* boost::shared_ptr -> std::shared_ptr
 * Introduce shared_ptr typedefs
-* Contributors: Bence Magyar
-
-0.14.2 (2018-04-26)
--------------------
 * Update maintainers
 * Contributors: Bence Magyar
 
-0.14.1 (2018-04-16)
--------------------
-
-0.14.0 (2018-03-26)
+0.13.2 (2018-04-16)
 -------------------
 * migrate classloader headers
 * Contributors: Mathias Lüdtke
+
+0.13.1 (2018-03-26)
+-------------------
 
 0.13.0 (2017-12-23)
 -------------------

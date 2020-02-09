@@ -25,8 +25,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#pragma once
 
+#ifndef HARDWARE_INTERFACE_INTERFACE_RESOURCES_H
+#define HARDWARE_INTERFACE_INTERFACE_RESOURCES_H
 
 #include <set>
 #include <string>
@@ -56,3 +57,5 @@ struct InterfaceResources
 };
 
 }
+
+#endif

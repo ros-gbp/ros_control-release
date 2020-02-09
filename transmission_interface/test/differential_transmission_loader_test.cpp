@@ -28,6 +28,7 @@
 /// \author Adolfo Rodriguez Tsouroukdissian
 
 #include <string>
+#include <boost/foreach.hpp>
 #include <gtest/gtest.h>
 #include <pluginlib/class_loader.hpp>
 #include <transmission_interface/differential_transmission.h>
@@ -46,16 +47,16 @@ TEST(DifferentialTransmissionLoaderTest, FullSpec)
   // Transmission loader
   TransmissionPluginLoader loader;
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
-  ASSERT_TRUE(nullptr != transmission_loader);
+  ASSERT_TRUE(0 != transmission_loader);
 
   TransmissionSharedPtr transmission;
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
-  ASSERT_TRUE(nullptr != transmission);
+  ASSERT_TRUE(0 != transmission);
 
   // Validate transmission
   DifferentialTransmission* differential_transmission = dynamic_cast<DifferentialTransmission*>(transmission.get());
-  ASSERT_TRUE(nullptr != differential_transmission);
+  ASSERT_TRUE(0 != differential_transmission);
 
   const std::vector<double>& actuator_reduction = differential_transmission->getActuatorReduction();
   EXPECT_EQ( 50.0, actuator_reduction[0]);
@@ -79,12 +80,12 @@ TEST(DifferentialTransmissionLoaderTest, MinimalSpec)
   // Transmission loader
   TransmissionPluginLoader loader;
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
-  ASSERT_TRUE(nullptr != transmission_loader);
+  ASSERT_TRUE(0 != transmission_loader);
 
   TransmissionSharedPtr transmission;
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
-  ASSERT_TRUE(nullptr != transmission);
+  ASSERT_TRUE(0 != transmission);
 
   // Validate transmission
   DifferentialTransmission* differential_transmission = dynamic_cast<DifferentialTransmission*>(transmission.get());
@@ -111,13 +112,13 @@ TEST(DifferentialTransmissionLoaderTest, InvalidSpec)
   // Transmission loader
   TransmissionPluginLoader loader;
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
-  ASSERT_TRUE(nullptr != transmission_loader);
+  ASSERT_TRUE(0 != transmission_loader);
 
-  for (const auto& info : infos)
+  BOOST_FOREACH(const TransmissionInfo& info, infos)
   {
     TransmissionSharedPtr transmission;
     transmission = transmission_loader->load(info);
-    ASSERT_TRUE(nullptr == transmission);
+    ASSERT_TRUE(0 == transmission);
   }
 }
 

@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef TRANSMISSION_INTERFACE_READ_FILE_H
+#define TRANSMISSION_INTERFACE_READ_FILE_H
 
 #include <string>
 #include <vector>
@@ -71,3 +71,5 @@ inline std::vector<TransmissionInfo> parseUrdf(const std::string& filename)
 }
 
 } // namespace
+
+#endif // header guard

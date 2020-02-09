@@ -25,12 +25,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////////
 
-#pragma once
-
+#ifndef HARDWARE_INTERFACE_ROBOT_HW_H
+#define HARDWARE_INTERFACE_ROBOT_HW_H
 
 #include <list>
 #include <map>
-#include <memory>
 #include <typeinfo>
 #include <hardware_interface/internal/demangle_symbol.h>
 #include <hardware_interface/internal/interface_manager.h>
@@ -78,7 +77,7 @@ public:
    *
    * \returns True if initialization was successful
    */
-  virtual bool init(ros::NodeHandle& /*root_nh*/, ros::NodeHandle &/*robot_hw_nh*/) {return true;}
+  virtual bool init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh) {return true;}
 
   /** \name Resource Management
    *\{*/
@@ -92,31 +91,38 @@ public:
   virtual bool checkForConflict(const std::list<ControllerInfo>& info) const
   {
     // Map from resource name to all controllers claiming it
-    std::map<std::string, std::list<ControllerInfo>> resource_map;
+    typedef std::map<std::string, std::list<ControllerInfo> > ResourceMap;
+
+    typedef std::list<ControllerInfo>::const_iterator CtrlInfoIt;
+    typedef std::vector<InterfaceResources>::const_iterator ClaimedResIt;
+    typedef std::set<std::string>::const_iterator ResourceIt;
 
     // Populate a map of all controllers claiming individual resources.
     // We do this by iterating over every claimed resource of every hardware interface used by every controller
-    for (const auto& controller_info : info)
+    ResourceMap resource_map;
+    for (CtrlInfoIt info_it = info.begin(); info_it != info.end(); ++info_it)
     {
-      for (const auto& claimed_resource : controller_info.claimed_resources)
+      const std::vector<InterfaceResources>& c_res = info_it->claimed_resources;
+      for (ClaimedResIt c_res_it = c_res.begin(); c_res_it != c_res.end(); ++c_res_it)
       {
-        for (const auto& iface_resource : claimed_resource.resources)
+        const std::set<std::string>& iface_resources = c_res_it->resources;
+        for (ResourceIt resource_it = iface_resources.begin(); resource_it != iface_resources.end(); ++resource_it)
         {
-          resource_map[iface_resource].push_back(controller_info);
+          resource_map[*resource_it].push_back(*info_it);
         }
       }
     }
 
     // Enforce resource exclusivity policy: No resource can be claimed by more than one controller
     bool in_conflict = false;
-    for (const auto& resource_name_and_claiming_controllers : resource_map)
+    for (ResourceMap::iterator it = resource_map.begin(); it != resource_map.end(); ++it)
     {
-      if (resource_name_and_claiming_controllers.second.size() > 1)
+      if (it->second.size() > 1)
       {
         std::string controller_list;
-        for (const auto& controller : resource_name_and_claiming_controllers.second)
-          controller_list += controller.name + ", ";
-        ROS_WARN("Resource conflict on [%s].  Controllers = [%s]", resource_name_and_claiming_controllers.first.c_str(), controller_list.c_str());
+        for (CtrlInfoIt controller_it = it->second.begin(); controller_it != it->second.end(); ++controller_it)
+          controller_list += controller_it->name + ", ";
+        ROS_WARN("Resource conflict on [%s].  Controllers = [%s]", it->first.c_str(), controller_list.c_str());
         in_conflict = true;
       }
     }
@@ -131,8 +137,8 @@ public:
    * with regard to necessary hardware interface switches and prepare the switching. Start and stop list are disjoint.
    * This handles the check and preparation, the actual switch is commited in doSwitch()
    */
-  virtual bool prepareSwitch(const std::list<ControllerInfo>& /*start_list*/,
-                             const std::list<ControllerInfo>& /*stop_list*/) { return true; }
+  virtual bool prepareSwitch(const std::list<ControllerInfo>& start_list,
+                             const std::list<ControllerInfo>& stop_list) { return true; }
 
   /**
    * Perform (in realtime) all necessary hardware interface switches in order to start and stop the given controllers.
@@ -141,32 +147,13 @@ public:
   virtual void doSwitch(const std::list<ControllerInfo>& /*start_list*/,
                         const std::list<ControllerInfo>& /*stop_list*/) {}
 
-  enum SwitchState
-  {
-    DONE,
-    ONGOING,
-    ERROR
-  };
-
-  // Return (in realtime) the state of the last doSwitch()
-  virtual SwitchState switchResult() const
-  {
-    return DONE;
-  }
-
-  // Return (in realtime) the state of the last doSwitch() for a given controller
-  virtual SwitchState switchResult(const ControllerInfo& /*controller*/) const
-  {
-    return DONE;
-  }
-
   /**
    * Reads data from the robot HW
    *
    * \param time The current time
    * \param period The time passed since the last call to \ref read
    */
-  virtual void read(const ros::Time& /*time*/, const ros::Duration& /*period*/) {}
+  virtual void read(const ros::Time& time, const ros::Duration& period) {}
 
   /**
    * Writes data to the robot HW
@@ -174,9 +161,12 @@ public:
    * \param time The current time
    * \param period The time passed since the last call to \ref write
    */
-  virtual void write(const ros::Time& /*time*/, const ros::Duration& /*period*/) {}
+  virtual void write(const ros::Time& time, const ros::Duration& period) {}
 };
 
-typedef std::shared_ptr<RobotHW> RobotHWSharedPtr;
+typedef boost::shared_ptr<RobotHW> RobotHWSharedPtr;
 
 }
+
+#endif
+

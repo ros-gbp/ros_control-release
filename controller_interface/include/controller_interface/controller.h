@@ -29,8 +29,8 @@
  * Author: Wim Meeussen
  */
 
-#pragma once
-
+#ifndef CONTROLLER_INTERFACE_CONTROLLER_H
+#define CONTROLLER_INTERFACE_CONTROLLER_H
 
 #include <controller_interface/controller_base.h>
 #include <hardware_interface/internal/demangle_symbol.h>
@@ -49,7 +49,7 @@ namespace controller_interface
  * control.
  */
 template <class T>
-class Controller: public virtual ControllerBase
+class Controller: public ControllerBase
 {
 public:
   Controller()  {state_ = CONSTRUCTED;}
@@ -145,3 +145,5 @@ private:
 };
 
 }
+
+#endif

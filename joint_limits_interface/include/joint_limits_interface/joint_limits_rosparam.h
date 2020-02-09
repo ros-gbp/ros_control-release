@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#pragma once
-
+#ifndef JOINT_LIMITS_INTERFACE_JOINT_LIMITS_ROSPARAM_H
+#define JOINT_LIMITS_INTERFACE_JOINT_LIMITS_ROSPARAM_H
 
 #include <string>
 
@@ -230,3 +230,5 @@ inline bool getSoftJointLimits(const std::string& joint_name, const ros::NodeHan
 }
 
 }
+
+#endif

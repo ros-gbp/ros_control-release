@@ -36,7 +36,7 @@ MyRobotHW1::MyRobotHW1()
 {
 }
 
-bool MyRobotHW1::init(ros::NodeHandle& /*root_nh*/, ros::NodeHandle &/*robot_hw_nh*/)
+bool MyRobotHW1::init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh)
 {
   using namespace hardware_interface;
 
@@ -90,46 +90,46 @@ bool MyRobotHW1::init(ros::NodeHandle& /*root_nh*/, ros::NodeHandle &/*robot_hw_
 }
 
 
-void MyRobotHW1::read(const ros::Time& /*time*/, const ros::Duration& /*period*/)
+void MyRobotHW1::read(const ros::Time& time, const ros::Duration& period)
 {
   joint_position_[0] = 2.7;
 }
 
-void MyRobotHW1::write(const ros::Time& /*time*/, const ros::Duration& /*period*/)
+void MyRobotHW1::write(const ros::Time& time, const ros::Duration& period)
 {
   // Just to test that write() is called
   joint_effort_command_[1] = joint_effort_command_[0];
 }
 
 bool MyRobotHW1::prepareSwitch(const std::list<hardware_interface::ControllerInfo>& start_list,
-                               const std::list<hardware_interface::ControllerInfo>& /*stop_list*/)
+                               const std::list<hardware_interface::ControllerInfo>& stop_list)
 {
-  for (const auto& controller : start_list)
+  for (std::list<hardware_interface::ControllerInfo>::const_iterator it = start_list.begin(); it != start_list.end(); ++it)
   {
-    if (controller.claimed_resources.empty())
+    if (it->claimed_resources.empty())
     {
       continue;
     }
-    for (const auto& res_it : controller.claimed_resources)
+    for (std::vector<hardware_interface::InterfaceResources>::const_iterator res_it = it->claimed_resources.begin(); res_it != it->claimed_resources.end(); ++res_it)
     {
       std::vector<std::string> r_hw_ifaces = this->getNames();
 
-      std::vector<std::string>::iterator if_name = std::find(r_hw_ifaces.begin(), r_hw_ifaces.end(), res_it.hardware_interface);
+      std::vector<std::string>::iterator if_name = std::find(r_hw_ifaces.begin(), r_hw_ifaces.end(), res_it->hardware_interface);
       if (if_name == r_hw_ifaces.end()) // this hardware_interface is not registered on this RobotHW
       {
-        ROS_ERROR_STREAM("Bad interface: " << res_it.hardware_interface);
-        std::cout << res_it.hardware_interface;
+        ROS_ERROR_STREAM("Bad interface: " << res_it->hardware_interface);
+        std::cout << res_it->hardware_interface;
         return false;
       }
 
-      std::vector<std::string> r_hw_iface_resources = this->getInterfaceResources(res_it.hardware_interface);
-      for (const auto& resource : res_it.resources)
+      std::vector<std::string> r_hw_iface_resources = this->getInterfaceResources(res_it->hardware_interface);
+      for (std::set<std::string>::const_iterator ctrl_res = res_it->resources.begin(); ctrl_res != res_it->resources.end(); ++ctrl_res)
       {
-        std::vector<std::string>::iterator res_name = std::find(r_hw_iface_resources.begin(), r_hw_iface_resources.end(), resource);
+        std::vector<std::string>::iterator res_name = std::find(r_hw_iface_resources.begin(), r_hw_iface_resources.end(), *ctrl_res);
         if (res_name == r_hw_iface_resources.end()) // this resource is not registered on this RobotHW
         {
-          ROS_ERROR_STREAM("Bad resource: " << resource);
-          std::cout << resource;
+          ROS_ERROR_STREAM("Bad resource: " << (*ctrl_res));
+          std::cout << (*ctrl_res);
           return false;
         }
       }
@@ -139,31 +139,31 @@ bool MyRobotHW1::prepareSwitch(const std::list<hardware_interface::ControllerInf
 }
 
 void MyRobotHW1::doSwitch(const std::list<hardware_interface::ControllerInfo>& start_list,
-                          const std::list<hardware_interface::ControllerInfo>& /*stop_list*/)
+                          const std::list<hardware_interface::ControllerInfo>& stop_list)
 {
-  for (const auto& controller : start_list)
+  for (std::list<hardware_interface::ControllerInfo>::const_iterator it = start_list.begin(); it != start_list.end(); ++it)
   {
-    if (controller.claimed_resources.empty())
+    if (it->claimed_resources.empty())
     {
       continue;
     }
-    for (const auto& claimed_resource : controller.claimed_resources)
+    for (std::vector<hardware_interface::InterfaceResources>::const_iterator res_it = it->claimed_resources.begin(); res_it != it->claimed_resources.end(); ++res_it)
     {
       std::vector<std::string> r_hw_ifaces = this->getNames();
 
-      std::vector<std::string>::iterator if_name = std::find(r_hw_ifaces.begin(), r_hw_ifaces.end(), claimed_resource.hardware_interface);
+      std::vector<std::string>::iterator if_name = std::find(r_hw_ifaces.begin(), r_hw_ifaces.end(), res_it->hardware_interface);
       if (if_name == r_hw_ifaces.end()) // this hardware_interface is not registered on this RobotHW
       {
-        throw hardware_interface::HardwareInterfaceException("Hardware_interface " + claimed_resource.hardware_interface + " is not registered");
+        throw hardware_interface::HardwareInterfaceException("Hardware_interface " + res_it->hardware_interface + " is not registered");
       }
 
-      std::vector<std::string> r_hw_iface_resources = this->getInterfaceResources(claimed_resource.hardware_interface);
-      for (const auto& resource : claimed_resource.resources)
+      std::vector<std::string> r_hw_iface_resources = this->getInterfaceResources(res_it->hardware_interface);
+      for (std::set<std::string>::const_iterator ctrl_res = res_it->resources.begin(); ctrl_res != res_it->resources.end(); ++ctrl_res)
       {
-        std::vector<std::string>::iterator res_name = std::find(r_hw_iface_resources.begin(), r_hw_iface_resources.end(), resource);
+        std::vector<std::string>::iterator res_name = std::find(r_hw_iface_resources.begin(), r_hw_iface_resources.end(), *ctrl_res);
         if (res_name == r_hw_iface_resources.end()) // this resource is not registered on this RobotHW
         {
-          throw hardware_interface::HardwareInterfaceException("Resource " + resource + " is not registered");
+          throw hardware_interface::HardwareInterfaceException("Resource " + *ctrl_res + " is not registered");
         }
       }
     }

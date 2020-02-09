@@ -28,6 +28,7 @@
 /// \author Adolfo Rodriguez Tsouroukdissian
 
 #include <string>
+#include <boost/foreach.hpp>
 #include <gtest/gtest.h>
 #include <pluginlib/class_loader.hpp>
 #include <transmission_interface/four_bar_linkage_transmission.h>
@@ -46,17 +47,17 @@ TEST(FourBarLinkageTransmissionLoaderTest, FullSpec)
   // Transmission loader
   TransmissionPluginLoader loader;
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
-  ASSERT_TRUE(nullptr != transmission_loader);
+  ASSERT_TRUE(0 != transmission_loader);
 
   TransmissionSharedPtr transmission;
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
-  ASSERT_TRUE(nullptr != transmission);
+  ASSERT_TRUE(0 != transmission);
 
   // Validate transmission
   FourBarLinkageTransmission* four_bar_linkage_transmission =
   dynamic_cast<FourBarLinkageTransmission*>(transmission.get());
-  ASSERT_TRUE(nullptr != four_bar_linkage_transmission);
+  ASSERT_TRUE(0 != four_bar_linkage_transmission);
 
   const std::vector<double>& actuator_reduction = four_bar_linkage_transmission->getActuatorReduction();
   EXPECT_EQ( 50.0, actuator_reduction[0]);
@@ -80,12 +81,12 @@ TEST(FourBarLinkageTransmissionLoaderTest, MinimalSpec)
   // Transmission loader
   TransmissionPluginLoader loader;
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
-  ASSERT_TRUE(nullptr != transmission_loader);
+  ASSERT_TRUE(0 != transmission_loader);
 
   TransmissionSharedPtr transmission;
   const TransmissionInfo& info = infos.front();
   transmission = transmission_loader->load(info);
-  ASSERT_TRUE(nullptr != transmission);
+  ASSERT_TRUE(0 != transmission);
 
   // Validate transmission
   FourBarLinkageTransmission* four_bar_linkage_transmission =
@@ -113,13 +114,13 @@ TEST(FourBarLinkageTransmissionLoaderTest, InvalidSpec)
   // Transmission loader
   TransmissionPluginLoader loader;
   TransmissionLoaderSharedPtr transmission_loader = loader.create(infos.front().type_);
-  ASSERT_TRUE(nullptr != transmission_loader);
+  ASSERT_TRUE(0 != transmission_loader);
 
-  for (const auto& info : infos)
+  BOOST_FOREACH(const TransmissionInfo& info, infos)
   {
     TransmissionSharedPtr transmission;
     transmission = transmission_loader->load(info);
-    ASSERT_TRUE(nullptr == transmission);
+    ASSERT_TRUE(0 == transmission);
   }
 }
 
