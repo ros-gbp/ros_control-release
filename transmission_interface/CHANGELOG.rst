@@ -2,6 +2,9 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.13.5 (2020-02-09)
+-------------------
+
 0.13.4 (2020-01-12)
 -------------------
 * add minimum required pluginlib version
