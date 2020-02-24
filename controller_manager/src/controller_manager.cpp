@@ -30,14 +30,13 @@
 
 #include "controller_manager/controller_manager.h"
 #include <algorithm>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/condition.hpp>
+#include <chrono>
+#include <mutex>
 #include <sstream>
+#include <thread>
 #include <ros/console.h>
 #include <controller_manager/controller_loader.h>
 #include <controller_manager_msgs/ControllerState.h>
-#include <chrono>
-#include <thread>
 
 namespace controller_manager
 {
@@ -46,12 +45,7 @@ namespace controller_manager
 ControllerManager::ControllerManager(hardware_interface::RobotHW *robot_hw, const ros::NodeHandle& nh) :
   robot_hw_(robot_hw),
   root_nh_(nh),
-  cm_node_(nh, "controller_manager"),
-  start_request_(0),
-  stop_request_(0),
-  switch_params_(),
-  current_controllers_list_(0),
-  used_by_realtime_(-1)
+  cm_node_(nh, "controller_manager")
 {
   // create controller loader
   controller_loaders_.push_back(
@@ -76,7 +70,7 @@ ControllerManager::~ControllerManager()
 void ControllerManager::update(const ros::Time& time, const ros::Duration& period, bool reset_controllers)
 {
   used_by_realtime_ = current_controllers_list_;
-
+  
   // Restart all running controllers if motors are re-enabled
   if (reset_controllers){
     for (const auto& controller : controllers_lists_[used_by_realtime_]){
@@ -102,7 +96,7 @@ void ControllerManager::update(const ros::Time& time, const ros::Duration& perio
 controller_interface::ControllerBase* ControllerManager::getControllerByName(const std::string& name)
 {
   // Lock recursive mutex in this context
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   for (const auto& controller : controllers_lists_[current_controllers_list_])
   {
@@ -114,7 +108,7 @@ controller_interface::ControllerBase* ControllerManager::getControllerByName(con
 
 void ControllerManager::getControllerNames(std::vector<std::string> &names)
 {
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
   names.clear();
   for (const auto& controller : controllers_lists_[current_controllers_list_])
   {
@@ -241,7 +235,7 @@ bool ControllerManager::loadController(const std::string& name)
   ROS_DEBUG("Will load controller '%s'", name.c_str());
 
   // lock controllers
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   // get reference to controller list
   int free_controllers_list = (current_controllers_list_ + 1) % 2;
@@ -294,7 +288,7 @@ bool ControllerManager::loadController(const std::string& name)
     try
     {
       // Trying loading the controller using all of our controller loaders. Exit once we've found the first valid loaded controller
-      std::list<ControllerLoaderInterfaceSharedPtr>::iterator it = controller_loaders_.begin();
+      auto it = controller_loaders_.begin();
       while (!c && it != controller_loaders_.end())
       {
         for (const auto& cur_type : (*it)->getDeclaredClasses()){
@@ -379,7 +373,7 @@ bool ControllerManager::unloadController(const std::string &name)
   ROS_DEBUG("Will unload controller '%s'", name.c_str());
 
   // lock the controllers
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   // get reference to controller list
   int free_controllers_list = (current_controllers_list_ + 1) % 2;
@@ -466,7 +460,7 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
     ROS_DEBUG(" - stopping controller '%s'", controller.c_str());
 
   // lock controllers
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   controller_interface::ControllerBase* ct;
   // list all controllers to stop
@@ -523,7 +517,7 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
   switch_start_list_.clear();
   switch_stop_list_.clear();
 
-  std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
+  const auto &controllers = controllers_lists_[current_controllers_list_];
   for (const auto& controller : controllers)
   {
     bool in_stop_list  = false;
@@ -636,7 +630,7 @@ bool ControllerManager::reloadControllerLibrariesSrv(
 {
   // lock services
   ROS_DEBUG("reload libraries service called");
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("reload libraries service locked");
 
   // only reload libraries if no controllers are running
@@ -692,7 +686,7 @@ bool ControllerManager::listControllerTypesSrv(
 
   // lock services
   ROS_DEBUG("list types service called");
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("list types service locked");
 
   for (const auto& controller_loader : controller_loaders_)
@@ -719,11 +713,11 @@ bool ControllerManager::listControllersSrv(
 
   // lock services
   ROS_DEBUG("list controller service called");
-  boost::mutex::scoped_lock services_guard(services_lock_);
+  std::lock_guard<std::mutex> services_guard(services_lock_);
   ROS_DEBUG("list controller service locked");
 
   // lock controllers to get all names/types/states
-  boost::recursive_mutex::scoped_lock controller_guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> controller_guard(controllers_lock_);
   std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
   resp.controller.resize(controllers.size());
 
@@ -783,7 +777,7 @@ bool ControllerManager::loadControllerSrv(
 {
   // lock services
   ROS_DEBUG("loading service called for controller '%s' ",req.name.c_str());
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("loading service locked");
 
   resp.ok = loadController(req.name);
@@ -799,7 +793,7 @@ bool ControllerManager::unloadControllerSrv(
 {
   // lock services
   ROS_DEBUG("unloading service called for controller '%s' ",req.name.c_str());
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("unloading service locked");
 
   resp.ok = unloadController(req.name);
@@ -815,7 +809,7 @@ bool ControllerManager::switchControllerSrv(
 {
   // lock services
   ROS_DEBUG("switching service called");
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("switching service locked");
 
   resp.ok = switchController(req.start_controllers, req.stop_controllers, req.strictness,
