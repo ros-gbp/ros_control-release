@@ -2,6 +2,12 @@
 Changelog for package combined_robot_hw_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.17.0 (2020-02-24)
+-------------------
+* Improve controller and resource filtering for CombinedRobotHW
+* Use auto
+* Contributors: AbhinavSingh, Bence Magyar, Toni Oliver
+
 0.16.0 (2020-01-27)
 -------------------
 * Use range-based for loop
