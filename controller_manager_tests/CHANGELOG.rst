@@ -2,6 +2,11 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.17.0 (2020-02-24)
+-------------------
+* Use auto
+* Contributors: AbhinavSingh
+
 0.16.0 (2020-01-27)
 -------------------
 * Merge pull request `#413 <https://github.com/ros-controls/ros_control/issues/413>`_ from matthew-reynolds/range-for
