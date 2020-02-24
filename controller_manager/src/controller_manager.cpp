@@ -30,28 +30,25 @@
 
 #include "controller_manager/controller_manager.h"
 #include <algorithm>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/condition.hpp>
+#include <chrono>
+#include <mutex>
 #include <sstream>
+#include <thread>
 #include <ros/console.h>
 #include <controller_manager/controller_loader.h>
 #include <controller_manager_msgs/ControllerState.h>
 
-namespace controller_manager{
+namespace controller_manager
+{
 
 
 ControllerManager::ControllerManager(hardware_interface::RobotHW *robot_hw, const ros::NodeHandle& nh) :
   robot_hw_(robot_hw),
   root_nh_(nh),
-  cm_node_(nh, "controller_manager"),
-  start_request_(0),
-  stop_request_(0),
-  please_switch_(false),
-  current_controllers_list_(0),
-  used_by_realtime_(-1)
+  cm_node_(nh, "controller_manager")
 {
   // create controller loader
-  controller_loaders_.push_back( 
+  controller_loaders_.push_back(
     ControllerLoaderInterfaceSharedPtr(new ControllerLoader<controller_interface::ControllerBase>("controller_interface",
                                                                                                   "controller_interface::ControllerBase") ) );
 
@@ -69,88 +66,186 @@ ControllerManager::~ControllerManager()
 {}
 
 
-
-
 // Must be realtime safe.
 void ControllerManager::update(const ros::Time& time, const ros::Duration& period, bool reset_controllers)
 {
   used_by_realtime_ = current_controllers_list_;
-  std::vector<ControllerSpec> &controllers = controllers_lists_[used_by_realtime_];
-
+  
   // Restart all running controllers if motors are re-enabled
   if (reset_controllers){
-    for (size_t i=0; i<controllers.size(); i++){
-      if (controllers[i].c->isRunning()){
-        controllers[i].c->stopRequest(time);
-        controllers[i].c->startRequest(time);
+    for (const auto& controller : controllers_lists_[used_by_realtime_]){
+      if (controller.c->isRunning()){
+        controller.c->stopRequest(time);
+        controller.c->startRequest(time);
       }
     }
   }
 
 
   // Update all controllers
-  for (size_t i=0; i<controllers.size(); i++)
-    controllers[i].c->updateRequest(time, period);
+  for (const auto& controller : controllers_lists_[used_by_realtime_])
+    controller.c->updateRequest(time, period);
 
   // there are controllers to start/stop
-  if (please_switch_)
+  if (switch_params_.do_switch)
   {
-    // switch hardware interfaces (if any)
-    robot_hw_->doSwitch(switch_start_list_, switch_stop_list_);
-
-    // stop controllers
-    for (unsigned int i=0; i<stop_request_.size(); i++)
-      if (!stop_request_[i]->stopRequest(time))
-        ROS_FATAL("Failed to stop controller in realtime loop. This should never happen.");
-
-    // start controllers
-    for (unsigned int i=0; i<start_request_.size(); i++)
-      if (!start_request_[i]->startRequest(time))
-        ROS_FATAL("Failed to start controller in realtime loop. This should never happen.");
-
-    please_switch_ = false;
+    manageSwitch(time);
   }
 }
 
 controller_interface::ControllerBase* ControllerManager::getControllerByName(const std::string& name)
 {
   // Lock recursive mutex in this context
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
-  std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
-  for (size_t i = 0; i < controllers.size(); ++i)
+  for (const auto& controller : controllers_lists_[current_controllers_list_])
   {
-    if (controllers[i].info.name == name)
-      return controllers[i].c.get();
+    if (controller.info.name == name)
+      return controller.c.get();
   }
-  return NULL;
+  return nullptr;
 }
 
 void ControllerManager::getControllerNames(std::vector<std::string> &names)
 {
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
   names.clear();
-  std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
-  for (size_t i = 0; i < controllers.size(); ++i)
+  for (const auto& controller : controllers_lists_[current_controllers_list_])
   {
-    names.push_back(controllers[i].info.name);
+    names.push_back(controller.info.name);
   }
 }
 
+void ControllerManager::manageSwitch(const ros::Time& time)
+{
+  // switch hardware interfaces (if any)
+  if (!switch_params_.started)
+  {
+    robot_hw_->doSwitch(switch_start_list_, switch_stop_list_);
+    switch_params_.started = true;
+  }
+
+  stopControllers(time);
+
+  // start controllers once the switch is fully complete
+  if (!switch_params_.start_asap)
+  {
+    startControllers(time);
+  }
+  // start controllers as soon as their required joints are done switching
+  else
+  {
+    startControllersAsap(time);
+  }
+}
+
+void ControllerManager::stopControllers(const ros::Time& time)
+{
+  // stop controllers
+  for (const auto& request : stop_request_)
+  {
+    if (request->isRunning())
+    {
+      request->stopRequest(time);
+    }
+  }
+}
+
+void ControllerManager::startControllers(const ros::Time& time)
+{
+  // start controllers
+  if (robot_hw_->switchResult() == hardware_interface::RobotHW::DONE)
+  {
+    for (const auto& request : start_request_)
+    {
+      request->startRequest(time);
+    }
+
+    switch_params_.do_switch = false;
+  }
+  // abort controllers in case of error or timeout (if set)
+  else if ((robot_hw_->switchResult() == hardware_interface::RobotHW::ERROR) ||
+           (switch_params_.timeout > 0.0 &&
+            (time - switch_params_.init_time).toSec() > switch_params_.timeout))
+  {
+    for (const auto& request : start_request_)
+    {
+      request->abortRequest(time);
+    }
+
+    switch_params_.do_switch = false;
+  }
+  // wait controllers
+  else
+  {
+    for (const auto& request : start_request_)
+    {
+      request->waitRequest(time);
+    }
+  }
+}
+
+void ControllerManager::startControllersAsap(const ros::Time& time)
+{
+  // start controllers if possible
+  for (const auto& request : start_request_)
+  {
+    if (!request->isRunning())
+    {
+      // find the info from this controller
+      for (const auto& controller : controllers_lists_[current_controllers_list_])
+      {
+        if (request == controller.c.get())
+        {
+          // ready to start
+          if (robot_hw_->switchResult(controller.info) == hardware_interface::RobotHW::DONE)
+          {
+            request->startRequest(time);
+          }
+          // abort on error or timeout (if set)
+          else if ((robot_hw_->switchResult(controller.info) == hardware_interface::RobotHW::ERROR) ||
+                   (switch_params_.timeout > 0.0 &&
+                    (time - switch_params_.init_time).toSec() > switch_params_.timeout))
+          {
+            request->abortRequest(time);
+          }
+          // controller is waiting
+          else
+          {
+            request->waitRequest(time);
+          }
+        }
+        continue;
+      }
+    }
+  }
+
+  // all needed controllers started or aborted, switch done
+  if (std::all_of(start_request_.begin(), start_request_.end(),
+                  [](controller_interface::ControllerBase *request) {
+                    return request->isRunning() || request->isAborted();
+                  }))
+  {
+    switch_params_.do_switch = false;
+  }
+}
 
 bool ControllerManager::loadController(const std::string& name)
 {
   ROS_DEBUG("Will load controller '%s'", name.c_str());
 
   // lock controllers
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   // get reference to controller list
   int free_controllers_list = (current_controllers_list_ + 1) % 2;
-  while (ros::ok() && free_controllers_list == used_by_realtime_){
+  while (ros::ok() && free_controllers_list == used_by_realtime_)
+  {
     if (!ros::ok())
+    {
       return false;
-    usleep(200);
+    }
+    std::this_thread::sleep_for(std::chrono::microseconds(200));
   }
   std::vector<ControllerSpec>
     &from = controllers_lists_[current_controllers_list_],
@@ -158,13 +253,13 @@ bool ControllerManager::loadController(const std::string& name)
   to.clear();
 
   // Copy all controllers from the 'from' list to the 'to' list
-  for (size_t i = 0; i < from.size(); ++i)
-    to.push_back(from[i]);
+  for (const auto& controller : from)
+    to.push_back(controller);
 
   // Checks that we're not duplicating controllers
-  for (size_t j = 0; j < to.size(); ++j)
+  for (const auto& controller : to)
   {
-    if (to[j].info.name == name)
+    if (controller.info.name == name)
     {
       to.clear();
       ROS_ERROR("A controller named '%s' was already loaded inside the controller manager", name.c_str());
@@ -193,12 +288,11 @@ bool ControllerManager::loadController(const std::string& name)
     try
     {
       // Trying loading the controller using all of our controller loaders. Exit once we've found the first valid loaded controller
-      std::list<ControllerLoaderInterfaceSharedPtr>::iterator it = controller_loaders_.begin();
+      auto it = controller_loaders_.begin();
       while (!c && it != controller_loaders_.end())
       {
-        std::vector<std::string> cur_types = (*it)->getDeclaredClasses();
-        for(size_t i=0; i < cur_types.size(); i++){
-          if (type == cur_types[i]){
+        for (const auto& cur_type : (*it)->getDeclaredClasses()){
+          if (type == cur_type){
             c = (*it)->createInstance(type);
           }
         }
@@ -207,7 +301,7 @@ bool ControllerManager::loadController(const std::string& name)
     }
     catch (const std::runtime_error &ex)
     {
-      ROS_ERROR("Could not load class %s: %s", type.c_str(), ex.what());
+      ROS_ERROR("Could not load class '%s': %s", type.c_str(), ex.what());
     }
   }
   else
@@ -234,11 +328,11 @@ bool ControllerManager::loadController(const std::string& name)
     initialized = c->initRequest(robot_hw_, root_nh_, c_nh, claimed_resources);
   }
   catch(std::exception &e){
-    ROS_ERROR("Exception thrown while initializing controller %s.\n%s", name.c_str(), e.what());
+    ROS_ERROR("Exception thrown while initializing controller '%s'.\n%s", name.c_str(), e.what());
     initialized = false;
   }
   catch(...){
-    ROS_ERROR("Exception thrown while initializing controller %s", name.c_str());
+    ROS_ERROR("Exception thrown while initializing controller '%s'", name.c_str());
     initialized = false;
   }
   if (!initialized)
@@ -259,10 +353,13 @@ bool ControllerManager::loadController(const std::string& name)
   // Destroys the old controllers list when the realtime thread is finished with it.
   int former_current_controllers_list_ = current_controllers_list_;
   current_controllers_list_ = free_controllers_list;
-  while (ros::ok() && used_by_realtime_ == former_current_controllers_list_){
+  while (ros::ok() && used_by_realtime_ == former_current_controllers_list_)
+  {
     if (!ros::ok())
+    {
       return false;
-    usleep(200);
+    }
+    std::this_thread::sleep_for(std::chrono::microseconds(200));
   }
   from.clear();
 
@@ -271,21 +368,22 @@ bool ControllerManager::loadController(const std::string& name)
 }
 
 
-
-
 bool ControllerManager::unloadController(const std::string &name)
 {
   ROS_DEBUG("Will unload controller '%s'", name.c_str());
 
   // lock the controllers
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   // get reference to controller list
   int free_controllers_list = (current_controllers_list_ + 1) % 2;
-  while (ros::ok() && free_controllers_list == used_by_realtime_){
+  while (ros::ok() && free_controllers_list == used_by_realtime_)
+  {
     if (!ros::ok())
+    {
       return false;
-    usleep(200);
+    }
+    std::this_thread::sleep_for(std::chrono::microseconds(200));
   }
   std::vector<ControllerSpec>
     &from = controllers_lists_[current_controllers_list_],
@@ -294,26 +392,26 @@ bool ControllerManager::unloadController(const std::string &name)
 
   // Transfers the running controllers over, skipping the one to be removed and the running ones.
   bool removed = false;
-  for (size_t i = 0; i < from.size(); ++i)
+  for (const auto& controller : from)
   {
-    if (from[i].info.name == name){
-      if (from[i].c->isRunning()){
+    if (controller.info.name == name){
+      if (controller.c->isRunning()){
         to.clear();
-        ROS_ERROR("Could not unload controller with name %s because it is still running",
+        ROS_ERROR("Could not unload controller with name '%s' because it is still running",
                   name.c_str());
         return false;
       }
       removed = true;
     }
     else
-      to.push_back(from[i]);
+      to.push_back(controller);
   }
 
   // Fails if we could not remove the controllers
   if (!removed)
   {
     to.clear();
-    ROS_ERROR("Could not unload controller with name %s because no controller with this name exists",
+    ROS_ERROR("Could not unload controller with name '%s' because no controller with this name exists",
               name.c_str());
     return false;
   }
@@ -322,10 +420,13 @@ bool ControllerManager::unloadController(const std::string &name)
   ROS_DEBUG("Realtime switches over to new controller list");
   int former_current_controllers_list_ = current_controllers_list_;
   current_controllers_list_ = free_controllers_list;
-  while (ros::ok() && used_by_realtime_ == former_current_controllers_list_){
+  while (ros::ok() && used_by_realtime_ == former_current_controllers_list_)
+  {
     if (!ros::ok())
+    {
       return false;
-    usleep(200);
+    }
+    std::this_thread::sleep_for(std::chrono::microseconds(200));
   }
   ROS_DEBUG("Destruct controller");
   from.clear();
@@ -336,11 +437,12 @@ bool ControllerManager::unloadController(const std::string &name)
 }
 
 
-
 bool ControllerManager::switchController(const std::vector<std::string>& start_controllers,
                                          const std::vector<std::string>& stop_controllers,
-                                         int strictness)
+                                         int strictness, bool start_asap, double timeout)
 {
+  switch_params_ = SwitchParams();
+
   if (!stop_request_.empty() || !start_request_.empty())
     ROS_FATAL("The internal stop and start request lists are not empty at the beginning of the swithController() call. This should not happen.");
 
@@ -352,59 +454,59 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
   }
 
   ROS_DEBUG("switching controllers:");
-  for (unsigned int i=0; i<start_controllers.size(); i++)
-    ROS_DEBUG(" - starting controller %s", start_controllers[i].c_str());
-  for (unsigned int i=0; i<stop_controllers.size(); i++)
-    ROS_DEBUG(" - stopping controller %s", stop_controllers[i].c_str());
+  for (const auto& controller : start_controllers)
+    ROS_DEBUG(" - starting controller '%s'", controller.c_str());
+  for (const auto& controller : stop_controllers)
+    ROS_DEBUG(" - stopping controller '%s'", controller.c_str());
 
   // lock controllers
-  boost::recursive_mutex::scoped_lock guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> guard(controllers_lock_);
 
   controller_interface::ControllerBase* ct;
   // list all controllers to stop
-  for (unsigned int i=0; i<stop_controllers.size(); i++)
+  for (const auto& controller : stop_controllers)
   {
-    ct = getControllerByName(stop_controllers[i]);
-    if (ct == NULL){
+    ct = getControllerByName(controller);
+    if (ct == nullptr){
       if (strictness ==  controller_manager_msgs::SwitchController::Request::STRICT){
-        ROS_ERROR("Could not stop controller with name %s because no controller with this name exists",
-                  stop_controllers[i].c_str());
+        ROS_ERROR("Could not stop controller with name '%s' because no controller with this name exists",
+                  controller.c_str());
         stop_request_.clear();
         return false;
       }
       else{
-        ROS_DEBUG("Could not stop controller with name %s because no controller with this name exists",
-                  stop_controllers[i].c_str());
+        ROS_DEBUG("Could not stop controller with name '%s' because no controller with this name exists",
+                  controller.c_str());
       }
     }
     else{
-      ROS_DEBUG("Found controller %s that needs to be stopped in list of controllers",
-                stop_controllers[i].c_str());
+      ROS_DEBUG("Found controller '%s' that needs to be stopped in list of controllers",
+                controller.c_str());
       stop_request_.push_back(ct);
     }
   }
   ROS_DEBUG("Stop request vector has size %i", (int)stop_request_.size());
 
   // list all controllers to start
-  for (unsigned int i=0; i<start_controllers.size(); i++)
+  for (const auto& controller : start_controllers)
   {
-    ct = getControllerByName(start_controllers[i]);
-    if (ct == NULL){
+    ct = getControllerByName(controller);
+    if (ct == nullptr){
       if (strictness ==  controller_manager_msgs::SwitchController::Request::STRICT){
-        ROS_ERROR("Could not start controller with name %s because no controller with this name exists",
-                  start_controllers[i].c_str());
+        ROS_ERROR("Could not start controller with name '%s' because no controller with this name exists",
+                  controller.c_str());
         stop_request_.clear();
         start_request_.clear();
         return false;
       }
       else{
-        ROS_DEBUG("Could not start controller with name %s because no controller with this name exists",
-                  start_controllers[i].c_str());
+        ROS_DEBUG("Could not start controller with name '%s' because no controller with this name exists",
+                  controller.c_str());
       }
     }
     else{
-      ROS_DEBUG("Found controller %s that needs to be started in list of controllers",
-                start_controllers[i].c_str());
+      ROS_DEBUG("Found controller '%s' that needs to be started in list of controllers",
+                controller.c_str());
       start_request_.push_back(ct);
     }
   }
@@ -415,13 +517,13 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
   switch_start_list_.clear();
   switch_stop_list_.clear();
 
-  std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
-  for (size_t i = 0; i < controllers.size(); ++i)
+  const auto &controllers = controllers_lists_[current_controllers_list_];
+  for (const auto& controller : controllers)
   {
     bool in_stop_list  = false;
-    for(size_t j = 0; j < stop_request_.size(); j++)
+    for (const auto& request : stop_request_)
     {
-      if (stop_request_[j] == controllers[i].c.get())
+      if (request == controller.c.get())
       {
         in_stop_list = true;
         break;
@@ -429,17 +531,17 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
     }
 
     bool in_start_list = false;
-    for(size_t j = 0; j < start_request_.size(); j++)
+    for (const auto& request : start_request_)
     {
-      if (start_request_[j] == controllers[i].c.get())
+      if (request == controller.c.get())
       {
         in_start_list = true;
         break;
       }
     }
 
-    const bool is_running = controllers[i].c->isRunning();
-    hardware_interface::ControllerInfo &info = controllers[i].info;
+    const bool is_running = controller.c->isRunning();
+    const hardware_interface::ControllerInfo &info = controller.info;
 
     if(!is_running && in_stop_list){ // check for double stop
       if(strictness ==  controller_manager_msgs::SwitchController::Request::STRICT){
@@ -498,15 +600,21 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
   }
 
   // start the atomic controller switching
-  switch_strictness_ = strictness;
-  please_switch_ = true;
+  switch_params_.strictness = strictness;
+  switch_params_.start_asap = start_asap;
+  switch_params_.init_time = ros::Time::now();
+  switch_params_.timeout = timeout;
+  switch_params_.do_switch = true;
 
   // wait until switch is finished
   ROS_DEBUG("Request atomic controller switch from realtime loop");
-  while (ros::ok() && please_switch_){
+  while (ros::ok() && switch_params_.do_switch)
+  {
     if (!ros::ok())
+    {
       return false;
-    usleep(100);
+    }
+    std::this_thread::sleep_for(std::chrono::microseconds(100));
   }
   start_request_.clear();
   stop_request_.clear();
@@ -516,16 +624,13 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
 }
 
 
-
-
-
 bool ControllerManager::reloadControllerLibrariesSrv(
   controller_manager_msgs::ReloadControllerLibraries::Request &req,
   controller_manager_msgs::ReloadControllerLibraries::Response &resp)
 {
   // lock services
   ROS_DEBUG("reload libraries service called");
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("reload libraries service locked");
 
   // only reload libraries if no controllers are running
@@ -546,10 +651,10 @@ bool ControllerManager::reloadControllerLibrariesSrv(
       resp.ok = false;
       return true;
     }
-    for (unsigned int i=0; i<controllers.size(); i++){
-      if (!unloadController(controllers[i])){
-        ROS_ERROR("Controller manager: Cannot reload controller libraries because failed to unload controller %s",
-                  controllers[i].c_str());
+    for (const auto& controller : controllers){
+      if (!unloadController(controller)){
+        ROS_ERROR("Controller manager: Cannot reload controller libraries because failed to unload controller '%s'",
+                  controller.c_str());
         resp.ok = false;
         return true;
       }
@@ -559,10 +664,10 @@ bool ControllerManager::reloadControllerLibrariesSrv(
   assert(controllers.empty());
 
   // Force a reload on all the PluginLoaders (internally, this recreates the plugin loaders)
-  for(std::list<ControllerLoaderInterfaceSharedPtr>::iterator it = controller_loaders_.begin(); it != controller_loaders_.end(); ++it)
+  for (const auto& controller_loader : controller_loaders_)
   {
-    (*it)->reload();
-    ROS_INFO("Controller manager: reloaded controller libraries for %s", (*it)->getName().c_str());
+    controller_loader->reload();
+    ROS_INFO("Controller manager: reloaded controller libraries for '%s'", controller_loader->getName().c_str());
   }
 
   resp.ok = true;
@@ -581,16 +686,16 @@ bool ControllerManager::listControllerTypesSrv(
 
   // lock services
   ROS_DEBUG("list types service called");
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("list types service locked");
 
-  for(std::list<ControllerLoaderInterfaceSharedPtr>::iterator it = controller_loaders_.begin(); it != controller_loaders_.end(); ++it)
+  for (const auto& controller_loader : controller_loaders_)
   {
-    std::vector<std::string> cur_types = (*it)->getDeclaredClasses();
-    for(size_t i=0; i < cur_types.size(); i++)
+    std::vector<std::string> cur_types = controller_loader->getDeclaredClasses();
+    for (const auto& cur_type : cur_types)
     {
-      resp.types.push_back(cur_types[i]);
-      resp.base_classes.push_back((*it)->getName());
+      resp.types.push_back(cur_type);
+      resp.base_classes.push_back(controller_loader->getName());
     }
   }
 
@@ -608,11 +713,11 @@ bool ControllerManager::listControllersSrv(
 
   // lock services
   ROS_DEBUG("list controller service called");
-  boost::mutex::scoped_lock services_guard(services_lock_);
+  std::lock_guard<std::mutex> services_guard(services_lock_);
   ROS_DEBUG("list controller service locked");
 
   // lock controllers to get all names/types/states
-  boost::recursive_mutex::scoped_lock controller_guard(controllers_lock_);
+  std::lock_guard<std::recursive_mutex> controller_guard(controllers_lock_);
   std::vector<ControllerSpec> &controllers = controllers_lists_[current_controllers_list_];
   resp.controller.resize(controllers.size());
 
@@ -625,19 +730,40 @@ bool ControllerManager::listControllersSrv(
     cs.claimed_resources.clear();
     typedef std::vector<hardware_interface::InterfaceResources> ClaimedResVec;
     typedef ClaimedResVec::const_iterator ClaimedResIt;
-    const ClaimedResVec& c_res = controllers[i].info.claimed_resources;
-    for (ClaimedResIt c_res_it = c_res.begin(); c_res_it != c_res.end(); ++c_res_it)
+    const ClaimedResVec& c_resources = controllers[i].info.claimed_resources;
+    for (const auto& c_resource : c_resources)
     {
       controller_manager_msgs::HardwareInterfaceResources iface_res;
-      iface_res.hardware_interface = c_res_it->hardware_interface;
-      std::copy(c_res_it->resources.begin(), c_res_it->resources.end(), std::back_inserter(iface_res.resources));
+      iface_res.hardware_interface = c_resource.hardware_interface;
+      std::copy(c_resource.resources.begin(), c_resource.resources.end(), std::back_inserter(iface_res.resources));
       cs.claimed_resources.push_back(iface_res);
     }
 
-    if (controllers[i].c->isRunning())
+    if (controllers[i].c->isInitialized())
+    {
+      cs.state = "initialized";
+    }
+    else if (controllers[i].c->isRunning())
+    {
       cs.state = "running";
-    else
+    }
+    else if (controllers[i].c->isStopped())
+    {
       cs.state = "stopped";
+    }
+    else if (controllers[i].c->isWaiting())
+    {
+      cs.state = "waiting";
+    }
+    else if (controllers[i].c->isAborted())
+    {
+      cs.state = "aborted";
+    }
+    else
+    {
+      // should never happen
+      cs.state = "unknown";
+    }
   }
 
   ROS_DEBUG("list controller service finished");
@@ -650,13 +776,13 @@ bool ControllerManager::loadControllerSrv(
   controller_manager_msgs::LoadController::Response &resp)
 {
   // lock services
-  ROS_DEBUG("loading service called for controller %s ",req.name.c_str());
-  boost::mutex::scoped_lock guard(services_lock_);
+  ROS_DEBUG("loading service called for controller '%s' ",req.name.c_str());
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("loading service locked");
 
   resp.ok = loadController(req.name);
 
-  ROS_DEBUG("loading service finished for controller %s ",req.name.c_str());
+  ROS_DEBUG("loading service finished for controller '%s' ",req.name.c_str());
   return true;
 }
 
@@ -666,13 +792,13 @@ bool ControllerManager::unloadControllerSrv(
   controller_manager_msgs::UnloadController::Response &resp)
 {
   // lock services
-  ROS_DEBUG("unloading service called for controller %s ",req.name.c_str());
-  boost::mutex::scoped_lock guard(services_lock_);
+  ROS_DEBUG("unloading service called for controller '%s' ",req.name.c_str());
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("unloading service locked");
 
   resp.ok = unloadController(req.name);
 
-  ROS_DEBUG("unloading service finished for controller %s ",req.name.c_str());
+  ROS_DEBUG("unloading service finished for controller '%s' ",req.name.c_str());
   return true;
 }
 
@@ -683,10 +809,11 @@ bool ControllerManager::switchControllerSrv(
 {
   // lock services
   ROS_DEBUG("switching service called");
-  boost::mutex::scoped_lock guard(services_lock_);
+  std::lock_guard<std::mutex> guard(services_lock_);
   ROS_DEBUG("switching service locked");
 
-  resp.ok = switchController(req.start_controllers, req.stop_controllers, req.strictness);
+  resp.ok = switchController(req.start_controllers, req.stop_controllers, req.strictness,
+                             req.start_asap, req.timeout);
 
   ROS_DEBUG("switching service finished");
   return true;

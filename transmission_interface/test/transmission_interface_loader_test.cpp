@@ -69,19 +69,7 @@ class TransmissionInterfaceLoaderTest : public ::testing::Test
 {
 public:
   TransmissionInterfaceLoaderTest()
-    : dim(3),
-      act_names(3),
-      act_pos(3, 0.0),
-      act_vel(3, 0.0),
-      act_eff(3, 0.0),
-      act_pos_cmd(3, 0.0),
-      act_vel_cmd(3, 0.0),
-      act_eff_cmd(3, 0.0)
   {
-    act_names[0] = "foo_actuator";
-    act_names[1] = "bar_actuator";
-    act_names[2] = "baz_actuator";
-
     // Populate actuators interface
     for (unsigned int i = 0; i < dim; ++i)
     {
@@ -104,9 +92,15 @@ public:
   }
 
 protected:
-  unsigned int dim;
-  std::vector<std::string> act_names;
-  std::vector<double> act_pos, act_vel, act_eff, act_pos_cmd, act_vel_cmd, act_eff_cmd;
+  const unsigned int       dim         = {3};
+  std::vector<std::string> act_names   = {"foo_actuator", "bar_actuator", "baz_actuator"};
+  std::vector<double>      act_pos     = {0.0, 0.0, 0.0};
+  std::vector<double>      act_vel     = {0.0, 0.0, 0.0};
+  std::vector<double>      act_eff     = {0.0, 0.0, 0.0};
+  std::vector<double>      act_pos_cmd = {0.0, 0.0, 0.0};
+  std::vector<double>      act_vel_cmd = {0.0, 0.0, 0.0};
+  std::vector<double>      act_eff_cmd = {0.0, 0.0, 0.0};
+
   hardware_interface::ActuatorStateInterface    act_state_iface;
   hardware_interface::PositionActuatorInterface pos_act_iface;
   hardware_interface::VelocityActuatorInterface vel_act_iface;
@@ -118,8 +112,8 @@ protected:
 
 TEST_F(TransmissionInterfaceLoaderTest, InvalidConstruction)
 {
-  EXPECT_THROW(TransmissionInterfaceLoader(0, &robot_transmissions), std::invalid_argument);
-  EXPECT_THROW(TransmissionInterfaceLoader(&robot_hw, 0), std::invalid_argument);
+  EXPECT_THROW(TransmissionInterfaceLoader(nullptr, &robot_transmissions), std::invalid_argument);
+  EXPECT_THROW(TransmissionInterfaceLoader(&robot_hw, nullptr), std::invalid_argument);
 }
 
 TEST_F(TransmissionInterfaceLoaderTest, UnsupportedTransmissionType)
@@ -220,7 +214,7 @@ TEST_F(TransmissionInterfaceLoaderTest, AccessorValidation)
 
   // Validate raw data accessor
   TransmissionLoaderData* loader_data_ptr = trans_iface_loader.getData();
-  ASSERT_TRUE(0 != loader_data_ptr);
+  ASSERT_TRUE(nullptr != loader_data_ptr);
   ASSERT_TRUE(&robot_hw == loader_data_ptr->robot_hw);
   ASSERT_TRUE(&robot_transmissions == loader_data_ptr->robot_transmissions);
   ASSERT_EQ(3, loader_data_ptr->raw_joint_data_map.size());
@@ -271,28 +265,27 @@ TEST_F(TransmissionInterfaceLoaderTest, SuccessfulLoad)
   PositionActuatorInterface* act_pos_cmd_iface = robot_hw.get<PositionActuatorInterface>();
   VelocityActuatorInterface* act_vel_cmd_iface = robot_hw.get<VelocityActuatorInterface>();
   EffortActuatorInterface*   act_eff_cmd_iface = robot_hw.get<EffortActuatorInterface>();
-  ASSERT_TRUE(0 != act_pos_cmd_iface);
-  ASSERT_TRUE(0 != act_vel_cmd_iface);
-  ASSERT_TRUE(0 != act_eff_cmd_iface);
+  ASSERT_TRUE(nullptr != act_pos_cmd_iface);
+  ASSERT_TRUE(nullptr != act_vel_cmd_iface);
+  ASSERT_TRUE(nullptr != act_eff_cmd_iface);
 
   // Joint interfaces
   PositionJointInterface* pos_jnt_iface = robot_hw.get<PositionJointInterface>();
   VelocityJointInterface* vel_jnt_iface = robot_hw.get<VelocityJointInterface>();
   EffortJointInterface*   eff_jnt_iface = robot_hw.get<EffortJointInterface>();
-  ASSERT_TRUE(0 != pos_jnt_iface);
-  ASSERT_TRUE(0 != vel_jnt_iface);
-  ASSERT_TRUE(0 != eff_jnt_iface);
+  ASSERT_TRUE(nullptr != pos_jnt_iface);
+  ASSERT_TRUE(nullptr != vel_jnt_iface);
+  ASSERT_TRUE(nullptr != eff_jnt_iface);
 
   // Transmission interfaces
   ActuatorToJointStateInterface*    act_to_jnt_state   = robot_transmissions.get<ActuatorToJointStateInterface>();
   JointToActuatorPositionInterface* jnt_to_act_pos_cmd = robot_transmissions.get<JointToActuatorPositionInterface>();
   JointToActuatorVelocityInterface* jnt_to_act_vel_cmd = robot_transmissions.get<JointToActuatorVelocityInterface>();
   JointToActuatorEffortInterface*   jnt_to_act_eff_cmd = robot_transmissions.get<JointToActuatorEffortInterface>();
-
-  ASSERT_TRUE(0 != act_to_jnt_state);
-  ASSERT_TRUE(0 != jnt_to_act_pos_cmd);
-  ASSERT_TRUE(0 != jnt_to_act_vel_cmd);
-  ASSERT_TRUE(0 != jnt_to_act_eff_cmd);
+  ASSERT_TRUE(nullptr != act_to_jnt_state);
+  ASSERT_TRUE(nullptr != jnt_to_act_pos_cmd);
+  ASSERT_TRUE(nullptr != jnt_to_act_vel_cmd);
+  ASSERT_TRUE(nullptr != jnt_to_act_eff_cmd);
 
   // Actuator handles
   ASSERT_NO_THROW(act_pos_cmd_iface->getHandle(info_red.actuators_.front().name_));
@@ -419,41 +412,39 @@ TEST_F(TransmissionInterfaceLoaderTest, SuccessfulLoadReversible)
   VelocityActuatorInterface* act_vel_cmd_iface = robot_hw.get<VelocityActuatorInterface>();
   EffortActuatorInterface*   act_eff_cmd_iface = robot_hw.get<EffortActuatorInterface>();
   ActuatorStateInterface*    act_state_iface   = robot_hw.get<ActuatorStateInterface>();
-  ASSERT_TRUE(0 != act_pos_cmd_iface);
-  ASSERT_TRUE(0 != act_vel_cmd_iface);
-  ASSERT_TRUE(0 != act_eff_cmd_iface);
-  ASSERT_TRUE(0 != act_state_iface);
+  ASSERT_TRUE(nullptr != act_pos_cmd_iface);
+  ASSERT_TRUE(nullptr != act_vel_cmd_iface);
+  ASSERT_TRUE(nullptr != act_eff_cmd_iface);
+  ASSERT_TRUE(nullptr != act_state_iface);
 
   // Joint interfaces
   PositionJointInterface* pos_jnt_iface = robot_hw.get<PositionJointInterface>();
   VelocityJointInterface* vel_jnt_iface = robot_hw.get<VelocityJointInterface>();
   EffortJointInterface*   eff_jnt_iface = robot_hw.get<EffortJointInterface>();
   JointStateInterface*    state_jnt_iface = robot_hw.get<JointStateInterface>();
-  ASSERT_TRUE(0 != pos_jnt_iface);
-  ASSERT_TRUE(0 != vel_jnt_iface);
-  ASSERT_TRUE(0 != eff_jnt_iface);
+  ASSERT_TRUE(nullptr != pos_jnt_iface);
+  ASSERT_TRUE(nullptr != vel_jnt_iface);
+  ASSERT_TRUE(nullptr != eff_jnt_iface);
 
   // Forward Transmission interfaces
   ActuatorToJointStateInterface*    act_to_jnt_state   = robot_transmissions.get<ActuatorToJointStateInterface>();
   JointToActuatorPositionInterface* jnt_to_act_pos_cmd = robot_transmissions.get<JointToActuatorPositionInterface>();
   JointToActuatorVelocityInterface* jnt_to_act_vel_cmd = robot_transmissions.get<JointToActuatorVelocityInterface>();
   JointToActuatorEffortInterface*   jnt_to_act_eff_cmd = robot_transmissions.get<JointToActuatorEffortInterface>();
+  ASSERT_TRUE(nullptr != act_to_jnt_state);
+  ASSERT_TRUE(nullptr != jnt_to_act_pos_cmd);
+  ASSERT_TRUE(nullptr != jnt_to_act_vel_cmd);
+  ASSERT_TRUE(nullptr != jnt_to_act_eff_cmd);
 
   // Inverse Transmission interfaces
   JointToActuatorStateInterface*    jnt_to_act_state   = robot_transmissions.get<JointToActuatorStateInterface>();
   ActuatorToJointPositionInterface* act_to_jnt_pos_cmd = robot_transmissions.get<ActuatorToJointPositionInterface>();
   ActuatorToJointVelocityInterface* act_to_jnt_vel_cmd = robot_transmissions.get<ActuatorToJointVelocityInterface>();
   ActuatorToJointEffortInterface*   act_to_jnt_eff_cmd = robot_transmissions.get<ActuatorToJointEffortInterface>();
-
-  ASSERT_TRUE(0 != act_to_jnt_state);
-  ASSERT_TRUE(0 != jnt_to_act_pos_cmd);
-  ASSERT_TRUE(0 != jnt_to_act_vel_cmd);
-  ASSERT_TRUE(0 != jnt_to_act_eff_cmd);
-
-  ASSERT_TRUE(0 != jnt_to_act_state);
-  ASSERT_TRUE(0 != act_to_jnt_pos_cmd);
-  ASSERT_TRUE(0 != act_to_jnt_vel_cmd);
-  ASSERT_TRUE(0 != act_to_jnt_eff_cmd);
+  ASSERT_TRUE(nullptr != jnt_to_act_state);
+  ASSERT_TRUE(nullptr != act_to_jnt_pos_cmd);
+  ASSERT_TRUE(nullptr != act_to_jnt_vel_cmd);
+  ASSERT_TRUE(nullptr != act_to_jnt_eff_cmd);
 
   // Actuator handles
   ASSERT_NO_THROW(act_pos_cmd_iface->getHandle(info_red.actuators_.front().name_));

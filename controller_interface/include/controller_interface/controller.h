@@ -29,8 +29,8 @@
  * Author: Wim Meeussen
  */
 
-#ifndef CONTROLLER_INTERFACE_CONTROLLER_H
-#define CONTROLLER_INTERFACE_CONTROLLER_H
+#pragma once
+
 
 #include <controller_interface/controller_base.h>
 #include <hardware_interface/internal/demangle_symbol.h>
@@ -49,10 +49,10 @@ namespace controller_interface
  * control.
  */
 template <class T>
-class Controller: public ControllerBase
+class Controller: public virtual ControllerBase
 {
 public:
-  Controller()  {state_ = CONSTRUCTED;}
+  Controller() {}
   virtual ~Controller<T>(){}
 
   /** \brief The init function is called to initialize the controller from a
@@ -145,5 +145,3 @@ private:
 };
 
 }
-
-#endif

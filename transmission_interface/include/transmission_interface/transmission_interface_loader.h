@@ -27,8 +27,8 @@
 
 /// \author Adolfo Rodriguez Tsouroukdissian
 
-#ifndef TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_LOADER_H
-#define TRANSMISSION_INTERFACE_TRANSMISSION_INTERFACE_LOADER_H
+#pragma once
+
 
 // C++ standard
 #include <algorithm>
@@ -37,10 +37,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-// Boost
-#include <boost/foreach.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 // ROS
 #include <ros/console.h>
@@ -107,21 +104,17 @@ bool is_permutation(ForwardIt1 first, ForwardIt1 last,
 // TODO: Don't assume interfaces?
 struct RawJointData
 {
-  RawJointData()
-    : position(std::numeric_limits<double>::quiet_NaN()),
-      velocity(std::numeric_limits<double>::quiet_NaN()),
-      effort(std::numeric_limits<double>::quiet_NaN()),
-      position_cmd(std::numeric_limits<double>::quiet_NaN()),
-      velocity_cmd(std::numeric_limits<double>::quiet_NaN()),
-      effort_cmd(std::numeric_limits<double>::quiet_NaN())
-  {}
+  double position          = {std::numeric_limits<double>::quiet_NaN()};
+  double velocity          = {std::numeric_limits<double>::quiet_NaN()};
+  double effort            = {std::numeric_limits<double>::quiet_NaN()};
+  double position_cmd      = {std::numeric_limits<double>::quiet_NaN()};
+  double velocity_cmd      = {std::numeric_limits<double>::quiet_NaN()};
+  double effort_cmd        = {std::numeric_limits<double>::quiet_NaN()};
+  double absolute_position = {std::numeric_limits<double>::quiet_NaN()};
+  double torque_sensor     = {std::numeric_limits<double>::quiet_NaN()};
 
-  double position;
-  double velocity;
-  double effort;
-  double position_cmd;
-  double velocity_cmd;
-  double effort_cmd;
+  bool hasAbsolutePosition = {true};
+  bool hasTorqueSensor     = {true};
 };
 
 typedef std::map<std::string, RawJointData> RawJointDataMap;
@@ -155,15 +148,8 @@ struct InverseTransmissionInterfaces
 
 struct TransmissionLoaderData
 {
-  typedef boost::shared_ptr<Transmission> TransmissionPtr; // DEPRECATED and unused!
-
-  TransmissionLoaderData()
-    : robot_hw(0),
-      robot_transmissions(0)
-  {}
-
-  hardware_interface::RobotHW*  robot_hw;            ///< Lifecycle is externally controlled (ie. hardware abstraction)
-  RobotTransmissions*           robot_transmissions; ///< Lifecycle is externally controlled (ie. hardware abstraction)
+  hardware_interface::RobotHW*  robot_hw            = {nullptr}; ///< Lifecycle is externally controlled (ie. hardware abstraction)
+  RobotTransmissions*           robot_transmissions = {nullptr}; ///< Lifecycle is externally controlled (ie. hardware abstraction)
   JointInterfaces               joint_interfaces;
   RawJointDataMap               raw_joint_data_map;
   ForwardTransmissionInterfaces transmission_interfaces;
@@ -270,7 +256,7 @@ protected:
     }
 
     // Get handles to all required resource
-    BOOST_FOREACH(const ActuatorInfo& info, actuators_info)
+    for (const auto& info : actuators_info)
     {
       try
       {
@@ -356,7 +342,7 @@ protected:
  *
  * private:
  *   RobotTransmissions robot_transmissions_;
- *   boost::scoped_ptr<TransmissionInterfaceLoader> transmission_loader_;
+ *   std::unique_ptr<TransmissionInterfaceLoader> transmission_loader_;
  *
  * };
  * \endcode
@@ -405,11 +391,11 @@ public:
 
 private:
   typedef pluginlib::ClassLoader<TransmissionLoader>      TransmissionClassLoader;
-  typedef boost::shared_ptr<TransmissionClassLoader>      TransmissionClassLoaderPtr;
+  typedef std::shared_ptr<TransmissionClassLoader>      TransmissionClassLoaderPtr;
   typedef pluginlib::ClassLoader<RequisiteProvider>       RequisiteProviderClassLoader;
-  typedef boost::shared_ptr<RequisiteProviderClassLoader> RequisiteProviderClassLoaderPtr;
+  typedef std::shared_ptr<RequisiteProviderClassLoader> RequisiteProviderClassLoaderPtr;
 
-  typedef boost::shared_ptr<RequisiteProvider>            RequisiteProviderPtr;
+  typedef std::shared_ptr<RequisiteProvider>            RequisiteProviderPtr;
 
   TransmissionClassLoaderPtr transmission_class_loader_;
   RequisiteProviderClassLoaderPtr req_provider_loader_;
@@ -422,5 +408,3 @@ private:
 };
 
 } // namespace
-
-#endif // header guard

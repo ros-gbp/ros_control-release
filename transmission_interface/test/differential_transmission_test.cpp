@@ -199,25 +199,12 @@ TEST(PreconditionsTest, AccessorValidation)
 
 class TransmissionSetup : public ::testing::Test
 {
-public:
-  TransmissionSetup()
-    : a_val(),
-      j_val(),
-      a_vec(vector<double*>(2)),
-      j_vec(vector<double*>(2))
-   {
-     a_vec[0] = &a_val[0];
-     a_vec[1] = &a_val[1];
-     j_vec[0] = &j_val[0];
-     j_vec[1] = &j_val[1];
-   }
-
 protected:
   // Input/output transmission data
   double a_val[2];
   double j_val[2];
-  vector<double*> a_vec;
-  vector<double*> j_vec;
+  vector<double*> a_vec = {&a_val[0], &a_val[1]};
+  vector<double*> j_vec = {&j_val[0], &j_val[1]};
 };
 
 /// \brief Exercises the actuator->joint->actuator roundtrip, which should yield the identity map.
@@ -312,7 +299,7 @@ TEST_F(BlackBoxTest, IdentityMap)
   TransList trans_list = createTestInstances(100);                                  // NOTE: Magic value
 
   // Test different transmission configurations...
-  for (TransList::iterator it = trans_list.begin(); it != trans_list.end(); ++it)
+  for (auto&& transmission : trans_list)
   {
     // ...and for each transmission, different input values
     RandomDoubleGenerator rand_gen(-1000.0, 1000.0);                                // NOTE: Magic value
@@ -320,7 +307,7 @@ TEST_F(BlackBoxTest, IdentityMap)
     for (unsigned int i = 0; i < input_value_trials; ++i)
     {
       vector<double> input_value = randomVector(2, rand_gen);
-      testIdentityMap(*it, input_value);
+      testIdentityMap(transmission, input_value);
     }
   }
 }

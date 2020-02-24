@@ -40,19 +40,19 @@ TEST(ActuatorStateHandleTest, HandleConstruction)
   string name = "name1";
   double pos, vel, eff;
   EXPECT_NO_THROW(ActuatorStateHandle(name, &pos, &vel, &eff));
-  EXPECT_THROW(ActuatorStateHandle(name, 0, &vel, &eff), HardwareInterfaceException);
-  EXPECT_THROW(ActuatorStateHandle(name, &pos, 0, &eff), HardwareInterfaceException);
-  EXPECT_THROW(ActuatorStateHandle(name, &pos, &vel, 0), HardwareInterfaceException);
+  EXPECT_THROW(ActuatorStateHandle(name, nullptr, &vel, &eff), HardwareInterfaceException);
+  EXPECT_THROW(ActuatorStateHandle(name, &pos, nullptr, &eff), HardwareInterfaceException);
+  EXPECT_THROW(ActuatorStateHandle(name, &pos, &vel, nullptr), HardwareInterfaceException);
 
   // Print error messages
   // Requires manual output inspection, but exception message should be descriptive
-  try {ActuatorStateHandle(name, 0, &vel, &eff);}
+  try {ActuatorStateHandle(name, nullptr, &vel, &eff);}
   catch(const HardwareInterfaceException& e) {ROS_ERROR_STREAM(e.what());}
 
-  try {ActuatorStateHandle(name, &pos, 0, &eff);}
+  try {ActuatorStateHandle(name, &pos, nullptr, &eff);}
   catch(const HardwareInterfaceException& e) {ROS_ERROR_STREAM(e.what());}
 
-  try {ActuatorStateHandle(name, &pos, &vel, 0);}
+  try {ActuatorStateHandle(name, &pos, &vel, nullptr);}
   catch(const HardwareInterfaceException& e) {ROS_ERROR_STREAM(e.what());}
 }
 
@@ -70,22 +70,13 @@ TEST(ActuatorStateHandleTest, AssertionTriggering)
 
 class ActuatorStateInterfaceTest : public ::testing::Test
 {
-public:
-  ActuatorStateInterfaceTest()
-    : pos1(1.0), vel1(2.0), eff1(3.0),
-      pos2(4.0), vel2(5.0), eff2(6.0),
-      name1("name_1"),
-      name2("name_2"),
-      h1(name1, &pos1, &vel1, &eff1),
-      h2(name2, &pos2, &vel2, &eff2)
-  {}
-
 protected:
-  double pos1, vel1, eff1;
-  double pos2, vel2, eff2;
-  string name1;
-  string name2;
-  ActuatorStateHandle h1, h2;
+  double pos1 = {1.0}, vel1 = {2.0}, eff1 = {3.0};
+  double pos2 = {4.0}, vel2 = {5.0}, eff2 = {6.0};
+  string name1 = {"name_1"};
+  string name2 = {"name_2"};
+  ActuatorStateHandle h1 = {name1, &pos1, &vel1, &eff1};
+  ActuatorStateHandle h2 = {name2, &pos2, &vel2, &eff2};
 };
 
 TEST_F(ActuatorStateInterfaceTest, ExcerciseApi)
@@ -130,4 +121,3 @@ int main(int argc, char** argv)
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
-

@@ -27,8 +27,8 @@
 
 /// \author Igor Kalevatykh
 
-#ifndef HARDWARE_INTERFACE_POSVEL_COMMAND_INTERFACE_H
-#define HARDWARE_INTERFACE_POSVEL_COMMAND_INTERFACE_H
+#pragma once
+
 
 #include <cassert>
 #include <string>
@@ -42,7 +42,7 @@ namespace hardware_interface
 class PosVelJointHandle : public JointStateHandle
 {
 public:
-  PosVelJointHandle() : JointStateHandle(), cmd_pos_(0), cmd_vel_(0) {}
+  PosVelJointHandle() {}
 
   /**
    * \param js This joint's state handle
@@ -75,8 +75,8 @@ public:
   double getCommandVelocity()     const {assert(cmd_vel_); return *cmd_vel_;}
 
 private:
-  double* cmd_pos_;
-  double* cmd_vel_;
+  double* cmd_pos_ = {nullptr};
+  double* cmd_vel_ = {nullptr};
 };
 
 /** \brief Hardware interface to support commanding an array of joints.
@@ -90,5 +90,3 @@ private:
 class PosVelJointInterface : public HardwareResourceManager<PosVelJointHandle, ClaimResources> {};
 
 }
-
-#endif /*HARDWARE_INTERFACE_POSVEL_COMMAND_INTERFACE_H*/

@@ -27,8 +27,8 @@
 
 /// \author: Adolfo Rodriguez Tsouroukdissian
 
-#ifndef HARDWARE_INTERFACE_IMU_SENSOR_INTERFACE_H
-#define HARDWARE_INTERFACE_IMU_SENSOR_INTERFACE_H
+#pragma once
+
 
 #include <hardware_interface/internal/hardware_resource_manager.h>
 #include <string>
@@ -46,27 +46,19 @@ class ImuSensorHandle
 public:
   struct Data
   {
-    Data()
-      : name(),
-        frame_id(),
-        orientation(0),
-        orientation_covariance(0),
-        angular_velocity(0),
-        angular_velocity_covariance(0),
-        linear_acceleration(0),
-        linear_acceleration_covariance(0) {}
+    Data() {};
 
-    std::string name;                       ///< The name of the sensor
-    std::string frame_id;                   ///< The reference frame to which this sensor is associated
-    double* orientation;                    ///< A pointer to the storage of the orientation value: a quaternion (x,y,z,w)
-    double* orientation_covariance;         ///< A pointer to the storage of the orientation covariance value: a row major 3x3 matrix about (x,y,z)
-    double* angular_velocity;               ///< A pointer to the storage of the angular velocity value: a triplet (x,y,z)
-    double* angular_velocity_covariance;    ///< A pointer to the storage of the angular velocity covariance value: a row major 3x3 matrix about (x,y,z)
-    double* linear_acceleration;            ///< A pointer to the storage of the linear acceleration value: a triplet (x,y,z)
-    double* linear_acceleration_covariance; ///< A pointer to the storage of the linear acceleration covariance value: a row major 3x3 matrix about (x,y,z)
+    std::string name;                                   ///< The name of the sensor
+    std::string frame_id;                               ///< The reference frame to which this sensor is associated
+    double* orientation                    = {nullptr}; ///< A pointer to the storage of the orientation value: a quaternion (x,y,z,w)
+    double* orientation_covariance         = {nullptr}; ///< A pointer to the storage of the orientation covariance value: a row major 3x3 matrix about (x,y,z)
+    double* angular_velocity               = {nullptr}; ///< A pointer to the storage of the angular velocity value: a triplet (x,y,z)
+    double* angular_velocity_covariance    = {nullptr}; ///< A pointer to the storage of the angular velocity covariance value: a row major 3x3 matrix about (x,y,z)
+    double* linear_acceleration            = {nullptr}; ///< A pointer to the storage of the linear acceleration value: a triplet (x,y,z)
+    double* linear_acceleration_covariance = {nullptr}; ///< A pointer to the storage of the linear acceleration covariance value: a row major 3x3 matrix about (x,y,z)
   };
 
-  ImuSensorHandle(const Data& data = Data())
+  ImuSensorHandle(const Data& data = {})
     : name_(data.name),
       frame_id_(data.frame_id),
       orientation_(data.orientation),
@@ -122,5 +114,3 @@ private:
 class ImuSensorInterface : public HardwareResourceManager<ImuSensorHandle> {};
 
 }
-
-#endif // HARDWARE_INTERFACE_IMU_SENSOR_INTERFACE_H

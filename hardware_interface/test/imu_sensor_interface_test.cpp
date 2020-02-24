@@ -44,12 +44,12 @@ TEST(ImuSensorHandleTest, HandleConstruction)
     ImuSensorHandle handle;
     EXPECT_EQ("", handle.getName());
     EXPECT_EQ("", handle.getFrameId());
-    EXPECT_TRUE(0 == handle.getOrientation());
-    EXPECT_TRUE(0 == handle.getOrientationCovariance());
-    EXPECT_TRUE(0 == handle.getAngularVelocity());
-    EXPECT_TRUE(0 == handle.getAngularVelocityCovariance());
-    EXPECT_TRUE(0 == handle.getLinearAcceleration());
-    EXPECT_TRUE(0 == handle.getLinearAccelerationCovariance());
+    EXPECT_TRUE(nullptr == handle.getOrientation());
+    EXPECT_TRUE(nullptr == handle.getOrientationCovariance());
+    EXPECT_TRUE(nullptr == handle.getAngularVelocity());
+    EXPECT_TRUE(nullptr == handle.getAngularVelocityCovariance());
+    EXPECT_TRUE(nullptr == handle.getLinearAcceleration());
+    EXPECT_TRUE(nullptr == handle.getLinearAccelerationCovariance());
   }
 
   // Valid handle
@@ -77,10 +77,8 @@ class ImuSensorInterfaceTest : public ::testing::Test
 {
 public:
   ImuSensorInterfaceTest()
-    : name1("name_1"), name2("name_2"),
-      frame_id1("frame_1"), frame_id2("frame_2")
   {
-    srand(time(NULL)); // Seed random number generator
+    srand(time(nullptr)); // Seed random number generator
 
     // Populate raw data
     for (unsigned int i = 0; i < 4; ++i)
@@ -127,8 +125,8 @@ protected:
   double angular_velocity_covariance1[9];
   double linear_acceleration1[3];
   double linear_acceleration_covariance1[9];
-  string name1, name2;
-  string frame_id1, frame_id2;
+  string name1 = {"name_1"}, name2 = {"name_2"};
+  string frame_id1 = {"frame_1"}, frame_id2 = {"frame_2"};
   ImuSensorHandle h1;
   ImuSensorHandle h2;
 
@@ -153,12 +151,12 @@ TEST_F(ImuSensorInterfaceTest, ExcerciseApi)
   EXPECT_EQ(name1, h1_tmp.getName());
   EXPECT_EQ(frame_id1, h1_tmp.getFrameId());
 
-  EXPECT_TRUE(0 != h1_tmp.getOrientation());
-  EXPECT_TRUE(0 != h1_tmp.getOrientationCovariance());
-  EXPECT_TRUE(0 != h1_tmp.getAngularVelocity());
-  EXPECT_TRUE(0 != h1_tmp.getAngularVelocityCovariance());
-  EXPECT_TRUE(0 != h1_tmp.getLinearAcceleration());
-  EXPECT_TRUE(0 != h1_tmp.getLinearAccelerationCovariance());
+  EXPECT_TRUE(nullptr != h1_tmp.getOrientation());
+  EXPECT_TRUE(nullptr != h1_tmp.getOrientationCovariance());
+  EXPECT_TRUE(nullptr != h1_tmp.getAngularVelocity());
+  EXPECT_TRUE(nullptr != h1_tmp.getAngularVelocityCovariance());
+  EXPECT_TRUE(nullptr != h1_tmp.getLinearAcceleration());
+  EXPECT_TRUE(nullptr != h1_tmp.getLinearAccelerationCovariance());
 
   for (unsigned int i = 0; i < 4; ++i)
   {
@@ -182,12 +180,12 @@ TEST_F(ImuSensorInterfaceTest, ExcerciseApi)
   EXPECT_EQ(name2, h2_tmp.getName());
   EXPECT_EQ(frame_id2, h2_tmp.getFrameId());
 
-  EXPECT_TRUE(0 != h2_tmp.getOrientation());
-  EXPECT_TRUE(0 == h2_tmp.getOrientationCovariance());
-  EXPECT_TRUE(0 == h2_tmp.getAngularVelocity());
-  EXPECT_TRUE(0 == h2_tmp.getAngularVelocityCovariance());
-  EXPECT_TRUE(0 == h2_tmp.getLinearAcceleration());
-  EXPECT_TRUE(0 == h2_tmp.getLinearAccelerationCovariance());
+  EXPECT_TRUE(nullptr != h2_tmp.getOrientation());
+  EXPECT_TRUE(nullptr == h2_tmp.getOrientationCovariance());
+  EXPECT_TRUE(nullptr == h2_tmp.getAngularVelocity());
+  EXPECT_TRUE(nullptr == h2_tmp.getAngularVelocityCovariance());
+  EXPECT_TRUE(nullptr == h2_tmp.getLinearAcceleration());
+  EXPECT_TRUE(nullptr == h2_tmp.getLinearAccelerationCovariance());
 
   for (unsigned int i = 0; i < 4; ++i)
   {

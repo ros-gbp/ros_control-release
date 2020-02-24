@@ -70,10 +70,6 @@ class JointLimitsTest
 {
 public:
   JointLimitsTest()
-    : pos(0.0), vel(0.0), eff(0.0), cmd(0.0),
-      name("joint_name"),
-      period(0.1),
-      cmd_handle(JointStateHandle(name, &pos, &vel, &eff), &cmd)
   {
     limits.has_position_limits = true;
     limits.min_position = -1.0;
@@ -92,10 +88,10 @@ public:
   }
 
 protected:
-  double pos, vel, eff, cmd;
-  string name;
-  ros::Duration period;
-  JointHandle cmd_handle;
+  double pos = {0.0}, vel = {0.0}, eff = {0.0}, cmd = {0.0};
+  string name = {"joint_name"};
+  ros::Duration period = ros::Duration{0.1};
+  JointHandle cmd_handle = {JointStateHandle(name, &pos, &vel, &eff), &cmd};
   JointLimits limits;
   SoftJointLimits soft_limits;
 };
@@ -376,14 +372,21 @@ TEST_F(VelocityJointSaturationHandleTest, EnforceAccelerationBounds)
 
   pos = 0.0;
   double cmd;
+  const ros::Duration long_enough(1000.0); // An arbitrarily long time, sufficient to suppress acceleration limits
 
   // Positive velocity
-  vel = limits.max_velocity / 2.0;
+  cmd_handle.setCommand(limits.max_velocity / 2.0); // register last command
+  limits_handle.enforceLimits(long_enough); // make sure the prev_cmd is registered
+                                            // without triggering the acceleration limits
 
   cmd = limits.max_velocity * 2.0; // Try to go beyond +max velocity
   cmd_handle.setCommand(cmd);
   limits_handle.enforceLimits(period);
   EXPECT_NEAR(limits.max_velocity, cmd_handle.getCommand(), EPS); // Max velocity bounded by velocity limit
+
+  cmd_handle.setCommand(limits.max_velocity / 2.0); // register last command
+  limits_handle.enforceLimits(long_enough); // make sure the prev_cmd is registered
+                                            // without triggering the acceleration limits
 
   cmd = -limits.max_velocity * 2.0; // Try to go beyond -max velocity
   cmd_handle.setCommand(cmd);
@@ -391,12 +394,18 @@ TEST_F(VelocityJointSaturationHandleTest, EnforceAccelerationBounds)
   EXPECT_NEAR(-limits.max_velocity / 2.0, cmd_handle.getCommand(), EPS); // Max velocity bounded by acceleration limit
 
   // Negative velocity
-  vel = -limits.max_velocity / 2.0;
+  cmd_handle.setCommand(-limits.max_velocity / 2.0); // register last command
+  limits_handle.enforceLimits(long_enough); // make sure the prev_cmd is registered
+                                            // without triggering the acceleration limits
 
   cmd = limits.max_velocity * 2.0; // Try to go beyond +max velocity
   cmd_handle.setCommand(cmd);
   limits_handle.enforceLimits(period);
   EXPECT_NEAR(limits.max_velocity / 2.0, cmd_handle.getCommand(), EPS); // Max velocity bounded by acceleration limit
+
+  cmd_handle.setCommand(-limits.max_velocity / 2.0); // register last command
+  limits_handle.enforceLimits(long_enough); // make sure the prev_cmd is registered
+                                            // without triggering the acceleration limits
 
   cmd = -limits.max_velocity * 2.0; // Try to go beyond -max velocity
   cmd_handle.setCommand(cmd);
@@ -406,18 +415,10 @@ TEST_F(VelocityJointSaturationHandleTest, EnforceAccelerationBounds)
 
 class JointLimitsInterfaceTest :public JointLimitsTest, public ::testing::Test
 {
-public:
-  JointLimitsInterfaceTest()
-    : JointLimitsTest(),
-      pos2(0.0), vel2(0.0), eff2(0.0), cmd2(0.0),
-      name2("joint2_name"),
-      cmd_handle2(JointStateHandle(name2, &pos2, &vel2, &eff2), &cmd2)
-  {}
-
 protected:
-  double pos2, vel2, eff2, cmd2;
-  string name2;
-  JointHandle cmd_handle2;
+  double pos2 = {0.0}, vel2 = {0.0}, eff2 = {0.0}, cmd2 = {0.0};
+  string name2 = {"joint2_name"};
+  JointHandle cmd_handle2 = {JointStateHandle(name2, &pos2, &vel2, &eff2), &cmd2};
 };
 
 TEST_F(JointLimitsInterfaceTest, InterfaceRegistration)
