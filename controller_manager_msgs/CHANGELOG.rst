@@ -2,6 +2,9 @@
 Changelog for package controller_manager_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.17.0 (2020-02-24)
+-------------------
+
 0.16.0 (2020-01-27)
 -------------------
 * Update package dependencies
