@@ -30,10 +30,6 @@
 
 namespace combined_robot_hw
 {
-  CombinedRobotHW::CombinedRobotHW() :
-    robot_hw_loader_("hardware_interface", "hardware_interface::RobotHW")
-  {}
-
   bool CombinedRobotHW::init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh)
   {
     root_nh_ = root_nh;
@@ -221,7 +217,7 @@ namespace combined_robot_hw
         filtered_iface_resources.hardware_interface = claimed_resource.hardware_interface;
         std::vector<std::string> r_hw_ifaces = robot_hw->getNames();
 
-        std::vector<std::string>::iterator if_name = std::find(r_hw_ifaces.begin(), r_hw_ifaces.end(), filtered_iface_resources.hardware_interface);
+        auto const if_name = std::find(r_hw_ifaces.begin(), r_hw_ifaces.end(), filtered_iface_resources.hardware_interface);
         if (if_name == r_hw_ifaces.end()) // this hardware_interface is not registered in r_hw, so we filter it out
         {
           continue;
@@ -237,10 +233,16 @@ namespace combined_robot_hw
             filtered_resources.insert(resource);
           }
         }
-        filtered_iface_resources.resources = filtered_resources;
-        filtered_controller.claimed_resources.push_back(filtered_iface_resources);
+        if (!filtered_resources.empty())
+        {
+          filtered_iface_resources.resources = filtered_resources;
+          filtered_controller.claimed_resources.push_back(filtered_iface_resources);
+        }
       }
-      filtered_list.push_back(filtered_controller);
+      if (!filtered_controller.claimed_resources.empty())
+      {
+        filtered_list.push_back(filtered_controller);
+      }
     }
   }
 }
