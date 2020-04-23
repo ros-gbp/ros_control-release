@@ -1,0 +1,12 @@
+Source: ros-noetic-combined-robot-hw-tests
+Section: misc
+Priority: optional
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin, ros-noetic-combined-robot-hw, ros-noetic-controller-manager, ros-noetic-controller-manager-msgs, ros-noetic-controller-manager-tests, ros-noetic-hardware-interface, ros-noetic-pluginlib, ros-noetic-roscpp, ros-noetic-rostest
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-noetic-combined-robot-hw-tests
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-combined-robot-hw, ros-noetic-controller-manager, ros-noetic-hardware-interface, ros-noetic-pluginlib, ros-noetic-roscpp
+Description: Tests for the combined Robot HW class.
