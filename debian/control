@@ -1,0 +1,12 @@
+Source: ros-noetic-controller-manager-tests
+Section: misc
+Priority: optional
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin, ros-noetic-controller-interface, ros-noetic-controller-manager, ros-noetic-hardware-interface, ros-noetic-pluginlib, ros-noetic-rosbash, ros-noetic-roscpp, ros-noetic-rosnode, ros-noetic-rostest
+Homepage: http://ros.org/wiki/controller_manager_tests
+Standards-Version: 3.9.2
+
+Package: ros-noetic-controller-manager-tests
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-controller-interface, ros-noetic-controller-manager, ros-noetic-controller-manager-msgs, ros-noetic-hardware-interface, ros-noetic-pluginlib, ros-noetic-roscpp, ros-noetic-rospy
+Description: Tests for the controller manager.
