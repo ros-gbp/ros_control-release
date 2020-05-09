@@ -52,7 +52,7 @@ namespace hardware_interface
 class ResourceManagerBase
 {
 public:
-  virtual ~ResourceManagerBase() {}
+  virtual ~ResourceManagerBase() = default;
 };
 
 /**
@@ -69,11 +69,9 @@ template <class ResourceHandle>
 class ResourceManager : public ResourceManagerBase
 {
 public:
-  typedef ResourceManager<ResourceHandle> ResourceManagerType;
+  typedef ResourceManager<ResourceHandle> resource_manager_type;
   /** \name Non Real-Time Safe Functions
    *\{*/
-
-  virtual ~ResourceManager() {}
 
   /** \return Vector of resource names registered to this interface. */
   std::vector<std::string> getNames() const
@@ -133,8 +131,8 @@ public:
    * \param result The interface where all the handles will be registered.
    * \return Resource associated to \e name. If the resource name is not found, an exception is thrown.
    */
-  static void concatManagers(std::vector<ResourceManagerType*>& managers,
-                             ResourceManagerType* result)
+  static void concatManagers(std::vector<resource_manager_type*>& managers,
+                             resource_manager_type* result)
   {
     for (const auto& manager : managers) {
       for (const auto& handle_name : manager->getNames()) {

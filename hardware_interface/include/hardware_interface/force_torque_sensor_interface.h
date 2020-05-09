@@ -40,7 +40,7 @@ namespace hardware_interface
 class ForceTorqueSensorHandle
 {
 public:
-  ForceTorqueSensorHandle() {}
+  ForceTorqueSensorHandle() = default;
 
   /**
    * \param name The name of the sensor
@@ -53,6 +53,17 @@ public:
                           const std::string& frame_id,
                           const double* force,
                           const double* torque)
+    : name_(name),
+      frame_id_(frame_id),
+      force_(force),
+      torque_(torque)
+  {}
+
+  // keep non-const version for binary compatibility
+  ForceTorqueSensorHandle(const std::string& name,
+                          const std::string& frame_id,
+                          double* force,
+                          double* torque)
     : name_(name),
       frame_id_(frame_id),
       force_(force),

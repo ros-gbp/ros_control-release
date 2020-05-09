@@ -2,9 +2,16 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.0 (2020-04-23)
+0.18.1 (2020-05-09)
 -------------------
-* Replace enums with enum classes (`#412 <https://github.com/ros-controls/ros_control/issues/412>`_)
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
+  * Add override specifiers & default constructors
+  * Delete ControllerBase copy & move ctors
+  * Remove unnecessary default constructors
+  * Modernize additional constructors
+  * Revert ImuSensorHandle::Data::Data() = default
+  * Remove unnecessary default overridden constructors
+  * Remove semicolon after function body
 * Contributors: Matt Reynolds
 
 0.18.0 (2020-04-16)

@@ -2,8 +2,14 @@
 Changelog for package rqt_controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.0 (2020-04-23)
+0.18.1 (2020-05-09)
 -------------------
+* Fix rqt displaying and handling of 'initialized' controllers (`#450 <https://github.com/ros-controls/ros_control/issues/450>`_)
+  This changes two minor behaviors:
+  - Now shows 'initialized' controllers as red again
+  - Now shows context menus for initialized controllers
+  Fixes `ros-controls/ros_control#445 <https://github.com/ros-controls/ros_control/issues/445>`_
+* Contributors: RobertWilbrandt
 
 0.18.0 (2020-04-16)
 -------------------

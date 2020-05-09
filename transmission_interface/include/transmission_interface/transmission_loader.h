@@ -61,13 +61,12 @@ namespace transmission_interface
 class TransmissionLoader
 {
 public:
-
-  virtual ~TransmissionLoader() {}
+  virtual ~TransmissionLoader() = default;
 
   virtual TransmissionSharedPtr load(const TransmissionInfo& transmission_info) = 0;
 
 protected:
-  enum class ParseStatus
+  enum ParseStatus
   {
     SUCCESS,
     NO_DATA,

@@ -2,12 +2,18 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.0 (2020-04-23)
+0.18.1 (2020-05-09)
 -------------------
-* Remove deprecated ForceTorqueHandle ctor (`#437 <https://github.com/ros-controls/ros_control/issues/437>`_)
-* Replace enums with enum classes (`#412 <https://github.com/ros-controls/ros_control/issues/412>`_)
-* Use CamelCase for ResourceManagerType typedef (`#438 <https://github.com/ros-controls/ros_control/issues/438>`_)
-* Contributors: Matt Reynolds
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
+  * Add override specifiers & default constructors
+  * Delete ControllerBase copy & move ctors
+  * Remove unnecessary default constructors
+  * Modernize additional constructors
+  * Revert ImuSensorHandle::Data::Data() = default
+  * Remove unnecessary default overridden constructors
+  * Remove semicolon after function body
+* [hardware_interface::RobotHW] doc: update read and write, fix: group names (`#444 <https://github.com/ros-controls/ros_control/issues/444>`_)
+* Contributors: Franz, Matt Reynolds
 
 0.18.0 (2020-04-16)
 -------------------

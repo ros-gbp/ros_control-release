@@ -52,8 +52,6 @@ template <class T>
 class Controller: public virtual ControllerBase
 {
 public:
-  Controller()  {state_ = ControllerState::CONSTRUCTED;}
-  virtual ~Controller<T>(){}
 
   /** \brief The init function is called to initialize the controller from a
    * non-realtime thread with a pointer to the hardware interface, itself,
@@ -95,13 +93,13 @@ protected:
    * can extract the correct interface from \c robot_hw.
    *
    */
-  virtual bool initRequest(hardware_interface::RobotHW* robot_hw,
-                           ros::NodeHandle&             root_nh,
-                           ros::NodeHandle&             controller_nh,
-                           ClaimedResources&            claimed_resources)
+  bool initRequest(hardware_interface::RobotHW* robot_hw,
+                   ros::NodeHandle&             root_nh,
+                   ros::NodeHandle&             controller_nh,
+                   ClaimedResources&            claimed_resources) override
   {
     // check if construction finished cleanly
-    if (state_ != ControllerState::CONSTRUCTED){
+    if (state_ != CONSTRUCTED){
       ROS_ERROR("Cannot initialize this controller because it failed to be constructed");
       return false;
     }
@@ -128,7 +126,7 @@ protected:
     hw->clearClaims();
 
     // success
-    state_ = ControllerState::INITIALIZED;
+    state_ = INITIALIZED;
     return true;
   }
 
@@ -137,11 +135,6 @@ protected:
   {
     return hardware_interface::internal::demangledTypeName<T>();
   }
-
-private:
-  Controller<T>(const Controller<T> &c);
-  Controller<T>& operator =(const Controller<T> &c);
-
 };
 
 }

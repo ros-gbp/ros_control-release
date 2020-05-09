@@ -43,17 +43,10 @@ using ::testing::Return;
 class ControllerMock : public controller_interface::ControllerBase
 {
 public:
-  ControllerMock() : controller_interface::ControllerBase()
-  {
-  }
-
-  ~ControllerMock()
-  {
-  }
 
   void initializeState()
   {
-    state_ = ControllerState::INITIALIZED;
+    state_ = INITIALIZED;
   }
 
   MOCK_METHOD1(starting, void(const ros::Time&));

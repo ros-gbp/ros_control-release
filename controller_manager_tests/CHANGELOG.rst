@@ -2,11 +2,17 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.0 (2020-04-23)
+0.18.1 (2020-05-09)
 -------------------
-* Disable flaky CLI spawn test (`#446 <https://github.com/ros-controls/ros_control/issues/446>`_)
-* Update travis config and rosinstall for noetic (`#439 <https://github.com/ros-controls/ros_control/issues/439>`_)
-* Contributors: Bence Magyar
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
+  * Add override specifiers & default constructors
+  * Delete ControllerBase copy & move ctors
+  * Remove unnecessary default constructors
+  * Modernize additional constructors
+  * Revert ImuSensorHandle::Data::Data() = default
+  * Remove unnecessary default overridden constructors
+  * Remove semicolon after function body
+* Contributors: Matt Reynolds
 
 0.18.0 (2020-04-16)
 -------------------
