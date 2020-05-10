@@ -1,0 +1,12 @@
+Source: ros-noetic-controller-manager
+Section: misc
+Priority: optional
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), python3-setuptools, ros-noetic-catkin, ros-noetic-controller-interface, ros-noetic-controller-manager-msgs, ros-noetic-hardware-interface, ros-noetic-pluginlib, ros-noetic-roscpp, ros-noetic-rostest
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-noetic-controller-manager
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-controller-interface, ros-noetic-controller-manager-msgs, ros-noetic-hardware-interface, ros-noetic-pluginlib, ros-noetic-roscpp, ros-noetic-rosparam, ros-noetic-rospy, ros-noetic-std-msgs
+Description: The controller manager.
