@@ -2,9 +2,9 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.18.1 (2020-05-09)
+0.19.1 (2020-05-10)
 -------------------
-* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
+* Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
   * Add override specifiers & default constructors
   * Delete ControllerBase copy & move ctors
   * Remove unnecessary default constructors
@@ -12,8 +12,17 @@ Changelog for package hardware_interface
   * Revert ImuSensorHandle::Data::Data() = default
   * Remove unnecessary default overridden constructors
   * Remove semicolon after function body
-* [hardware_interface::RobotHW] doc: update read and write, fix: group names (`#444 <https://github.com/ros-controls/ros_control/issues/444>`_)
-* Contributors: Franz, Matt Reynolds
+  Co-authored-by: Matt Reynolds <mtreynolds@uwaterloo.ca>
+* [hardware_interface::RobotHW] doc: update read and write, fix: group names (`#444 <https://github.com/ros-controls/ros_control/issues/444>`_) (`#454 <https://github.com/ros-controls/ros_control/issues/454>`_)
+* Use setuptools instead of distutils (`#429 <https://github.com/ros-controls/ros_control/issues/429>`_)
+* Contributors: Bence Magyar, Matt Reynolds
+
+0.19.0 (2020-04-23)
+-------------------
+* Remove deprecated ForceTorqueHandle ctor (`#437 <https://github.com/ros-controls/ros_control/issues/437>`_)
+* Replace enums with enum classes (`#412 <https://github.com/ros-controls/ros_control/issues/412>`_)
+* Use CamelCase for ResourceManagerType typedef (`#438 <https://github.com/ros-controls/ros_control/issues/438>`_)
+* Contributors: Matt Reynolds
 
 0.18.0 (2020-04-16)
 -------------------
