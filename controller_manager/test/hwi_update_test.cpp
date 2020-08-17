@@ -82,7 +82,7 @@ public:
 
   void initializeState()
   {
-    state_ = INITIALIZED;
+    state_ = ControllerState::INITIALIZED;
   }
 
   MOCK_METHOD1(starting, void(const ros::Time &));
@@ -190,7 +190,7 @@ TEST_F(ControllerManagerTest, SwitchOnlyTest)
   EXPECT_CALL(*hw_mock_, checkForConflict(_)).Times(1).WillOnce(Return(false));
   EXPECT_CALL(*hw_mock_, prepareSwitch(_, _)).Times(1).WillOnce(Return(true));
   EXPECT_CALL(*hw_mock_, doSwitch(_, _)).Times(1);
-  EXPECT_CALL(*hw_mock_, switchResult()).Times(1).WillOnce(Return(RobotHWMock::DONE));
+  EXPECT_CALL(*hw_mock_, switchResult()).Times(1).WillOnce(Return(RobotHWMock::SwitchState::DONE));
 
   // switch with no controllers at all
   const std::vector<std::string> start_controllers, stop_controllers;
@@ -210,7 +210,7 @@ TEST_F(ControllerManagerTest, SwitchControllersTest)
   EXPECT_CALL(*hw_mock_, checkForConflict(_)).Times(2).WillRepeatedly(Return(false));
   EXPECT_CALL(*hw_mock_, prepareSwitch(_, _)).Times(2).WillRepeatedly(Return(true));
   EXPECT_CALL(*hw_mock_, doSwitch(_, _)).Times(2);
-  EXPECT_CALL(*hw_mock_, switchResult()).Times(2).WillRepeatedly(Return(RobotHWMock::DONE));
+  EXPECT_CALL(*hw_mock_, switchResult()).Times(2).WillRepeatedly(Return(RobotHWMock::SwitchState::DONE));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
@@ -250,7 +250,7 @@ TEST_F(ControllerManagerTest, SwitchControllersAbortTest)
   EXPECT_CALL(*hw_mock_, checkForConflict(_)).Times(1).WillOnce(Return(false));
   EXPECT_CALL(*hw_mock_, prepareSwitch(_, _)).Times(1).WillOnce(Return(true));
   EXPECT_CALL(*hw_mock_, doSwitch(_, _)).Times(1);
-  EXPECT_CALL(*hw_mock_, switchResult()).Times(2).WillRepeatedly(Return(RobotHWMock::ERROR));
+  EXPECT_CALL(*hw_mock_, switchResult()).Times(2).WillRepeatedly(Return(RobotHWMock::SwitchState::ERROR));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
@@ -281,7 +281,7 @@ TEST_F(ControllerManagerTest, SwitchControllersTimeoutTest)
   EXPECT_CALL(*hw_mock_, checkForConflict(_)).Times(1).WillOnce(Return(false));
   EXPECT_CALL(*hw_mock_, prepareSwitch(_, _)).Times(1).WillOnce(Return(true));
   EXPECT_CALL(*hw_mock_, doSwitch(_, _)).Times(1);
-  EXPECT_CALL(*hw_mock_, switchResult()).WillRepeatedly(Return(RobotHWMock::ONGOING));
+  EXPECT_CALL(*hw_mock_, switchResult()).WillRepeatedly(Return(RobotHWMock::SwitchState::ONGOING));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
@@ -317,17 +317,17 @@ TEST_F(ControllerManagerTest, ControllerUpdatesTest)
   EXPECT_CALL(*hw_mock_, doSwitch(_, _)).Times(1);
   EXPECT_CALL(*hw_mock_, switchResult())
       .Times(11)
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::DONE));
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::DONE));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
@@ -370,18 +370,18 @@ TEST_F(ControllerManagerTest, SwitchControllersAsapTest)
   EXPECT_CALL(*hw_mock_, switchResult()).Times(0);
   EXPECT_CALL(*hw_mock_, switchResult(_))
       .Times(12)
-      .WillOnce(Return(RobotHWMock::DONE))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::DONE));
+      .WillOnce(Return(RobotHWMock::SwitchState::DONE))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::DONE));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
@@ -418,19 +418,19 @@ TEST_F(ControllerManagerTest, SwitchControllersAsapAbortTest)
   EXPECT_CALL(*hw_mock_, switchResult()).Times(0);
   EXPECT_CALL(*hw_mock_, switchResult(_))
       .Times(13)
-      .WillOnce(Return(RobotHWMock::DONE))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ONGOING))
-      .WillOnce(Return(RobotHWMock::ERROR))
-      .WillOnce(Return(RobotHWMock::ERROR));
+      .WillOnce(Return(RobotHWMock::SwitchState::DONE))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ONGOING))
+      .WillOnce(Return(RobotHWMock::SwitchState::ERROR))
+      .WillOnce(Return(RobotHWMock::SwitchState::ERROR));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
@@ -466,8 +466,8 @@ TEST_F(ControllerManagerTest, SwitchControllersAsapTimeoutTest)
   EXPECT_CALL(*hw_mock_, doSwitch(_, _)).Times(1);
   EXPECT_CALL(*hw_mock_, switchResult()).Times(0);
   EXPECT_CALL(*hw_mock_, switchResult(_))
-      .WillOnce(Return(RobotHWMock::DONE))
-      .WillRepeatedly(Return(RobotHWMock::ONGOING));
+      .WillOnce(Return(RobotHWMock::SwitchState::DONE))
+      .WillRepeatedly(Return(RobotHWMock::SwitchState::ONGOING));
 
   const int strictness = controller_manager_msgs::SwitchController::Request::STRICT;
   std::vector<std::string> start_controllers, stop_controllers;
