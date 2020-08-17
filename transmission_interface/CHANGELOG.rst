@@ -2,6 +2,9 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.19.2 (2020-08-17)
+-------------------
+
 0.19.1 (2020-05-10)
 -------------------
 * Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
