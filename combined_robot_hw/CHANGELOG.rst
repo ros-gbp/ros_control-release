@@ -2,9 +2,12 @@
 Changelog for package combined_robot_hw
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.1 (2020-05-10)
+0.18.2 (2020-08-17)
 -------------------
-* Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
+
+0.18.1 (2020-05-09)
+-------------------
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
   * Add override specifiers & default constructors
   * Delete ControllerBase copy & move ctors
   * Remove unnecessary default constructors
@@ -12,12 +15,7 @@ Changelog for package combined_robot_hw
   * Revert ImuSensorHandle::Data::Data() = default
   * Remove unnecessary default overridden constructors
   * Remove semicolon after function body
-  Co-authored-by: Matt Reynolds <mtreynolds@uwaterloo.ca>
-* Use setuptools instead of distutils (`#429 <https://github.com/ros-controls/ros_control/issues/429>`_)
-* Contributors: Bence Magyar, Matt Reynolds
-
-0.19.0 (2020-04-23)
--------------------
+* Contributors: Matt Reynolds
 
 0.18.0 (2020-04-16)
 -------------------

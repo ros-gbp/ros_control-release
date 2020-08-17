@@ -135,7 +135,7 @@ public:
   virtual void doSwitch(const std::list<ControllerInfo>& /*start_list*/,
                         const std::list<ControllerInfo>& /*stop_list*/) {}
 
-  enum class SwitchState
+  enum SwitchState
   {
     DONE,
     ONGOING,
@@ -145,13 +145,13 @@ public:
   /** \brief Return (in realtime) the state of the last doSwitch(). */
   virtual SwitchState switchResult() const
   {
-    return SwitchState::DONE;
+    return DONE;
   }
 
   /** \brief Return (in realtime) the state of the last doSwitch() for a given controller. */
   virtual SwitchState switchResult(const ControllerInfo& /*controller*/) const
   {
-    return SwitchState::DONE;
+    return DONE;
   }
   /**\}*/
 

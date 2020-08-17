@@ -66,7 +66,7 @@ public:
   virtual TransmissionSharedPtr load(const TransmissionInfo& transmission_info) = 0;
 
 protected:
-  enum class ParseStatus
+  enum ParseStatus
   {
     SUCCESS,
     NO_DATA,
