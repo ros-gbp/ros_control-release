@@ -1,3 +1,37 @@
+## ros_control (noetic) - 0.19.3-2
+
+The packages in the `ros_control` repository were released into the `noetic` distro by running `/home/bence/.local/bin/bloom-release --track noetic --ros-distro noetic ros_control` on `Sun, 11 Oct 2020 08:07:55 -0000`
+
+These packages were released:
+- `combined_robot_hw`
+- `combined_robot_hw_tests`
+- `controller_interface`
+- `controller_manager`
+- `controller_manager_msgs`
+- `controller_manager_tests`
+- `hardware_interface`
+- `joint_limits_interface`
+- `ros_control`
+- `rqt_controller_manager`
+- `transmission_interface`
+
+Version of package(s) in repository `ros_control`:
+
+- upstream repository: https://github.com/ros-controls/ros_control.git
+- release repository: https://github.com/ros-gbp/ros_control-release.git
+- rosdistro version: `0.19.2-1`
+- old version: `0.19.3-1`
+- new version: `0.19.3-2`
+
+Versions of tools used:
+
+- bloom version: `0.10.0`
+- catkin_pkg version: `0.4.22`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.8.2`
+- vcstools version: `0.1.42`
+
+
 ## ros_control (noetic) - 0.19.3-1
 
 The packages in the `ros_control` repository were released into the `noetic` distro by running `/home/bence/.local/bin/bloom-release --track noetic --ros-distro noetic ros_control` on `Sun, 11 Oct 2020 07:55:25 -0000`
