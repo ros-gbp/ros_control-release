@@ -1,0 +1,12 @@
+Source: ros-noetic-controller-manager-msgs
+Section: misc
+Priority: optional
+Maintainer: Bence Magyar <bence.magyar.robotics@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), python3-setuptools, ros-noetic-catkin, ros-noetic-message-generation, ros-noetic-std-msgs
+Homepage: https://github.com/ros-controls/ros_control/wiki
+Standards-Version: 3.9.2
+
+Package: ros-noetic-controller-manager-msgs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-message-runtime, ros-noetic-rospy, ros-noetic-rosservice, ros-noetic-std-msgs
+Description: Messages and services for the controller manager.
