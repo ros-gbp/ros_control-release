@@ -1,1 +1,1 @@
-{"trim": "", "base": "1a289a75a", "trimbase": "", "parent": "debian/noetic/controller_manager_msgs", "previous": "8b9f86607"}
+{"base": "19ea3595a", "parent": "debian/noetic/controller_manager_msgs", "previous": "077c108d8", "trim": "", "trimbase": ""}
