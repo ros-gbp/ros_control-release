@@ -2,26 +2,47 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.3 (2020-10-11)
+0.18.3 (2020-12-05)
 -------------------
-* Update mainpage.dox
+* [hardware_interface] Update documentation (`#457 <https://github.com/ros-controls/ros_control/issues/457>`_)
+  * doc: update robot_hw.h docstrings
+  update docstring of class and init method.
+  * doc: add mainpage.dox including examples
+  * doc: add README.md for hardware_interface
+  * Update hardware_interface/mainpage.dox
+  - Use JointStateHandle in case of read-only operations
   - Explain JointStateInterface and PositionJointInterface
   - Explain how to use potential software transmissions
   - Link to transmission_interface examples
-* Update doc of robot_hw.h
+* remove whitespace
+* Update mainpage.dox with comments from @bmagyar
+  - Explain JointStateInterface and PositionJointInterface
+  - Explain how to use potential software transmissions
+  - Link to transmission_interface examples
+* Update doc of robot_hw.h with comments of @bmagyar
   - Use JointStateHandle in case of read-only operations
+* Clarified documentation for InterfaceManager sub-manager handling
+* Updated InterfaceManager documentation
+* Removed duplicate error message
+  Previously, trying to combine two non-ResourceManager interfaces yielded
+  two identical error messages.
+* Remove inconsistent InterfaceManager manager registering behavior
+  All InterfaceManager now handle registered InterfaceManagers
+  transparently. This allows chains of multiple InterfaceManagers
+  registered to each other to work corectly, mostly relevant for
+  registering a manager from a combined_robot_hw RobotHW.
 * doc: add README.md for hardware_interface
 * doc: add mainpage.dox including examples
 * doc: update robot_hw.h docstrings
   update docstring of class and init method.
-* Contributors: Franz Pucher, Bence Magyar
+* Contributors: Bence Magyar, Franz Pucher, Robert Wilbrandt
 
-0.19.2 (2020-08-17)
+0.18.2 (2020-08-17)
 -------------------
 
-0.19.1 (2020-05-10)
+0.18.1 (2020-05-09)
 -------------------
-* Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
   * Add override specifiers & default constructors
   * Delete ControllerBase copy & move ctors
   * Remove unnecessary default constructors
@@ -29,17 +50,8 @@ Changelog for package hardware_interface
   * Revert ImuSensorHandle::Data::Data() = default
   * Remove unnecessary default overridden constructors
   * Remove semicolon after function body
-  Co-authored-by: Matt Reynolds <mtreynolds@uwaterloo.ca>
-* [hardware_interface::RobotHW] doc: update read and write, fix: group names (`#444 <https://github.com/ros-controls/ros_control/issues/444>`_) (`#454 <https://github.com/ros-controls/ros_control/issues/454>`_)
-* Use setuptools instead of distutils (`#429 <https://github.com/ros-controls/ros_control/issues/429>`_)
-* Contributors: Bence Magyar, Matt Reynolds
-
-0.19.0 (2020-04-23)
--------------------
-* Remove deprecated ForceTorqueHandle ctor (`#437 <https://github.com/ros-controls/ros_control/issues/437>`_)
-* Replace enums with enum classes (`#412 <https://github.com/ros-controls/ros_control/issues/412>`_)
-* Use CamelCase for ResourceManagerType typedef (`#438 <https://github.com/ros-controls/ros_control/issues/438>`_)
-* Contributors: Matt Reynolds
+* [hardware_interface::RobotHW] doc: update read and write, fix: group names (`#444 <https://github.com/ros-controls/ros_control/issues/444>`_)
+* Contributors: Franz, Matt Reynolds
 
 0.18.0 (2020-04-16)
 -------------------

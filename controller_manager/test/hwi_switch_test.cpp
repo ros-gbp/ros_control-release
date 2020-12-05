@@ -251,7 +251,7 @@ class DummyControllerLoader: public controller_manager::ControllerLoaderInterfac
             std::set<std::string> resources(joints.begin(), joints.end());
             hardware_interface::InterfaceResources iface_res(getHardwareInterfaceType(), resources);
             claimed_resources.assign(1, iface_res);
-            state_ = ControllerState::INITIALIZED;
+            state_ = INITIALIZED;
             return true;
         }
         virtual std::string getHardwareInterfaceType() const

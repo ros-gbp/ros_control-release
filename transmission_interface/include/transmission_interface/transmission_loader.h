@@ -66,6 +66,12 @@ public:
   virtual TransmissionSharedPtr load(const TransmissionInfo& transmission_info) = 0;
 
 protected:
+  enum ParseStatus
+  {
+    SUCCESS,
+    NO_DATA,
+    BAD_TYPE
+  };
 
   static bool checkActuatorDimension(const TransmissionInfo& transmission_info, const unsigned int expected_dim)
   {
@@ -102,31 +108,31 @@ protected:
     return element;
   }
 
-  static bool getActuatorReduction(const TiXmlElement& parent_el,
+  static ParseStatus getActuatorReduction(const TiXmlElement& parent_el,
                                           const std::string&  actuator_name,
                                           const std::string&  transmission_name,
                                           bool                required,
                                           double&             reduction);
 
-  static bool getJointReduction(const TiXmlElement& parent_el,
+  static ParseStatus getJointReduction(const TiXmlElement& parent_el,
                                        const std::string&  joint_name,
                                        const std::string&  transmission_name,
                                        bool                required,
                                        double&             reduction);
 
-  static bool getJointOffset(const TiXmlElement& parent_el,
+  static ParseStatus getJointOffset(const TiXmlElement& parent_el,
                                     const std::string&  joint_name,
                                     const std::string&  transmission_name,
                                     bool                required,
                                     double&             offset);
 
-  static bool getActuatorRole(const TiXmlElement& parent_el,
+  static ParseStatus getActuatorRole(const TiXmlElement& parent_el,
                                      const std::string&  actuator_name,
                                      const std::string&  transmission_name,
                                      bool                required,
                                      std::string&        role);
 
-  static bool getJointRole(const TiXmlElement& parent_el,
+  static ParseStatus getJointRole(const TiXmlElement& parent_el,
                                   const std::string&  joint_name,
                                   const std::string&  transmission_name,
                                   bool                required,

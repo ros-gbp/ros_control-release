@@ -98,7 +98,7 @@ public:
    */
   bool isInitialized() const
   {
-    return state_ == ControllerState::INITIALIZED;
+    return state_ == INITIALIZED;
   }
 
   /** \brief Check if the controller is running
@@ -106,7 +106,7 @@ public:
    */
   bool isRunning() const
   {
-    return state_ == ControllerState::RUNNING;
+    return state_ == RUNNING;
   }
 
   /** \brief Check if the controller is stopped
@@ -114,7 +114,7 @@ public:
    */
   bool isStopped() const
   {
-    return state_ == ControllerState::STOPPED;
+    return state_ == STOPPED;
   }
 
   /** \brief Check if the controller is waiting
@@ -122,7 +122,7 @@ public:
    */
   bool isWaiting() const
   {
-    return state_ == ControllerState::WAITING;
+    return state_ == WAITING;
   }
 
   /** \brief Check if the controller is aborted
@@ -130,13 +130,13 @@ public:
    */
   bool isAborted() const
   {
-    return state_ == ControllerState::ABORTED;
+    return state_ == ABORTED;
   }
 
   /// Calls \ref update only if this controller is running.
   void updateRequest(const ros::Time& time, const ros::Duration& period)
   {
-    if (state_ == ControllerState::RUNNING)
+    if (state_ == RUNNING)
     {
       update(time, period);
     }
@@ -146,10 +146,10 @@ public:
   bool startRequest(const ros::Time& time)
   {
     // start works from any state, except CONSTRUCTED
-    if (state_ != ControllerState::CONSTRUCTED)
+    if (state_ != CONSTRUCTED)
     {
       starting(time);
-      state_ = ControllerState::RUNNING;
+      state_ = RUNNING;
       return true;
     }
     else
@@ -163,10 +163,10 @@ public:
   bool stopRequest(const ros::Time& time)
   {
     // stop works from any state, except CONSTRUCTED
-    if (state_ != ControllerState::CONSTRUCTED)
+    if (state_ != CONSTRUCTED)
     {
       stopping(time);
-      state_ = ControllerState::STOPPED;
+      state_ = STOPPED;
       return true;
     }
     else
@@ -180,10 +180,10 @@ public:
   bool waitRequest(const ros::Time& time)
   {
     // wait works from any state, except CONSTRUCTED
-    if (state_ != ControllerState::CONSTRUCTED)
+    if (state_ != CONSTRUCTED)
     {
       waiting(time);
-      state_ = ControllerState::WAITING;
+      state_ = WAITING;
       return true;
     }
     else
@@ -197,10 +197,10 @@ public:
   bool abortRequest(const ros::Time& time)
   {
     // abort works from any state, except CONSTRUCTED
-    if (state_ != ControllerState::CONSTRUCTED)
+    if (state_ != CONSTRUCTED)
     {
       aborting(time);
-      state_ = ControllerState::ABORTED;
+      state_ = ABORTED;
       return true;
     }
     else
@@ -240,19 +240,8 @@ public:
 
   /*\}*/
 
-  enum class ControllerState
-  {
-    CONSTRUCTED,
-    INITIALIZED,
-    RUNNING,
-    STOPPED,
-    WAITING,
-    ABORTED
-  };
-
   /// The current execution state of the controller
-  ControllerState state_ = ControllerState::CONSTRUCTED;
-
+  enum {CONSTRUCTED, INITIALIZED, RUNNING, STOPPED, WAITING, ABORTED} state_ = {CONSTRUCTED};
 };
 
 typedef std::shared_ptr<ControllerBase> ControllerBaseSharedPtr;

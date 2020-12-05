@@ -2,21 +2,17 @@
 Changelog for package transmission_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.3 (2020-10-11)
+0.18.3 (2020-12-05)
 -------------------
-* Fix jnt-to-act command propagation check in transmission_interface_loader_test (`#473 <https://github.com/ros-controls/ros_control/issues/473>`_)
-  * Fix jnt-to-act command propagation check
-  * Fix jnt-to-act command propagation check of bidirectional transmissions
-* Remove ParseStatus enum (`#470 <https://github.com/ros-controls/ros_control/issues/470>`_)
-* Remove irrelevant test case (resolve `#460 <https://github.com/ros-controls/ros_control/issues/460>`_) (`#472 <https://github.com/ros-controls/ros_control/issues/472>`_)
-* Contributors: Mateus Amarante, Jordan Lack
+* Update docs in hardware_interface
+* Contributors: Franz Pucher
 
-0.19.2 (2020-08-17)
+0.18.2 (2020-08-17)
 -------------------
 
-0.19.1 (2020-05-10)
+0.18.1 (2020-05-09)
 -------------------
-* Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
   * Add override specifiers & default constructors
   * Delete ControllerBase copy & move ctors
   * Remove unnecessary default constructors
@@ -24,13 +20,6 @@ Changelog for package transmission_interface
   * Revert ImuSensorHandle::Data::Data() = default
   * Remove unnecessary default overridden constructors
   * Remove semicolon after function body
-  Co-authored-by: Matt Reynolds <mtreynolds@uwaterloo.ca>
-* Use setuptools instead of distutils (`#429 <https://github.com/ros-controls/ros_control/issues/429>`_)
-* Contributors: Bence Magyar, Matt Reynolds
-
-0.19.0 (2020-04-23)
--------------------
-* Replace enums with enum classes (`#412 <https://github.com/ros-controls/ros_control/issues/412>`_)
 * Contributors: Matt Reynolds
 
 0.18.0 (2020-04-16)
