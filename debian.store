@@ -1,1 +1,1 @@
-{"trim": "", "base": "f36ed086e", "trimbase": "", "parent": "debian/melodic/controller_manager_msgs", "previous": "fbd097507"}
+{"base": "f4710cd7a", "parent": "debian/melodic/controller_manager_msgs", "previous": "608c037c6", "trim": "", "trimbase": ""}
