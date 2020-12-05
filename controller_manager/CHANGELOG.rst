@@ -2,6 +2,11 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.3 (2020-12-05)
+-------------------
+* Update docs in hardware_interface
+* Contributors: Franz Pucher
+
 0.18.2 (2020-08-17)
 -------------------
 
