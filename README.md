@@ -1,59 +1,39 @@
-ros_control
-===========
+# Hardware Interfaces
 
-See [ros_control documentation](http://wiki.ros.org/ros_control) on ros.org
+Hardware interfaces are used by ROS control in conjunction with one of the
+available ROS controllers to send (\ref hardware_interface::RobotHW::write)
+commands to the hardware and receive (\ref hardware_interface::RobotHW::read)
+states from the robot's resources (joints, sensors, actuators).
 
-### Build Status
+A list of available hardware interfaces (provided via the HardwareResourceManager)
+as of this writing are:
 
-Indigo | Kinetic | Lunar | Melodic | Noetic
------- | ------ | ------ | ------ | ------ |
-[![Build Status](https://travis-ci.org/ros-controls/ros_control.png?branch=indigo-devel)](https://travis-ci.org/ros-controls/ros_control) | [![Build Status](https://travis-ci.org/ros-controls/ros_control.png?branch=kinetic-devel)](https://travis-ci.org/ros-controls/ros_control) | [![Build Status](https://travis-ci.org/ros-controls/ros_control.png?branch=kinetic-devel)](https://travis-ci.org/ros-controls/ros_control) | [![Build Status](https://travis-ci.org/ros-controls/ros_control.png?branch=melodic-devel)](https://travis-ci.org/ros-controls/ros_control) | [![Build Status](https://travis-ci.org/ros-controls/ros_control.png?branch=noetic-devel)](https://travis-ci.org/ros-controls/ros_control) |
+- [JointCommandInterface](include/hardware_interface/joint_command_interface.h): 
+  hardware interface to support commanding and reading the state of an array of
+  joints. Note that these commands can have any semantic meaning as long as each
+  can be represented by a single double, they are not necessarily effort commands. 
+  To specify a meaning to this command, see the derived classes:
+  - [EffortJointInterface](https://github.com/ros-controls/ros_control/blob/c6ee2451cf919307b7c1dbc75b32bec7d1b52d23/hardware_interface/include/hardware_interface/joint_command_interface.h#L82): 
+    for commanding and reading effort-based joints.
+  - [VelocityJointInterface](https://github.com/ros-controls/ros_control/blob/c6ee2451cf919307b7c1dbc75b32bec7d1b52d23/hardware_interface/include/hardware_interface/joint_command_interface.h#L85): 
+    for commanding and reading velocity-based joints.
+  - [PositionJointInterface](https://github.com/ros-controls/ros_control/blob/c6ee2451cf919307b7c1dbc75b32bec7d1b52d23/hardware_interface/include/hardware_interface/joint_command_interface.h#L88): 
+    for commanding and reading position-based joints.
+- [JointStateInterfaces](include/hardware_interface/joint_state_interface.h): 
+  hardware interface to support reading the state of an array of named joints, 
+  each of which has some position, velocity, and effort (force or torque).
+- [ActuatorStateInterfaces](include/hardware_interface/actuator_state_interface.h): 
+  hardware interface to support reading the state of an array of named actuators,
+  each of which has some position, velocity, and effort (force or torque).
+- [ActuatorCommandInterfaces](include/hardware_interface/actuator_command_interface.h)
+  - [EffortActuatorInterface](https://github.com/ros-controls/ros_control/blob/c6ee2451cf919307b7c1dbc75b32bec7d1b52d23/hardware_interface/include/hardware_interface/actuator_command_interface.h#L79)
+  - [VelocityActuatorInterface](https://github.com/ros-controls/ros_control/blob/c6ee2451cf919307b7c1dbc75b32bec7d1b52d23/hardware_interface/include/hardware_interface/actuator_command_interface.h#L82)
+  - [PositionActuatorInterface](https://github.com/ros-controls/ros_control/blob/c6ee2451cf919307b7c1dbc75b32bec7d1b52d23/hardware_interface/include/hardware_interface/actuator_command_interface.h#L85)
+- [PosVelJointInterface](include/hardware_interface/posvel_command_interface.h)
+- [PosVelAccJointInterface](include/hardware_interface/posvelacc_command_interface.h)
+- [Force-torque sensor Interface](include/hardware_interface/force_torque_sensor_interface.h)
+- [IMU sensor Interface](include/hardware_interface/imu_sensor_interface.h)
 
-
-
-### Branches for source-based installation
-
-| ROS Indigo  | ROS Kinetic | ROS Lunar | ROS Melodic | ROS Noetic |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| indigo-devel  | kinetic-devel  | kinetic-devel | melodic-devel | noetic-devel |
-
-
-## Publication
-
-If you find this work useful please give credits to the authors by citing:
-
-* S. Chitta, E. Marder-Eppstein, W. Meeussen, V. Pradeep, A. Rodríguez Tsouroukdissian, J. Bohren, D. Coleman, B. Magyar, G. Raiola, M. Lüdtke and E. Fernandez Perdomo
-**"ros_control: A generic and simple control framework for ROS"**,
-The Journal of Open Source Software, 2017. ([PDF](http://www.theoj.org/joss-papers/joss.00456/10.21105.joss.00456.pdf))
-
-```
-@article{ros_control,
-author = {Chitta, Sachin and Marder-Eppstein, Eitan and Meeussen, Wim and Pradeep, Vijay and Rodr{\'i}guez Tsouroukdissian, Adolfo  and Bohren, Jonathan and Coleman, David and Magyar, Bence and Raiola, Gennaro and L{\"u}dtke, Mathias and Fern{\'a}ndez Perdomo, Enrique},
-title = {ros\_control: A generic and simple control framework for ROS},
-journal = {The Journal of Open Source Software},
-year = {2017},
-doi = {10.21105/joss.00456},
-URL = {http://www.theoj.org/joss-papers/joss.00456/10.21105.joss.00456.pdf}
-}
-```
-
-## Acknowledgements
-***
-<!-- 
-    ROSIN acknowledgement from the ROSIN press kit
-    @ https://github.com/rosin-project/press_kit
--->
-
-<a href="http://rosin-project.eu">
-  <img src="http://rosin-project.eu/wp-content/uploads/rosin_ack_logo_wide.png" 
-       alt="rosin_logo" height="60" >
-</a>
-
-Supported by ROSIN - ROS-Industrial Quality-Assured Robot Software Components.  
-More information: <a href="http://rosin-project.eu">rosin-project.eu</a>
-
-<img src="http://rosin-project.eu/wp-content/uploads/rosin_eu_flag.jpg" 
-     alt="eu_flag" height="45" align="left" >  
-
-This project has received funding from the European Union’s Horizon 2020  
-research and innovation programme under grant agreement no. 732287. 
+Note that \ref hardware_interface::JointCommandInterface allows both reading
+joint state and commanding [effort|velocity|position]-based joints
+(see this [answer](https://answers.ros.org/question/209619/differences-between-hardware-interfaces/?answer=209636#post-id-209636)).
