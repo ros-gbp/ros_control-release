@@ -2,6 +2,12 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.19.5 (2021-06-16)
+-------------------
+* Add wall clock timeout to avoid some deadlock situation when switching mode (`#491 <https://github.com/ros-controls/ros_control/issues/491>`_)
+  Co-authored-by: Krishna <chaitanyaradon89@gmail.com>
+* Contributors: Bence Magyar
+
 0.19.4 (2020-12-05)
 -------------------
 
