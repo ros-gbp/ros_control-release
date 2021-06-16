@@ -2,35 +2,20 @@
 Changelog for package controller_manager_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.19.4 (2020-12-05)
+0.18.4 (2021-06-16)
 -------------------
 
-0.19.3 (2020-10-11)
+0.18.3 (2020-12-05)
+-------------------
+* Update docs in hardware_interface
+* Contributors: Franz Pucher
+
+0.18.2 (2020-08-17)
 -------------------
 
-0.19.2 (2020-08-17)
+0.18.1 (2020-05-09)
 -------------------
-* Fixes part 2 of issue`#448 <https://github.com/ros-controls/ros_control/issues/448>`_ [Noetic] Rework and re-enable spawning and switching CLI tests (`#462 <https://github.com/ros-controls/ros_control/issues/462>`_)
-  * [tests] Split controller_manager_scripts.txt in two parts.
-  The second part is now called controller_manager_interface_test.
-  This fixes part 2 of issue `#448 <https://github.com/ros-controls/ros_control/issues/448>`_
-  * [test] Modification of the validation test.
-  When commenting the first test (cm_msg_utils_test.py) the output
-  is correct, while uncommented an inversion of the output happens.
-  As this test is a pure python with no interaction with the
-  controller_manager, it is very likely a race condition due either to
-  Python or to the operating system. As the output is not fundamentally
-  wrong, and as the tests are heavily relying on timing and subprocesses
-  which are making the reproducibility difficult, this PR accepts both
-  solution:
-  [my_controller1, my_controller3] order
-  or
-  [my_controller3, my_controller1] order
-* Contributors: Olivier Stasse
-
-0.19.1 (2020-05-10)
--------------------
-* Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
+* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
   * Add override specifiers & default constructors
   * Delete ControllerBase copy & move ctors
   * Remove unnecessary default constructors
@@ -38,15 +23,7 @@ Changelog for package controller_manager_tests
   * Revert ImuSensorHandle::Data::Data() = default
   * Remove unnecessary default overridden constructors
   * Remove semicolon after function body
-  Co-authored-by: Matt Reynolds <mtreynolds@uwaterloo.ca>
-* Use setuptools instead of distutils (`#429 <https://github.com/ros-controls/ros_control/issues/429>`_)
-* Contributors: Bence Magyar, Matt Reynolds
-
-0.19.0 (2020-04-23)
--------------------
-* Disable flaky CLI spawn test (`#446 <https://github.com/ros-controls/ros_control/issues/446>`_)
-* Update travis config and rosinstall for noetic (`#439 <https://github.com/ros-controls/ros_control/issues/439>`_)
-* Contributors: Bence Magyar
+* Contributors: Matt Reynolds
 
 0.18.0 (2020-04-16)
 -------------------

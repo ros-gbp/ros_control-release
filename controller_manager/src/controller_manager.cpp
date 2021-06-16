@@ -150,7 +150,7 @@ void ControllerManager::stopControllers(const ros::Time& time)
 void ControllerManager::startControllers(const ros::Time& time)
 {
   // start controllers
-  if (robot_hw_->switchResult() == hardware_interface::RobotHW::SwitchState::DONE)
+  if (robot_hw_->switchResult() == hardware_interface::RobotHW::DONE)
   {
     for (const auto& request : start_request_)
     {
@@ -160,7 +160,7 @@ void ControllerManager::startControllers(const ros::Time& time)
     switch_params_.do_switch = false;
   }
   // abort controllers in case of error or timeout (if set)
-  else if ((robot_hw_->switchResult() == hardware_interface::RobotHW::SwitchState::ERROR) ||
+  else if ((robot_hw_->switchResult() == hardware_interface::RobotHW::ERROR) ||
            (switch_params_.timeout > 0.0 &&
             (time - switch_params_.init_time).toSec() > switch_params_.timeout))
   {
@@ -194,12 +194,12 @@ void ControllerManager::startControllersAsap(const ros::Time& time)
         if (request == controller.c.get())
         {
           // ready to start
-          if (robot_hw_->switchResult(controller.info) == hardware_interface::RobotHW::SwitchState::DONE)
+          if (robot_hw_->switchResult(controller.info) == hardware_interface::RobotHW::DONE)
           {
             request->startRequest(time);
           }
           // abort on error or timeout (if set)
-          else if ((robot_hw_->switchResult(controller.info) == hardware_interface::RobotHW::SwitchState::ERROR) ||
+          else if ((robot_hw_->switchResult(controller.info) == hardware_interface::RobotHW::ERROR) ||
                    (switch_params_.timeout > 0.0 &&
                     (time - switch_params_.init_time).toSec() > switch_params_.timeout))
           {
@@ -604,17 +604,29 @@ bool ControllerManager::switchController(const std::vector<std::string>& start_c
 
   // wait until switch is finished
   ROS_DEBUG("Request atomic controller switch from realtime loop");
+  auto start_time = std::chrono::system_clock::now();
+  bool timed_out = false;
   while (ros::ok() && switch_params_.do_switch)
   {
     if (!ros::ok())
     {
       return false;
     }
-    std::this_thread::sleep_for(std::chrono::microseconds(100));
+    std::chrono::duration<double> diff = std::chrono::system_clock::now() - start_time;
+    if (diff.count() < timeout+1.0 || timeout == 0){
+        std::this_thread::sleep_for(std::chrono::microseconds(100));
+    } else {
+        ROS_DEBUG("Timed out while switching controllers. Exiting...");
+        timed_out = true;
+        break;
+    }
   }
   start_request_.clear();
   stop_request_.clear();
-
+  if(timed_out){
+      ROS_DEBUG("Exited wait until switch is finished loop using non-ROS-time timeout");
+      return false;
+  }
   ROS_DEBUG("Successfully switched controllers");
   return true;
 }

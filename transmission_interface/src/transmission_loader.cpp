@@ -32,7 +32,7 @@
 namespace transmission_interface
 {
 
-bool
+TransmissionLoader::ParseStatus
 TransmissionLoader::getActuatorReduction(const TiXmlElement& parent_el,
                                          const std::string&  actuator_name,
                                          const std::string&  transmission_name,
@@ -47,14 +47,13 @@ TransmissionLoader::getActuatorReduction(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
                              "' does not specify the required <mechanicalReduction> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
                              "' does not specify the optional <mechanicalReduction> element.");
-      return true;
     }
+    return NO_DATA;
   }
 
   // Cast to number
@@ -62,13 +61,13 @@ TransmissionLoader::getActuatorReduction(const TiXmlElement& parent_el,
   catch (const std::logic_error&) // Captures both std::invalid_argument and std::out_of_range
   {
     ROS_ERROR_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
-                           "' specifies the <mechanicalReduction> element, but is not a number.");
-    return false;
+                           "' specifies the <mechanicalReduction> element, but is not a valid number.");
+    return BAD_TYPE;
   }
-  return true;
+  return SUCCESS;
 }
 
-bool
+TransmissionLoader::ParseStatus
 TransmissionLoader::getJointReduction(const TiXmlElement& parent_el,
                                       const std::string&  joint_name,
                                       const std::string&  transmission_name,
@@ -83,14 +82,13 @@ TransmissionLoader::getJointReduction(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' does not specify the required <mechanicalReduction> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' does not specify the optional <mechanicalReduction> element.");
-      return true;
     }
+    return NO_DATA;
   }
 
   // Cast to number
@@ -98,13 +96,13 @@ TransmissionLoader::getJointReduction(const TiXmlElement& parent_el,
   catch (const std::logic_error&) // Captures both std::invalid_argument and std::out_of_range
   {
     ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
-                           "' specifies the <mechanicalReduction> element, but is not a number.");
-    return false;
+                           "' specifies the <mechanicalReduction> element, but is not a valid number.");
+    return BAD_TYPE;
   }
-  return true;
+  return SUCCESS;
 }
 
-bool
+TransmissionLoader::ParseStatus
 TransmissionLoader::getJointOffset(const TiXmlElement& parent_el,
                                    const std::string&  joint_name,
                                    const std::string&  transmission_name,
@@ -119,14 +117,13 @@ TransmissionLoader::getJointOffset(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' does not specify the required <offset> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' does not specify the optional <offset> element.");
-      return true;
     }
+    return NO_DATA;
   }
 
   // Cast to number
@@ -134,13 +131,13 @@ TransmissionLoader::getJointOffset(const TiXmlElement& parent_el,
   catch (const std::logic_error&) // Captures both std::invalid_argument and std::out_of_range
   {
     ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
-                           "' specifies the <offset> element, but is not a number.");
-    return false;
+                           "' specifies the <offset> element, but is not a valid number.");
+    return BAD_TYPE;
   }
-  return true;
+  return SUCCESS;
 }
 
-bool
+TransmissionLoader::ParseStatus
 TransmissionLoader::getActuatorRole(const TiXmlElement& parent_el,
                                     const std::string&  actuator_name,
                                     const std::string&  transmission_name,
@@ -155,14 +152,13 @@ TransmissionLoader::getActuatorRole(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
                              "' does not specify the required <role> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
                              "' does not specify the optional <offset> element.");
-      return true;
     }
+    return NO_DATA;
   }
 
   // Cast to number
@@ -172,21 +168,20 @@ TransmissionLoader::getActuatorRole(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
                              "' specifies an empty <role> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Actuator '" << actuator_name << "' of transmission '" << transmission_name <<
                              "' specifies an empty <role> element.");
-      return true;
     }
+    return NO_DATA;
   }
   role = role_el->GetText();
 
-  return true;
+  return SUCCESS;
 }
 
-bool
+TransmissionLoader::ParseStatus
 TransmissionLoader::getJointRole(const TiXmlElement& parent_el,
                                  const std::string&  joint_name,
                                  const std::string&  transmission_name,
@@ -201,14 +196,13 @@ TransmissionLoader::getJointRole(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' does not specify the required <role> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' does not specify the optional <offset> element.");
-      return true;
     }
+    return NO_DATA;
   }
 
   // Cast to number
@@ -218,18 +212,17 @@ TransmissionLoader::getJointRole(const TiXmlElement& parent_el,
     {
       ROS_ERROR_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' specifies an empty <role> element.");
-      return false;
     }
     else
     {
       ROS_DEBUG_STREAM_NAMED("parser", "Joint '" << joint_name << "' of transmission '" << transmission_name <<
                              "' specifies an empty <role> element.");
-      return true;
     }
+    return NO_DATA;
   }
   role = role_el->GetText();
 
-  return true;
+  return SUCCESS;
 }
 
 } // namespace
