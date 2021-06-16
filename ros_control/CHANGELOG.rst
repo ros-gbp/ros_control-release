@@ -2,6 +2,9 @@
 Changelog for package ros_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.4 (2021-06-16)
+-------------------
+
 0.18.3 (2020-12-05)
 -------------------
 * Update docs in hardware_interface
