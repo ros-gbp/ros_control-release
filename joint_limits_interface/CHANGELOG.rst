@@ -2,20 +2,21 @@
 Changelog for package joint_limits_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.18.4 (2021-06-16)
+0.19.5 (2021-06-16)
 -------------------
 
-0.18.3 (2020-12-05)
--------------------
-* Update docs in hardware_interface
-* Contributors: Franz Pucher
-
-0.18.2 (2020-08-17)
+0.19.4 (2020-12-05)
 -------------------
 
-0.18.1 (2020-05-09)
+0.19.3 (2020-10-11)
 -------------------
-* Add function specifiers and modernize constructors (`#430 <https://github.com/ros-controls/ros_control/issues/430>`_)
+
+0.19.2 (2020-08-17)
+-------------------
+
+0.19.1 (2020-05-10)
+-------------------
+* Function specifiers noetic (`#453 <https://github.com/ros-controls/ros_control/issues/453>`_)
   * Add override specifiers & default constructors
   * Delete ControllerBase copy & move ctors
   * Remove unnecessary default constructors
@@ -23,7 +24,12 @@ Changelog for package joint_limits_interface
   * Revert ImuSensorHandle::Data::Data() = default
   * Remove unnecessary default overridden constructors
   * Remove semicolon after function body
-* Contributors: Matt Reynolds
+  Co-authored-by: Matt Reynolds <mtreynolds@uwaterloo.ca>
+* Use setuptools instead of distutils (`#429 <https://github.com/ros-controls/ros_control/issues/429>`_)
+* Contributors: Bence Magyar, Matt Reynolds
+
+0.19.0 (2020-04-23)
+-------------------
 
 0.18.0 (2020-04-16)
 -------------------

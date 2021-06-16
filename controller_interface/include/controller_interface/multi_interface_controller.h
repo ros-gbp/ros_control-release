@@ -248,7 +248,7 @@ protected:
                    ClaimedResources&            claimed_resources) override
   {
     // check if construction finished cleanly
-    if (state_ != CONSTRUCTED){
+    if (state_ != ControllerState::CONSTRUCTED){
       ROS_ERROR("Cannot initialize this controller because it failed to be constructed");
       return false;
     }
@@ -277,7 +277,7 @@ protected:
     // is start()ed
 
     // initialization successful
-    state_ = INITIALIZED;
+    state_ = ControllerState::INITIALIZED;
     return true;
   }
 
