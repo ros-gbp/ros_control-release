@@ -2,6 +2,9 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.18.4 (2021-06-16)
+-------------------
+
 0.18.3 (2020-12-05)
 -------------------
 * [hardware_interface] Update documentation (`#457 <https://github.com/ros-controls/ros_control/issues/457>`_)
