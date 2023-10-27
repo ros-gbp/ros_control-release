@@ -2,6 +2,16 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.0 (2023-10-27)
+-------------------
+* Reorder waiting for services and ros time to speed up controller start (`#508 <https://github.com/ros-controls/ros_control/issues/508>`_)
+* duplicate controller name in start and stop list will throw error (`#506 <https://github.com/ros-controls/ros_control/issues/506>`_)
+* Contributors: Bence Magyar, Captain Yoshi, Martin Oehler
+
+* Reorder waiting for services and ros time to speed up controller start (`#508 <https://github.com/ros-controls/ros_control/issues/508>`_)
+* duplicate controller name in start and stop list will throw error (`#506 <https://github.com/ros-controls/ros_control/issues/506>`_)
+* Contributors: Captain Yoshi, Martin Oehler
+
 0.19.6 (2022-10-21)
 -------------------
 * SPAWNER: Wait for the clock to be available before proceeding (`#432 <https://github.com/ros-controls/ros_control/issues/432>`_)
