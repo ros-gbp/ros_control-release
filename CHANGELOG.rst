@@ -2,6 +2,11 @@
 Changelog for package hardware_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.20.0 (2023-10-27)
+-------------------
+* Add JPVTPIDGains-like interface (`#515 <https://github.com/ros-controls/ros_control/issues/515>`_)
+* Contributors: Bence Magyar, Wolfgang Merkt
+
 0.19.6 (2022-10-21)
 -------------------
 * Update mainpage.dox (`#496 <https://github.com/ros-controls/ros_control/issues/496>`_)
